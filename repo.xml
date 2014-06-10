@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <meta xmlns="http://exist-db.org/xquery/repo">
-    <description>The Podlove Matrix</description>
-    <author>lasse</author>
-    <website/>
+    <description>The SARIT provides electronic editions of Sanskrit and other Indian-language texts.</description>
+    <author>Joern Turner, Wolfgang Meier, Lars Windauer</author>
+    <website>http://sarit.indology.info/</website>
     <status>alpha</status>
     <license>MIT</license>
     <copyright>true</copyright>
     <type>application</type>
-    <target>podlove-matrix</target>
+    <target>sarit</target>
     <prepare>pre-install.xql</prepare>
     <finish/>
     <deployed/>

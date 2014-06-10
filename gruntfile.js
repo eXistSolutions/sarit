@@ -87,7 +87,12 @@ module.exports = function (grunt) {
                     {
                         from: '@APPAUTHOR@',
                         to: '<%= xar.author %>'
+                    },
+                    {
+                        from: '@APPURL@',
+                        to: '<%= xar.url %>'
                     }
+
                 ]
             }
         },

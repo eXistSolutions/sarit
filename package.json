@@ -1,8 +1,8 @@
 {
-  "name": "podlove-matrix",
+  "name": "sarit",
   "version": "0.0.1",
-  "url":"http://podlove.org/podlove-matrix",
-  "description": "The Podlove Matrix",
+  "url":"http://sarit.indology.info/",
+  "description": "The SARIT provides electronic editions of Sanskrit and other Indian-language texts.",
   "main": "resources/js/app.js",
   "directories": {
     "doc": "doc",
@@ -11,7 +11,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "lasse",
+  "author": "Joern Turner, Wolfgang Meier, Lars Windauer",
   "license": "MIT",
   "devDependencies": {
     "grunt": "~0.4.4",
