@@ -261,6 +261,9 @@ li {
   -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
   -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
   transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
+  -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
+  -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
+  transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
   -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
   -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
   transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
@@ -337,6 +340,7 @@ li {
     hides for sm and xs devices */
 .toc-col {
   /* not at all sure if this is the best/right way */
+
   padding-right: 0;
 }
 .toc {
@@ -405,7 +409,6 @@ li {
 }
 /* ++++++++++ end of media object overwrites ++++++++++ */
 footer {
-  float: left;
   background: #4c4b4d;
   width: 100%;
 }
@@ -428,7 +431,6 @@ footer a:hover {
   line-height: 40px;
   position: relative;
   color: white;
-  float: right;
   font-size: 0.8em;
   padding: 0 20px;
 }
@@ -463,10 +465,10 @@ footer a:hover {
 }
 @media (min-width: 1200px) {
   /*
-      body{
-        background:orange;
-      }
-  */
+        body{
+          background:orange;
+        }
+    */
 }
 .color {
   width: 100px;

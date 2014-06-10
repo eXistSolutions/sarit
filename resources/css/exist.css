@@ -409,7 +409,6 @@ li {
 }
 /* ++++++++++ end of media object overwrites ++++++++++ */
 footer {
-  float: left;
   background: #4c4b4d;
   width: 100%;
 }
@@ -432,7 +431,6 @@ footer a:hover {
   line-height: 40px;
   position: relative;
   color: white;
-  float: right;
   font-size: 0.8em;
   padding: 0 20px;
 }
