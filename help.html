@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/html" lang="en">
+    <head>
+        <title data-template="config:app-title">App Title</title>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta data-template="config:app-meta"/>
+        <link rel="shortcut icon" href="resources/img/favicon.ico"/>
+
+    <!-- build:template
+    <%= minifiedCss %>
+    /build -->
+
+    <!-- build:remove -->
+        <link href="components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="components/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+        <link href="components/animate.css/animate.css" rel="stylesheet"/>
+        <link rel="stylesheet" type="text/css" href="resources/css/styles.css"/>
+    <!-- /build -->
+        <link href="http://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet" type="text/css"/>
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" type="text/css"/>
+    </head>
+    <body id="grey-top">
+        <div role="navigation" class="navbar navbar-static-top nav-animate">
+            <div class="container">
+                <div class="navbar-header">
+                    <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="fa fa-bars"/>
+                    </button>
+                    <a href="#" class="navbar-brand">
+                        <img src="resources/img/existdb.png" alt="eXistdb" class="logo"/>
+                    </a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="#" data-toggle="collapse" data-target=".navbar-collapse">Home</a>
+                        </li>
+                        <li>
+                            <a href="#" data-toggle="collapse" data-target=".navbar-collapse">Demo</a>
+                        </li>
+                        <li>
+                            <a href="#" data-toggle="collapse" data-target=".navbar-collapse">Media</a>
+                        </li>
+                        <li>
+                            <a href="#" data-toggle="collapse" data-target=".navbar-collapse">Developer</a>
+                        </li>
+                    </ul>
+                    <form role="search" class="navbar-form navbar-left nav-search">
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Search ..." type="search" value="" name="search" id="search"/>
+                            <span class="fa fa-search"/>
+                        </div>
+                    </form>
+                </div>
+            <!--/.nav-collapse -->
+            </div>
+        <!--/.container-fluid -->
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h1>Search Term Help</h1>
+                        <small><!-- hhmts start -->Last modified: Tue Nov 9 00:38:24 CET 2010 <!-- hhmts end --></small>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Please see the
+                    current <a href="http://sites.google.com/site/philologic3/manual">Philologic
+                        user manual</a> for general information. The
+                    following points are specific
+                    to <a href="/top.shtml">SARIT</a>.
+                </p>
+                    <p>Search terms are entered into the
+                    <em>Terms(s)</em> input field in either the
+                    <a href="/basic.shtml">basic</a>or
+                    <a href="/advanced.shtml">advanced</a>search form. One must, however, enter the correct utf-8
+                    <a name="diacriticsref" href="help.html#diacritics">accented characters</a>or diacritics, for
+                    e.g., please enter
+                    <em>ahiṁsā</em>, not
+                    <em>ahimsa</em>. Alongside or below the main search form is a key listing the most often used diacritics
+                    for Romanised Sanskrit. These characters may be cut and pasted into the search input field. Search terms
+                    may also be entered using
+                    <a name="wildcardref" href="help.html#wildcard">wildcard characters</a>to match patterns, for
+                    e.g.,
+                    <em>akṣar.*</em> to retrieve
+                    <em>akṣaro</em>,
+                    <em>akṣarāṇām</em> and so on.
+                </p>
+                    <hr/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Contents</h3>
+                    <dl>
+                        <dt>
+                            <a name="diacriticsref2" href="help.html#diacritics">Diacritics and Special Characters</a>
+                        </dt>
+                        <dd>
+                            <a name="diacriticssktref" href="help.html#diacriticsskt">Diacritics for Romanised
+                            Sanskrit</a>
+                        </dd>
+                        <dd>
+                            <a name="speccharref" href="help.html#specchar">Special Characters</a>
+                        </dd>
+                        <dt>
+                            <a name="wildcardref2" href="help.html#wildcard">Wildcard Characters and Boolean
+                            Operators</a>
+                        </dt>
+                        <dd>
+                            <a name="wildfulltxtref" href="help.html#wildfulltxt">Full Text Searching</a>:
+                        <a name="wildcharref" href="help.html#wildchar">Wildcard Characters</a>;
+                        <a name="boolopref" href="help.html#boolop">Boolean (Logical) Operators</a>
+                        </dd>
+                        <dd>
+                            <a name="wildbibref" href="help.html#wildbib">Searching for Titles and Authors &amp;c.</a>
+                        </dd>
+                        <dt>
+                            <a name="punctuationref2" href="help.html#punctuation">Punctuation Marks and Searching</a>
+                        </dt>
+                        <dd>
+                            <a name="punctfullref" href="help.html#punctfull">Full Text Searching</a>:
+                        <a name="apostropheref" href="help.html#apostrophe">Apostrophe</a>;
+                        <a name="hyphenref" href="help.html#hyphen">Hyphen</a>;
+                        <a name="periodref" href="help.html#period">Period</a>
+                        </dd>
+                        <dd>
+                            <a name="punctbibref" href="help.html#punctbib">Searching for Titles and Authors &amp;c.</a>
+                        </dd>
+                    </dl>
+                    <hr/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>
+                        <a name="diacritics" href="help.html#diacriticsref2">-</a>Diacritics and Special Characters -</h3>
+                    <p>
+                        <a href="/top.shtml">SARIT</a>digital texts are encoded in utf-8. All search terms must therefore use
+                    utf-8 characters in all the search input fields, including the
+                    <em>Terms(s)</em> and the
+                    <em>Bibliographic</em> fields (i.e., the
+                    <em>Title</em> and
+                    <em>Author</em> fields &amp;c.).</p>
+                    <p>If your computer is not configured to input
+                    diacritical marks directly, please copy and paste
+                    the characters into the search field from the list of characters
+                    shown on the search pages.</p>
+                    <h4>
+                        <a name="specchar" href="help.html#speccharref">--</a>Special Characters --</h4>
+                    <dl>
+                        <dt>ampersands (&amp;) and many other
+                        <a name="punctuationref" href="help.html#punctuation">punctuation marks</a>are not
+                        searchable characters
+                    </dt>
+                        <dt>mathematical symbols</dt>
+                        <dd>the equal sign (=) and minus sign (-) will produce a ``No words matching specified search term(s)''
+                        message
+                    </dd>
+                        <dd>the plus sign (+) is not a searchable character, but, if entered, will be ignored</dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>
+                        <a name="wildcard" href="help.html#wildcardref2">-</a>Wildcard Characters and Boolean Operators
+                    -</h3>
+                    <p>One can include wildcard characters in search terms. This enables one to search for terms that match a
+                    pattern. Wildcard characters are available for both full text and bibliographic searching.</p>
+                    <h4>
+                        <a name="wildfulltxt" href="help.html#wildfulltxtref">--</a>Full Text Searching --</h4>
+                    <p>
+                        <a href="/top.shtml">SARIT</a>supports wildcard characters and Boolean (logical) operators, which are
+                    modeled on UNIX regular expressions to perform ``pattern matching'' in full text searching. Pattern
+                    matching allows identification of a large number of words corresponding to a defined pattern. Wildcard
+                    characters can be useful, for example, in identifying cognates made obscure by affixes and vowel
+                    weakening, inconsistencies due to irregular orthography, and variations on account of word inflection as
+                    well as for discovering potential emendations for uncertain readings. The most commonly used regular
+                    expression operators (wildcard and Boolean) are listed below.</p>
+                    <h5>
+                        <a name="wildchar" href="help.html#wildcharref">---</a>Wildcard Characters ---</h5>
+                    <dl>
+                        <dt>. (period) :: matches any single character:</dt>
+                        <dd>
+                            <em>akṣar.</em>:: matches akṣara and akṣaro [
+                        <a title="Search result: Term = akṣar." href="/newphilo/search3t?dbname=indologica&amp;word=ak%E1%B9%A3ar.&amp;OUTPUT=kwic&amp;CONJUNCT=PHRASE&amp;DISTANCE=3&amp;title=&amp;author=">Search
+                            result</a>]
+                    </dd>
+                        <dt>.* (period asterisk "dot-star") :: matches any string of characters:</dt>
+                        <dd>
+                            <em>.*māṇo</em>:: matches mantrayamāṇo, sadharmāṇo, śiṣyamāṇo, karmāṇo, pramāṇo, &amp;c. [
+                        <a title="Search result: Term = .*māṇo" href="/newphilo/search3t?dbname=indologica&amp;word=.*m%C4%81%E1%B9%87o&amp;OUTPUT=conc&amp;CONJUNCT=PHRASE&amp;DISTANCE=3&amp;title=&amp;author=">Search
+                            result</a>]
+                    </dd>
+                        <dd>
+                            <em>a.*yataḥ</em>:: matches anyataḥ, akārayataḥ, amokṣayataḥ, adūṣyataḥ, &amp;c. [
+                        <a title="Search result: Term = a.*yataḥ" href="/newphilo/search3t?dbname=indologica&amp;word=a.*yata%E1%B8%A5&amp;OUTPUT=conc&amp;CONJUNCT=PHRASE&amp;DISTANCE=3&amp;title=&amp;author=">Search
+                            result</a>]
+                    </dd>
+                        <dd>
+                            <em>kauṭil.*</em>:: matches kauṭilyaḥ, kauṭilyena, kauṭilīya, &amp;c. [
+                        <a title="Search result: Term = kauṭil.*" href="/newphilo/search3t?dbname=indologica&amp;word=kau%E1%B9%ADily.*&amp;OUTPUT=conc&amp;CONJUNCT=PHRASE&amp;DISTANCE=3&amp;title=&amp;author=">Search
+                            result</a>]
+                    </dd>
+                        <dt>.? (period question mark) :: matches the characters entered, or the characters entered plus one
+                        instead of the question mark:
+                    </dt>
+                        <dd>
+                            <em>kañci.?</em>:: matches kañcid and kañcit [
+                        <a title="Search result: Term = kañci.?" href="/newphilo/search3t?dbname=indologica&amp;word=kañci.%3F&amp;OUTPUT=conc&amp;CONJUNCT=PHRASE&amp;DISTANCE=3&amp;title=&amp;author=">Search
+                            result</a>]
+                    </dd>
+                        <dt>[a-z] (brackets) :: matches a single character within a range:</dt>
+                        <dd>
+                            <em>kuryā[a-o]</em>:: matches kuryād and kuryān but not kuryāt [
+                        <a title="Search result: Term = kuryā[a-o]" href="/newphilo/search3t?dbname=indologica&amp;word=kury%C4%81%5Ba-o%5D&amp;OUTPUT=conc&amp;CONJUNCT=PHRASE&amp;DISTANCE=3&amp;title=&amp;author=">Search
+                            result</a>]
+                    </dd>
+                    </dl>
+                    <p>N.B., for a full list of words matching a wildcard search term, go to the
+                    <a href="./advanced.shtml">advanced search interface</a>, enter the wildcard search term, select the
+                    <em>Refined Search Results</em> tab, select the
+                    <em>Frequency by Title</em> radio button, and then press `Search'.</p>
+                    <h5>
+                        <a name="boolop" href="help.html#boolopref">---</a>Boolean (Logical) Operators ---</h5>
+                    <dl>
+                        <dt>| (vertical bar) :: the OR operator:</dt>
+                        <dd>
+                            <em>kañcid | kañcit</em>:: matches kañcid OR kañcit [
+                        <a title="Search result: Term = kañcid | kañcit" href="/newphilo/search3t?dbname=indologica&amp;word=kañcid+|+kañcit&amp;OUTPUT=conc&amp;CONJUNCT=PHRASE&amp;DISTANCE=3&amp;title=&amp;author=">Search
+                            result</a>]
+                    </dd>
+                        <dt>Space :: the AND operator in sentence and paragraph proximity searching:</dt>
+                        <dd>
+                            <em>teṣām apy</em>:: matches teṣām AND apy in sentence and paragraph proximity searching [
+                        <a title="Search result: Term = teṣām apy" href="/newphilo/search3t?dbname=indologica&amp;word=te%E1%B9%A3%C4%81m+apy&amp;OUTPUT=conc&amp;CONJUNCT=PHRASE&amp;DISTANCE=3&amp;title=&amp;author=">Search
+                            result</a>]
+                    </dd>
+                    </dl>
+                    <p>N.B., wildcard characters and boolean operators can be combined within the same search: e.g.,
+                    <em>mantriṇ.* | kañci.?</em>. [
+                    <a title="Search result: Term = mantriṇ.* | kañci.?" href="/newphilo/search3t?dbname=indologica&amp;word=mantriṇ.*+|+kañci.%3F&amp;OUTPUT=conc&amp;CONJUNCT=PHRASE&amp;DISTANCE=3&amp;title=&amp;author=">Search
+                        result</a>]</p>
+                    <h4>
+                        <a name="wildbib" href="help.html#wildbibref">--</a>Searching for Titles and Authors &amp;c.
+                    (Bibliographic Searching) --</h4>
+                    <p>When searching for titles and authors and so on (bibliographic searching) one needs only limited support
+                    for wildcard characters and Boolean operators. In general, one should only need to enter an uncommon
+                    term from the title or author's name. Please note that only the Boolean operator OR (|) can be used, not
+                    AND (space); that the wildcard operator (.*) is unnecessary; and that a title or author's name that
+                    contains diacritics must be entered with utf-8 characters, not postfix modifiers.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>
+                        <a name="punctuation" href="help.html#punctuationref2">-</a>Punctuation Marks and Searching -
+                </h3>
+                    <p>In general, it is advisable to avoid using punctuation marks when engaged in full text or bibliographic
+                    searching.</p>
+                    <h4>
+                        <a name="punctfull" href="help.html#punctfullref">--</a>Full Text Searching --</h4>
+                    <p>Punctuation marks must be avoided when full text searching. Many of the symbols often used for
+                    punctuation are used by
+                    <a href="/top.shtml">SARIT</a>for postscript modifiers or wildcard characters.</p>
+                    <p>The punctuation that must be eschewed includes: the comma (,), question mark (?), exclamation mark (!),
+                    vertical bar (|), forward (/) and backward (\) slashes, parentheses (( )), braces({ }), brackets([ ]),
+                    angle brackets (&lt; &gt;), colons (:), and semi-colons (;) as well as quotation marks (` ' "),
+                    ampersands (&amp;), asterisk (*), percentage sign (%), dollar sign ($), and number sign (#).</p>
+                    <p>Some punctuation marks are especially problematic and deserve further comment:</p>
+                    <h5>
+                        <a name="apostrophe" href="help.html#apostropheref">---</a>Apostrophe ---</h5>
+                    <p>The Tibetan
+                    <em>'a chuṅ</em> is represented by an apostrophe ('). When searching for a term including an apostrophe
+                    one should substitute a wildcard character: e.g., search for
+                    <em>tha snyad .*dogs pa</em> or
+                    <em>tha snyad .?dogs pa</em> rather than
+                    <em>tha snyad 'dogs pa</em>.</p>
+                    <h5>
+                        <a name="hyphen" href="help.html#hyphenref">---</a>Hyphen ---</h5>
+                    <p>Some texts use hyphens to separate words within compounds. When searching for words within a hyphenated
+                    compound one should omit the hyphen: e.g., search for
+                    <em>apāya hetu</em> rather than
+                    <em>apāya-hetu</em>.</p>
+                    <h5>
+                        <a name="period" href="help.html#periodref">---</a>Period ---</h5>
+                    <p>The period (.) is not searchable. It serves as a wildcard character.</p>
+                    <p>N.B., as few digital texts are tagged for sentence termination,
+                    <a href="http://sites.google.com/site/philologic3/">PhiloLogic™</a>relies on punctuation marks in
+                    combination with capitalisation to identify sentence termination. This is especially problematic for
+                    Indological and Buddhological texts.</p>
+                    <h4>
+                        <a name="punctbib" href="help.html#punctbibref">--</a>Searching for Titles and Authors &amp;c.
+                    (Bibliographic Searching) --</h4>
+                    <p>The following punctuation marks produce a ``No documents found matching specified bibliographic
+                    criteria'' message when used in bibliographic search input fields: parentheses (( )), semi-colons (;),
+                    colons (:), ampersands (&amp;), apostrophes ('), quotation marks (` ' "), braces ({ }), brackets ([ ]),
+                    and angle brackets (&lt; &gt;), forward slash (/), as well as the dollar sign ($).</p>
+                    <p>The following punctuation marks have no adverse effect on a bibliographical search and, if appearing
+                    within a string, must be entered: period (.), hyphen (-), question mark (?), exclamation mark (!), and
+                    comma (,).</p>
+                    <p>N.B., On the whole, it is perhaps most convenient simply to avoid using punctuation marks when making
+                    bibliographic searches. All that is often needed to find what one wants is to enter an uncommon
+                    bibliographic term from either the title or author's name.</p>
+                    <hr/>
+                    <p>
+                        <sup>[
+                        <a name="footnote" href="help.html#footnoteref">*</a>]</sup>This page is a modified version
+                    of the
+                    <a href="http://sites.google.com/site/philologic3/manual#3">PhiloLogic™ User Manual: 3. Character
+                        Representation for Search Terms</a>.</p>
+                </div>
+            </div>
+        </div>
+        <footer class="row">
+            <div class="copyright col-md-6">
+                <h4>Stay Connected</h4>
+                <div class="exist-social-horizontal">
+                    <a href="https://github.com/eXist-db/exist">
+                        <i class="fa fa-github-square"/>
+                    </a>
+                    <a href="http://www.linkedin.com/groups?trk=groups_members-h-dsc&amp;gid=35624&amp;goback=%2Eanp_35624_1397120975460_1" title="LinkedIn" data-toggle="collapse" data-target=".navbar-collapse">
+                        <i class="fa fa-linkedin-square"/>
+                    </a>
+                    <a href="#">
+                        <i class="fa fa-twitter-square"/>
+                    </a>
+                    <a href="https://plus.google.com/u/0/s/existdb">
+                        <i class="fa fa-google-plus-square"/>
+                    </a>
+                    <a href="#">
+                        <i class="fa fa-facebook-square"/>
+                    </a>
+                    <a href="#">
+                        <i class="fa fa-youtube"/>
+                    </a>
+                    <a href="#">
+                        <i class="fa fa-envelope"/>
+                    </a>
+                </div>
+            </div>
+            <div class="copyright col-md-6">
+                <h4>SARIT: Search and Retrieval of Indic Texts</h4>
+                <p>SARIT provides digital tools for philological research into Indic texts.
+                http://sarit.indology.info/basic.shtml</p>
+                <p>Publisher &amp; contact for INDOLOGY site:</p>
+                <ul class="fa-ul">
+                    <li>
+                        <i class="fa-li fa fa-caret-right"/>Dominik Wujastyk
+                </li>
+                    <li>
+                        <i class="fa-li fa fa-caret-right"/>Dominik WUJASTYK email address
+                </li>
+                    <li>
+                        <i class="fa-li fa fa-caret-right"/>RSS Feed icon
+                </li>
+                    <li>
+                        <i class="fa-li fa fa-caret-right"/>Last modified: June 2014
+                </li>
+                </ul>
+            </div>
+        </footer>
+
+<!-- build:js resources/js/app.min.js -->
+        <script src="components/jquery/dist/jquery.js" type="text/javascript"/>
+        <script src="components/bootstrap/dist/js/bootstrap.js" type="text/javascript"/>
+        <script src="components/snap.svg/dist/snap.svg.js" type="text/javascript"/>
+        <script src="resources/js/app.js" type="text/javascript"/>
+<!-- /build -->
+    </body>
+</html>

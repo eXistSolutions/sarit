@@ -470,6 +470,10 @@ footer a:hover {
         }
     */
 }
+body a {
+  color: #428BCA;
+  text-decoration: none;
+}
 .color {
   width: 100px;
   height: 100px;
