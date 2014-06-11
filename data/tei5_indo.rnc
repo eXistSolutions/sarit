@@ -1,0 +1,3588 @@
+# DTD Generated 2009-05-20T19:34:36-04:00. 
+# TEI Edition: 1.3.0. Last updated on February 1st 2009.
+#
+
+# start datatypes
+
+# end datatypes
+
+# predeclared classes
+
+default namespace = "http://www.tei-c.org/ns/1.0"
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+namespace xsi = "http://www.w3.org/2001/XMLSchema-instance"
+
+model.placeTraitLike = climate | location | population | terrain | trait
+model.placeNamePart =
+  placeName | bloc | country | region | district | settlement | geogName
+model.placeNamePart_sequenceOptional =
+  placeName?,
+  bloc?,
+  country?,
+  region?,
+  district?,
+  settlement?,
+  geogName?
+model.placeStateLike = model.placeNamePart | state
+model.placeEventLike = event
+model.resourceLike = facsimile
+att.metrical.attributes =
+  attribute met { text }?,
+  attribute real { text }?,
+  attribute rhyme { text }?
+att.enjamb.attributes = attribute enjamb { xsd:NMTOKEN }?
+model.persNamePart =
+  surname | forename | genName | nameLink | addName | roleName
+att.datable.iso.attributes =
+  attribute when-iso { text }?,
+  attribute notBefore-iso { text }?,
+  attribute notAfter-iso { text }?,
+  attribute from-iso { text }?,
+  attribute to-iso { text }?
+att.global.linking.attributes =
+  attribute corresp { text }?,
+  attribute synch { text }?,
+  attribute sameAs { text }?,
+  attribute copyOf { text }?,
+  attribute next { text }?,
+  attribute prev { text }?,
+  attribute exclude { text }?,
+  attribute select { text }?
+att.pointing.attributes =
+  attribute type { xsd:NMTOKEN }?,
+  attribute evaluate { "all" | "one" | "none" }?
+att.global.analytic.attributes = attribute ana { text }?
+att.msExcerpt.attributes =
+  [ a:defaultValue = "false" ] attribute defective { text }?
+att.global.facs.attributes = attribute facs { text }?
+# end of predeclared classes
+att.ascribed.attributes = attribute who { text }?
+att.canonical.attributes =
+  attribute key { text }?,
+  attribute ref { text }?
+att.dimensions.attributes =
+  attribute unit { xsd:NMTOKEN }?,
+  attribute quantity { text }?,
+  attribute extent { text }?,
+  attribute atLeast { text }?,
+  attribute atMost { text }?,
+  attribute min { text }?,
+  attribute max { text }?,
+  attribute precision { text }?,
+  attribute scope { xsd:NMTOKEN }?
+att.damaged.attributes =
+  att.dimensions.attributes,
+  attribute hand { text }?,
+  attribute agent { xsd:NMTOKEN }?,
+  attribute degree { text }?,
+  attribute group { text }?
+att.datable.w3c.attributes =
+  attribute period { text }?,
+  attribute when { text }?,
+  attribute notBefore { text }?,
+  attribute notAfter { text }?,
+  attribute from { text }?,
+  attribute to { text }?
+att.datable.attributes =
+  att.datable.w3c.attributes, att.datable.iso.attributes
+att.declarable.attributes =
+  [ a:defaultValue = "false" ] attribute default { "true" | "false" }?
+att.declaring.attributes = attribute decls { text }?
+att.divLike.attributes =
+  att.metrical.attributes,
+  [ a:defaultValue = "uniform" ]
+  attribute org { "composite" | "uniform" }?,
+  [ a:defaultValue = "complete" ]
+  attribute sample {
+    "initial" | "medial" | "final" | "unknown" | "complete"
+  }?,
+  [ a:defaultValue = "N" ]
+  attribute part { "Y" | "N" | "I" | "M" | "F" }?
+att.editLike.attributes =
+  att.dimensions.attributes,
+  attribute cert { text }?,
+  attribute resp { text }?,
+  attribute evidence { xsd:NMTOKEN }?,
+  attribute source { text }?
+att.global.attributes =
+  att.global.linking.attributes,
+  att.global.analytic.attributes,
+  att.global.facs.attributes,
+  attribute xml:id { xsd:ID }?,
+  attribute n { text }?,
+  attribute xml:lang { text }?,
+  attribute rend { text }?,
+  attribute rendition { text }?,
+  attribute xml:base { text }?
+att.handFeatures.attributes =
+  attribute scribe { xsd:NMTOKEN }?,
+  attribute script { xsd:NMTOKEN }?,
+  attribute medium { xsd:NMTOKEN }?,
+  attribute scope { "sole" | "major" | "minor" }?
+att.internetMedia.attributes = attribute mimeType { text }?
+att.interpLike.attributes =
+  attribute resp { text }?,
+  attribute type { xsd:NMTOKEN }?,
+  attribute inst { text }?
+att.measurement.attributes =
+  attribute unit { xsd:NMTOKEN }?,
+  attribute quantity { text }?,
+  attribute commodity { text }?
+att.naming.attributes =
+  att.canonical.attributes,
+  attribute nymRef { text }?
+att.placement.attributes = attribute place { xsd:NMTOKEN }?
+att.segLike.attributes =
+  att.metrical.attributes,
+  attribute function { xsd:NMTOKEN }?,
+  [ a:defaultValue = "N" ]
+  attribute part { "Y" | "N" | "I" | "M" | "F" }?
+att.sourced.attributes = attribute ed { text }?
+att.spanning.attributes = attribute spanTo { text }?
+att.tableDecoration.attributes =
+  [ a:defaultValue = "data" ] attribute role { xsd:NMTOKEN }?,
+  [ a:defaultValue = "1" ] attribute rows { text }?,
+  [ a:defaultValue = "1" ] attribute cols { text }?
+att.transcriptional.attributes =
+  att.editLike.attributes,
+  attribute hand { text }?,
+  [ a:defaultValue = "unremarkable" ] attribute status { xsd:NMTOKEN }?,
+  attribute seq { text }?
+att.translatable.attributes = attribute version { text }?
+att.typed.attributes =
+  attribute type { xsd:NMTOKEN }?,
+  attribute subtype { xsd:NMTOKEN }?
+model.nameLike.agent = name | orgName | persName
+model.segLike = seg | s | cl | phr | w | m | c
+model.hiLike = hi
+model.emphLike =
+  foreign
+  | emph
+  | distinct
+  | mentioned
+  | soCalled
+  | gloss
+  | term
+  | title
+model.highlighted = model.hiLike | model.emphLike
+model.dateLike = date | time
+model.measureLike =
+  num | measure | measureGrp | geo | height | depth | width
+model.graphicLike = graphic | binaryObject | formula
+model.offsetLike = offset | geogFeat
+model.pPart.msdesc =
+  catchwords
+  | dimensions
+  | heraldry
+  | locus
+  | locusGrp
+  | material
+  | origDate
+  | origPlace
+  | secFol
+  | signatures
+  | stamp
+  | watermark
+  | handShift
+model.pPart.editorial = choice | abbr | expan | ex | am | subst
+model.pPart.transcriptional =
+  sic
+  | corr
+  | reg
+  | orig
+  | add
+  | del
+  | unclear
+  | app
+  | damage
+  | restore
+  | supplied
+model.pPart.edit = model.pPart.editorial | model.pPart.transcriptional
+model.ptrLike = ptr | ref
+model.lPart = caesura | rhyme
+model.global.meta =
+  index
+  | link
+  | linkGrp
+  | timeline
+  | join
+  | joinGrp
+  | alt
+  | altGrp
+  | certainty
+  | respons
+  | span
+  | spanGrp
+  | interp
+  | interpGrp
+model.milestoneLike = milestone | pb | lb | cb | anchor | fw
+model.biblLike = bibl | biblStruct | biblFull | msDesc
+model.headLike = head
+model.labelLike = desc | label
+model.listLike =
+  \list
+  | listBibl
+  | listOrg
+  | listEvent
+  | listPerson
+  | listPlace
+  | listNym
+  | listWit
+model.noteLike = note | witDetail
+model.lLike = l
+model.pLike = p | ab
+model.stageLike = stage
+model.global.edit = gap | addSpan | damageSpan | delSpan | space
+model.divPart = model.lLike | model.pLike | lg | sp | floatingText
+model.persTraitLike =
+  age | faith | langKnowledge | nationality | sex | socecStatus | trait
+model.persStateLike =
+  persName
+  | affiliation
+  | education
+  | floruit
+  | occupation
+  | residence
+  | state
+model.persEventLike = birth | death | event
+model.personLike = org | person | personGrp
+model.personPart =
+  model.persTraitLike | model.persStateLike | model.persEventLike | bibl
+model.publicationStmtPart =
+  address
+  | date
+  | publisher
+  | pubPlace
+  | distributor
+  | authority
+  | idno
+  | availability
+model.glossLike = desc | gloss
+model.quoteLike = quote | cit
+model.qLike = model.quoteLike | said | q
+model.respLike =
+  author | editor | respStmt | sponsor | funder | principal
+model.divWrapper =
+  meeting
+  | byline
+  | dateline
+  | argument
+  | epigraph
+  | docAuthor
+  | docDate
+model.divTopPart = model.headLike | opener | salute
+model.divTop = model.divWrapper | model.divTopPart
+model.pLike.front =
+  head
+  | byline
+  | argument
+  | epigraph
+  | docTitle
+  | titlePart
+  | docAuthor
+  | docEdition
+  | docImprint
+  | docDate
+model.divBottomPart = trailer | closer | signed | postscript
+model.divBottom = model.divWrapper | model.divBottomPart
+model.titlepagePart =
+  graphic
+  | binaryObject
+  | byline
+  | epigraph
+  | docTitle
+  | titlePart
+  | docAuthor
+  | imprimatur
+  | docEdition
+  | docImprint
+  | docDate
+  | figure
+model.msItemPart =
+  model.quoteLike
+  | model.respLike
+  | title
+  | bibl
+  | listBibl
+  | colophon
+  | explicit
+  | filiation
+  | finalRubric
+  | incipit
+  | msItem
+  | msItemStruct
+  | rubric
+  | textLang
+  | decoNote
+model.choicePart =
+  sic | corr | reg | orig | unclear | abbr | expan | seg | ex | am
+model.imprintPart = publisher | biblScope | pubPlace | distributor
+model.catDescPart = textDesc
+model.settingPart = locale | activity
+model.textDescPart_sequence =
+  channel,
+  constitution,
+  derivation,
+  domain,
+  factuality,
+  interaction,
+  preparedness
+model.physDescPart_sequenceOptional =
+  objectDesc?,
+  handDesc?,
+  typeDesc?,
+  musicNotation?,
+  decoDesc?,
+  additions?,
+  bindingDesc?,
+  sealDesc?,
+  accMat?
+model.addressLike = email | address | affiliation
+model.nameLike =
+  model.nameLike.agent
+  | model.offsetLike
+  | model.placeStateLike
+  | rs
+  | model.persNamePart
+model.global =
+  model.global.meta
+  | model.milestoneLike
+  | model.noteLike
+  | model.global.edit
+model.biblPart =
+  model.respLike
+  | model.imprintPart
+  | series
+  | meeting
+  | relatedItem
+  | edition
+  | extent
+  | idno
+  | msIdentifier
+model.frontPart = divGen | titlePage
+model.addrPart = model.nameLike | addrLine | street | postCode | postBox
+model.pPart.data =
+  model.dateLike
+  | model.measureLike
+  | model.addressLike
+  | model.nameLike
+model.inter =
+  model.biblLike
+  | model.labelLike
+  | model.listLike
+  | model.stageLike
+  | model.qLike
+  | table
+  | figure
+model.common = model.divPart | model.inter
+model.phrase =
+  model.segLike
+  | model.highlighted
+  | model.graphicLike
+  | model.pPart.msdesc
+  | model.pPart.edit
+  | model.ptrLike
+  | model.lPart
+  | model.pPart.data
+model.limitedPhrase =
+  model.emphLike
+  | model.pPart.msdesc
+  | model.pPart.editorial
+  | model.ptrLike
+  | model.pPart.data
+model.divLike = \div
+model.divGenLike = divGen
+model.div1Like = div1
+model.div2Like = div2
+model.div3Like = div3
+model.div4Like = div4
+model.div5Like = div5
+model.div6Like = div6
+model.div7Like = div7
+att.personal.attributes =
+  att.naming.attributes,
+  [ a:defaultValue = "yes" ] attribute full { "yes" | "abb" | "init" }?,
+  attribute sort { text }?
+model.placeLike = place
+model.headerPart = encodingDesc | profileDesc
+model.encodingPart =
+  projectDesc
+  | samplingDecl
+  | editorialDecl
+  | tagsDecl
+  | refsDecl
+  | classDecl
+  | appInfo
+  | geoDecl
+  | metDecl
+  | variantEncoding
+model.editorialDeclPart =
+  correction
+  | normalization
+  | quotation
+  | hyphenation
+  | segmentation
+  | stdVals
+  | interpretation
+model.applicationLike = application
+model.profileDescPart =
+  langUsage
+  | textClass
+  | textDesc
+  | particDesc
+  | settingDesc
+  | handNotes
+att.pointing.group.attributes =
+  att.pointing.attributes,
+  attribute domains { xsd:NMTOKEN }?,
+  attribute targFunc { text }?
+model.rdgLike = rdg
+model.rdgPart = wit | witStart | witEnd | lacunaStart | lacunaEnd
+att.rdgPart.attributes = attribute wit { text }?
+att.textCritical.attributes =
+  attribute wit { text }?,
+  attribute type { xsd:NMTOKEN }?,
+  attribute cause { xsd:NMTOKEN }?,
+  attribute varSeq { text }?,
+  attribute resp { text }?,
+  attribute hand { text }?
+att.coordinated.attributes =
+  attribute ulx { text }?,
+  attribute uly { text }?,
+  attribute lrx { text }?,
+  attribute lry { text }?
+# start predeclared patterns
+
+# start rest of patterns
+macro.paraContent =
+  (text
+   | _DUMMY_model.gLike
+   | model.phrase
+   | model.inter
+   | model.global)*
+macro.limitedContent = (text | model.limitedPhrase | model.inter)*
+macro.phraseSeq =
+  (text | _DUMMY_model.gLike | model.phrase | model.global)*
+macro.phraseSeq.limited = (text | model.limitedPhrase | model.global)*
+macro.specialPara =
+  (text
+   | _DUMMY_model.gLike
+   | model.phrase
+   | model.inter
+   | model.divPart
+   | model.global)*
+macro.xtext = (text | _DUMMY_model.gLike)*
+# end patterns
+
+# start elements
+
+# doc:(TEI document) contains a single TEI-conformant document,
+# comprising a TEI header and a text, either in isolation or as part of a
+# teiCorpus element.
+TEI =
+  element TEI {
+    attlist.TEI,
+    teiHeader,
+    ((model.resourceLike+, \text?) | \text)
+  }
+attlist.TEI &=
+  att.global.attributes,
+  [ a:defaultValue = "5.0" ] attribute version { text }?
+attlist.TEI &= attribute xsi:schemaLocation { text }?
+# doc:(anonymous block) contains any arbitrary component-level unit of text, acting as
+# an anonymous container for phrase or inter level elements analogous to, but
+# without the semantic baggage of, a paragraph.
+ab = element ab { attlist.ab, macro.paraContent }
+attlist.ab &=
+  att.global.attributes,
+  att.typed.attributes,
+  att.declaring.attributes,
+  [ a:defaultValue = "N" ]
+  attribute part { "Y" | "N" | "I" | "M" | "F" }?
+# doc:(abbreviation) contains an abbreviation of any sort.
+abbr = element abbr { attlist.abbr, macro.phraseSeq }
+attlist.abbr &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:(accompanying material) contains details of any significant additional
+# material which may be closely associated with the manuscript being
+# described, such as non-contemporaneous documents or fragments bound in
+# with the manuscript at some earlier historical period.
+accMat = element accMat { attlist.accMat, macro.specialPara }
+attlist.accMat &= att.global.attributes, att.typed.attributes
+# doc:contains any descriptive or other information
+# concerning the process by which a manuscript or manuscript part entered the holding
+# institution.
+acquisition =
+  element acquisition { attlist.acquisition, macro.specialPara }
+attlist.acquisition &= att.global.attributes, att.datable.attributes
+# doc:contains a brief informal description of what a participant in a
+# language interaction is doing other than speaking, if anything.
+activity =
+  element activity { attlist.activity, macro.phraseSeq.limited }
+attlist.activity &= att.global.attributes
+# doc:(addition) contains letters, words, or phrases inserted in the text by an
+# author, scribe, annotator, or corrector.
+add = element add { attlist.add, macro.paraContent }
+attlist.add &=
+  att.global.attributes,
+  att.transcriptional.attributes,
+  att.placement.attributes,
+  att.typed.attributes
+# doc:(additional name) contains an additional name component, such as a nickname, epithet, or alias, or any other descriptive phrase used within a personal
+# name.
+addName = element addName { attlist.addName, macro.phraseSeq }
+attlist.addName &=
+  att.global.attributes, att.personal.attributes, att.typed.attributes
+# doc:(added span of text) marks the beginning of a longer sequence of text added by an
+# author, scribe, annotator or corrector (see also add).
+addSpan = element addSpan { attlist.addSpan, empty }
+attlist.addSpan &=
+  att.global.attributes,
+  att.transcriptional.attributes,
+  att.placement.attributes,
+  att.typed.attributes,
+  att.spanning.attributes
+# doc:groups additional information, combining
+# bibliographic information about a manuscript, or surrogate copies of
+# it with  curatorial or administrative information.
+additional =
+  element additional {
+    attlist.additional, adminInfo?, surrogates?, listBibl?
+  }
+attlist.additional &= att.global.attributes
+# doc:contains a description of any significant additions found
+# within a manuscript, such as marginalia or other annotations.
+additions = element additions { attlist.additions, macro.specialPara }
+attlist.additions &= att.global.attributes
+# doc:(address line) contains one line of a postal address.
+addrLine = element addrLine { attlist.addrLine, macro.phraseSeq }
+attlist.addrLine &= att.global.attributes
+# doc:contains a postal  address, for example of a
+# publisher, an organization, or an individual.
+address =
+  element address {
+    attlist.address, model.global*, (model.addrPart, model.global*)+
+  }
+attlist.address &= att.global.attributes
+# doc:(administrative information) contains information about the present
+# custody and availability of the manuscript, and also about the record
+# description itself.
+adminInfo =
+  element adminInfo {
+    attlist.adminInfo,
+    recordHist?,
+    availability?,
+    custodialHist?,
+    model.noteLike?
+  }
+attlist.adminInfo &= att.global.attributes
+# doc:(affiliation) contains an informal description of a person's present or past affiliation with some
+# organization, for example an employer or sponsor.
+affiliation =
+  element affiliation { attlist.affiliation, macro.phraseSeq }
+attlist.affiliation &=
+  att.global.attributes,
+  att.editLike.attributes,
+  att.datable.attributes,
+  att.naming.attributes
+# doc:(age) specifies the age of a person.
+age = element age { attlist.age, macro.phraseSeq.limited }
+attlist.age &=
+  att.global.attributes,
+  att.editLike.attributes,
+  att.datable.attributes,
+  attribute value { text }?
+# doc:(alternation) identifies an alternation or a set of choices among elements or passages.
+alt = element alt { attlist.alt, empty }
+attlist.alt &=
+  att.global.attributes,
+  att.pointing.attributes,
+  attribute targets { text },
+  attribute mode { "excl" | "incl" }?,
+  attribute weights { text }?
+# doc:(alternation group) groups a collection of alt elements and possibly
+# pointers.
+altGrp = element altGrp { attlist.altGrp, (alt | ptr)* }
+attlist.altGrp &=
+  att.global.attributes,
+  att.pointing.group.attributes,
+  [ a:defaultValue = "excl" ] attribute mode { "excl" | "incl" }?
+# doc:(alternative identifier) contains an alternative or former structured identifier used for
+# a manuscript, such as a former catalogue number.
+altIdentifier =
+  element altIdentifier {
+    attlist.altIdentifier,
+    model.placeNamePart_sequenceOptional,
+    institution?,
+    repository?,
+    collection?,
+    idno,
+    note?
+  }
+attlist.altIdentifier &= att.global.attributes, att.typed.attributes
+# doc:(abbreviation marker) contains a sequence of letters or signs present in an
+# abbreviation which are omitted or replaced in the expanded form of
+# the abbreviation.
+am = element am { attlist.am, macro.xtext }
+attlist.am &= att.global.attributes, att.editLike.attributes
+# doc:(analytic level) contains bibliographic elements describing an item (e.g. an article or poem) published
+# within a monograph or journal and not as an independent publication.
+analytic =
+  element analytic {
+    attlist.analytic, (author | editor | respStmt | title)*
+  }
+attlist.analytic &= att.global.attributes
+# doc:(anchor point) attaches an identifier to a
+# point within a text, whether or not it corresponds with a textual
+# element.
+anchor = element anchor { attlist.anchor, empty }
+attlist.anchor &= att.global.attributes, att.typed.attributes
+# doc:(apparatus entry) contains one entry in a critical apparatus, with an optional
+# lemma and at least one reading.
+app =
+  element app {
+    attlist.app,
+    model.global*,
+    (lem, model.global*, (wit, model.global*)?)?,
+    ((model.rdgLike, model.global*, (wit, model.global*)?)
+     | (rdgGrp, model.global*, (wit, model.global*)?))*
+  }
+attlist.app &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?,
+  attribute from { text }?,
+  attribute to { text }?,
+  attribute loc { text }?
+# doc:(application information) records information about an application which has
+# edited the TEI file.
+appInfo = element appInfo { attlist.appInfo, model.applicationLike+ }
+attlist.appInfo &= att.global.attributes
+# doc:provides information about an application which has acted upon the document.
+application =
+  element application {
+    attlist.application,
+    model.labelLike+,
+    (model.ptrLike* | model.pLike*)
+  }
+attlist.application &=
+  att.global.attributes,
+  att.typed.attributes,
+  att.datable.attributes,
+  attribute ident { xsd:NMTOKEN },
+  attribute version { text }
+# doc:A formal list or prose description of the topics addressed by
+# a subdivision of a text.
+argument =
+  element argument {
+    attlist.argument,
+    (model.global | model.headLike)*,
+    (model.common, model.global*)+
+  }
+attlist.argument &= att.global.attributes
+# doc:in a bibliographic reference, contains the name of the author(s), personal or corporate, of
+# a work; the primary statement of responsibility for any bibliographic item.
+author = element author { attlist.author, macro.phraseSeq }
+attlist.author &= att.global.attributes, att.canonical.attributes
+# doc:(release authority) supplies the name of a person or other agency responsible for
+# making an electronic file available, other than a publisher or
+# distributor.
+authority =
+  element authority { attlist.authority, macro.phraseSeq.limited }
+attlist.authority &= att.global.attributes
+# doc:supplies information about the availability of a text, for
+# example any restrictions on its use or distribution, its copyright
+# status, etc.
+availability =
+  element availability { attlist.availability, model.pLike+ }
+attlist.availability &=
+  att.global.attributes,
+  att.declarable.attributes,
+  [ a:defaultValue = "unknown" ]
+  attribute status { "free" | "unknown" | "restricted" }?
+# doc:(back matter) contains any appendixes, etc. following the main part of a text.
+back =
+  element back {
+    attlist.back,
+    (model.frontPart | model.pLike.front | model.global)*,
+    ((model.div1Like,
+      (model.frontPart | model.div1Like | model.global)*)
+     | (model.divLike,
+        (model.frontPart | model.divLike | model.global)*))?,
+    (model.divBottomPart, (model.divBottomPart | model.global)*)?
+  }
+attlist.back &= att.global.attributes, att.declaring.attributes
+# doc:(bibliographic citation) contains a loosely-structured bibliographic citation of which the sub-components may or may
+# not be explicitly tagged.
+bibl =
+  element bibl {
+    attlist.bibl,
+    (text
+     | _DUMMY_model.gLike
+     | model.highlighted
+     | model.pPart.data
+     | model.pPart.edit
+     | model.segLike
+     | model.ptrLike
+     | model.biblPart
+     | model.global)*
+  }
+attlist.bibl &=
+  att.global.attributes, att.declarable.attributes, att.typed.attributes
+# doc:(fully-structured bibliographic citation) contains a fully-structured bibliographic citation, in which all
+# components of the TEI file description
+# are present.
+biblFull =
+  element biblFull {
+    attlist.biblFull,
+    (titleStmt,
+     editionStmt?,
+     extent?,
+     publicationStmt,
+     seriesStmt?,
+     notesStmt?),
+    sourceDesc*
+  }
+attlist.biblFull &= att.global.attributes, att.declarable.attributes
+# doc:(scope of citation) defines the scope of a bibliographic reference, for example as a
+# list of page numbers, or a named subdivision of a larger work.
+biblScope = element biblScope { attlist.biblScope, macro.phraseSeq }
+attlist.biblScope &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:(structured bibliographic citation) contains a structured bibliographic citation, in which only bibliographic sub-elements
+# appear and in a specified order.
+biblStruct =
+  element biblStruct {
+    attlist.biblStruct,
+    analytic*,
+    (monogr, series*)+,
+    (model.noteLike | idno | relatedItem)*
+  }
+attlist.biblStruct &=
+  att.global.attributes, att.declarable.attributes, att.typed.attributes
+# doc:provides encoded binary data representing an inline graphic or other object.
+binaryObject = element binaryObject { attlist.binaryObject, text }
+attlist.binaryObject &=
+  att.global.attributes,
+  att.internetMedia.attributes,
+  attribute width { text }?,
+  attribute height { text }?,
+  attribute scale { text }?,
+  attribute encoding { text }?
+# doc:contains a description of one binding, i.e. type of covering, boards, etc. applied to a manuscript.
+binding =
+  element binding {
+    attlist.binding, (model.pLike | condition | decoNote)+
+  }
+attlist.binding &=
+  att.global.attributes,
+  att.datable.attributes,
+  attribute contemporary { text }?
+# doc:(binding description) describes the present and former bindings of a manuscript, either
+# as a series of paragraphs or as a series of distinct binding elements,
+# one for each binding of the manuscript.
+bindingDesc =
+  element bindingDesc {
+    attlist.bindingDesc,
+    ((model.pLike | decoNote | condition)+ | binding+)
+  }
+attlist.bindingDesc &= att.global.attributes
+# doc:(birth) contains information about a person's birth, such as its date and place.
+birth = element birth { attlist.birth, macro.phraseSeq }
+attlist.birth &=
+  att.global.attributes,
+  att.editLike.attributes,
+  att.datable.attributes,
+  att.naming.attributes
+# doc:(bloc) contains the name of a geo-political unit consisting of two or more nation states or
+# countries.
+bloc = element bloc { attlist.bloc, macro.phraseSeq }
+attlist.bloc &=
+  att.global.attributes,
+  att.naming.attributes,
+  att.typed.attributes,
+  att.datable.attributes
+# doc:(text body) contains the whole body of a single unitary text, excluding any front or back matter.
+body =
+  element body {
+    attlist.body,
+    model.global*,
+    (model.divTop, (model.global | model.divTop)*)?,
+    (model.divGenLike, (model.global | model.divGenLike)*)?,
+    ((model.divLike, (model.global | model.divGenLike)*)+
+     | (model.div1Like, (model.global | model.divGenLike)*)+
+     | ((model.common, model.global*)+,
+        ((model.divLike, (model.global | model.divGenLike)*)+
+         | (model.div1Like, (model.global | model.divGenLike)*)+)?)),
+    (model.divBottom, model.global*)*
+  }
+attlist.body &= att.global.attributes, att.declaring.attributes
+# doc:contains the primary statement of responsibility given for a work
+# on its title page or at the head or end of the work.
+byline =
+  element byline {
+    attlist.byline,
+    (text
+     | _DUMMY_model.gLike
+     | model.phrase
+     | docAuthor
+     | model.global)*
+  }
+attlist.byline &= att.global.attributes
+# doc:(character) represents a character.
+c = element c { attlist.c, macro.xtext }
+attlist.c &=
+  att.global.attributes, att.segLike.attributes, att.typed.attributes
+# doc:(canonical reference pattern) specifies an expression and replacement pattern for
+# transforming a canonical reference into a URI.
+cRefPattern = element cRefPattern { attlist.cRefPattern, model.pLike* }
+attlist.cRefPattern &=
+  att.global.attributes,
+  attribute matchPattern { text },
+  attribute replacementPattern { text }
+# doc:marks the point at which a metrical line may be divided.
+caesura = element caesura { attlist.caesura, empty }
+attlist.caesura &= att.global.attributes
+# doc:(category description) describes some category within a taxonomy
+# or text typology, either in the form of a brief prose description
+# or in terms of the situational parameters used by the TEI
+# formal textDesc.
+catDesc =
+  element catDesc {
+    attlist.catDesc, (text | model.limitedPhrase | model.catDescPart)*
+  }
+attlist.catDesc &= att.global.attributes
+# doc:(category reference) specifies one or more defined categories
+# within some taxonomy or text typology.
+catRef = element catRef { attlist.catRef, empty }
+attlist.catRef &=
+  att.global.attributes,
+  attribute target { text },
+  attribute scheme { text }?
+# doc:describes the system used to ensure
+# correct ordering of the quires making up a codex or incunable,
+# typically by means of annotations at the foot of the page.
+catchwords = element catchwords { attlist.catchwords, macro.phraseSeq }
+attlist.catchwords &= att.global.attributes
+# doc:contains an individual descriptive category, possibly nested
+# within a superordinate category, within a user-defined taxonomy.
+category =
+  element category {
+    attlist.category, (catDesc | model.glossLike*), category*
+  }
+attlist.category &= att.global.attributes
+# doc:(column break) marks the boundary between one column of a text and the next
+# in a standard reference system.
+cb = element cb { attlist.cb, empty }
+attlist.cb &=
+  att.global.attributes, att.typed.attributes, att.sourced.attributes
+# doc:contains one cell of a table.
+cell = element cell { attlist.cell, macro.paraContent }
+attlist.cell &= att.global.attributes, att.tableDecoration.attributes
+# doc:indicates the degree of certainty or uncertainty associated
+# with some aspect of the text markup.
+certainty = element certainty { attlist.certainty, model.glossLike* }
+attlist.certainty &=
+  att.global.attributes,
+  attribute target { text },
+  attribute locus { xsd:NMTOKEN },
+  attribute assertedValue { text }?,
+  attribute given { text }?,
+  attribute degree { text }?
+# doc:summarizes a particular change or correction made
+# to a particular version of an electronic text which is
+# shared between several researchers.
+change =
+  element change {
+    attlist.change,
+    (text | model.limitedPhrase | model.inter | model.global)*
+  }
+attlist.change &=
+  att.global.attributes,
+  att.ascribed.attributes,
+  attribute when { text }?
+# doc:(primary channel) describes the medium or channel by which a text is delivered or
+# experienced. For a written text, this might be print, manuscript, e-mail, etc.;
+# for a spoken one, radio, telephone, face-to-face, etc.
+channel = element channel { attlist.channel, macro.phraseSeq.limited }
+attlist.channel &=
+  att.global.attributes,
+  [ a:defaultValue = "x" ]
+  attribute mode { "s" | "w" | "sw" | "ws" | "m" | "x" }?
+# doc:groups a number of alternative encodings for the same point in
+# a text.
+choice = element choice { attlist.choice, (model.choicePart | choice)* }
+attlist.choice &= att.global.attributes
+# doc:(cited quotation) contains a quotation from some other document, together with a
+# bibliographic reference to its source.  In a dictionary it may
+# contain an example text with at least one occurrence of the word
+# form, used in the sense being described, or a translation of the
+# headword, or an example.
+cit =
+  element cit {
+    attlist.cit,
+    (model.qLike
+     | model.biblLike
+     | model.ptrLike
+     | model.global
+     | _DUMMY_model.entryPart)+
+  }
+attlist.cit &= att.global.attributes, att.typed.attributes
+# doc:(clause) represents a grammatical clause.
+cl = element cl { attlist.cl, macro.phraseSeq }
+attlist.cl &=
+  att.global.attributes, att.segLike.attributes, att.typed.attributes
+# doc:(classification code) contains the classification code used for this text in some
+# standard classification system.
+classCode =
+  element classCode { attlist.classCode, macro.phraseSeq.limited }
+attlist.classCode &=
+  att.global.attributes,
+  attribute scheme { text }
+# doc:(classification declarations) contains one or more taxonomies defining any classificatory
+# codes used elsewhere in the text.
+classDecl = element classDecl { attlist.classDecl, taxonomy+ }
+attlist.classDecl &= att.global.attributes
+# doc:(climate) contains information about the physical climate of a place.
+climate =
+  element climate {
+    attlist.climate,
+    model.headLike*,
+    (model.pLike+ | model.labelLike+),
+    (model.noteLike | model.biblLike)*,
+    climate*
+  }
+attlist.climate &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.naming.attributes,
+  att.typed.attributes
+# doc:groups together salutations, datelines, and similar phrases appearing as a final group at
+# the end of a division, especially of a letter.
+closer =
+  element closer {
+    attlist.closer,
+    (text
+     | _DUMMY_model.gLike
+     | signed
+     | dateline
+     | salute
+     | model.phrase
+     | model.global)*
+  }
+attlist.closer &= att.global.attributes
+# doc:contains a description of how the leaves or bifolia are physically
+# arranged.
+collation = element collation { attlist.collation, macro.specialPara }
+attlist.collation &= att.global.attributes
+# doc:contains the name of a collection of
+# manuscripts, not necessarily located within a single repository.
+collection = element collection { attlist.collection, macro.xtext }
+attlist.collection &= att.global.attributes, att.naming.attributes
+# doc:contains the  colophon
+# of a  manuscript item: that is, a statement providing information regarding the date, place, agency, or reason for production of the manuscript.
+colophon = element colophon { attlist.colophon, macro.phraseSeq }
+attlist.colophon &= att.global.attributes
+# doc:contains a description of the physical
+# condition of the manuscript.
+condition = element condition { attlist.condition, macro.specialPara }
+attlist.condition &= att.global.attributes
+# doc:describes the internal composition of a text or text sample,
+# for example
+# as fragmentary, complete, etc.
+constitution =
+  element constitution { attlist.constitution, macro.phraseSeq.limited }
+attlist.constitution &=
+  att.global.attributes,
+  [ a:defaultValue = "single" ]
+  attribute type { "single" | "composite" | "frags" | "unknown" }?
+# doc:(correction) contains the correct form of a passage apparently erroneous in the copy text.
+corr = element corr { attlist.corr, macro.paraContent }
+attlist.corr &=
+  att.global.attributes, att.editLike.attributes, att.typed.attributes
+# doc:(correction principles) states how and under what circumstances corrections have been
+# made in the text.
+correction = element correction { attlist.correction, model.pLike+ }
+attlist.correction &=
+  att.global.attributes,
+  att.declarable.attributes,
+  [ a:defaultValue = "unknown" ]
+  attribute status { "high" | "medium" | "low" | "unknown" }?,
+  [ a:defaultValue = "silent" ]
+  attribute method { "silent" | "markup" }?
+# doc:(country) contains the name of a geo-political unit, such as a nation, country, colony, or
+# commonwealth, larger than or administratively superior to a region and smaller than a bloc.
+country = element country { attlist.country, macro.phraseSeq }
+attlist.country &=
+  att.global.attributes,
+  att.naming.attributes,
+  att.typed.attributes,
+  att.datable.attributes
+# doc:contains information about the creation of a text.
+creation =
+  element creation { attlist.creation, macro.phraseSeq.limited }
+attlist.creation &= att.global.attributes
+# doc:(custodial event) describes a single event during the custodial history of a manuscript.
+custEvent = element custEvent { attlist.custEvent, macro.specialPara }
+attlist.custEvent &=
+  att.global.attributes, att.datable.attributes, att.typed.attributes
+# doc:(custodial history) contains a description of a manuscript's custodial history, either
+# as running prose or as a series of dated custodial events.
+custodialHist =
+  element custodialHist {
+    attlist.custodialHist, (model.pLike+ | custEvent+)
+  }
+attlist.custodialHist &= att.global.attributes
+# doc:contains an area of damage to the text witness.
+damage = element damage { attlist.damage, macro.paraContent }
+attlist.damage &=
+  att.global.attributes, att.typed.attributes, att.damaged.attributes
+# doc:(damaged span of text) marks the beginning of a longer sequence of text which is
+# damaged in some way but still legible.
+damageSpan = element damageSpan { attlist.damageSpan, empty }
+attlist.damageSpan &=
+  att.global.attributes,
+  att.damaged.attributes,
+  att.typed.attributes,
+  att.spanning.attributes
+# doc:contains a date in any format.
+date =
+  element date {
+    attlist.date,
+    (text | _DUMMY_model.gLike | model.phrase | model.global)*
+  }
+attlist.date &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.typed.attributes,
+  attribute calendar { xsd:NMTOKEN }?
+# doc:contains a brief description of the place, date, time, etc. of production of a letter,
+# newspaper story, or other work, prefixed or suffixed to it as a kind of heading or trailer.
+dateline = element dateline { attlist.dateline, macro.phraseSeq }
+attlist.dateline &= att.global.attributes
+# doc:(death) contains information about a person's death, such as its date and place.
+death = element death { attlist.death, macro.phraseSeq }
+attlist.death &=
+  att.global.attributes,
+  att.editLike.attributes,
+  att.datable.attributes,
+  att.naming.attributes
+# doc:(decoration description) contains a description of the decoration of a manuscript, either as a sequence of paragraphs, or as a sequence of topically organised decoNote elements.
+decoDesc =
+  element decoDesc { attlist.decoDesc, (model.pLike+ | decoNote+) }
+attlist.decoDesc &= att.global.attributes
+# doc:(note on decoration) contains a note describing either a
+# decorative component of a manuscript, or a fairly homogenous class of
+# such components.
+decoNote = element decoNote { attlist.decoNote, macro.specialPara }
+attlist.decoNote &= att.global.attributes, att.typed.attributes
+# doc:(deletion) contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as
+# superfluous or spurious in the copy text by an author, scribe, annotator, or corrector.
+del = element del { attlist.del, macro.paraContent }
+attlist.del &=
+  att.global.attributes,
+  att.transcriptional.attributes,
+  att.typed.attributes
+# doc:(deleted span of text) marks the beginning of a longer sequence of text deleted,
+# marked as deleted, or otherwise signaled as superfluous or spurious by an
+# author, scribe, annotator, or corrector.
+delSpan = element delSpan { attlist.delSpan, empty }
+attlist.delSpan &=
+  att.global.attributes,
+  att.transcriptional.attributes,
+  att.typed.attributes,
+  att.spanning.attributes
+# doc:specifies a length measured across the spine.
+depth = element depth { attlist.depth, macro.xtext }
+attlist.depth &= att.global.attributes, att.dimensions.attributes
+# doc:describes the nature and extent of originality of this text.
+derivation =
+  element derivation { attlist.derivation, macro.phraseSeq.limited }
+attlist.derivation &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:(description) contains a brief description of the object documented by its
+# parent element, including its intended usage, purpose,
+# or application where this is appropriate.
+desc = element desc { attlist.desc, macro.limitedContent }
+attlist.desc &= att.global.attributes, att.translatable.attributes
+# doc:contains a dimensional specification.
+dimensions =
+  element dimensions { attlist.dimensions, height?, width?, depth? }
+attlist.dimensions &=
+  att.global.attributes,
+  att.dimensions.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:identifies any word or phrase which is regarded as linguistically distinct, for example as
+# archaic, technical, dialectal, non-preferred, etc., or as forming part of a sublanguage.
+distinct = element distinct { attlist.distinct, macro.phraseSeq }
+attlist.distinct &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?,
+  attribute time { text }?,
+  attribute space { text }?,
+  attribute social { text }?
+# doc:supplies the name of a person or other agency responsible for the
+# distribution of a text.
+distributor =
+  element distributor { attlist.distributor, macro.phraseSeq }
+attlist.distributor &= att.global.attributes
+# doc:contains the name of any kind of subdivision of a settlement, such as a parish, ward, or
+# other administrative or geographic unit.
+district = element district { attlist.district, macro.phraseSeq }
+attlist.district &=
+  att.global.attributes,
+  att.naming.attributes,
+  att.typed.attributes,
+  att.datable.attributes
+# doc:(text division) contains a subdivision of the front, body, or back of a text.
+\div =
+  element div {
+    attlist.div,
+    (model.divTop | model.global)*,
+    ((((model.divLike | model.divGenLike), model.global*)+
+      | ((model.common, model.global*)+,
+         ((model.divLike | model.divGenLike), model.global*)*)),
+     (model.divBottom, model.global*)*)?
+  }
+attlist.div &=
+  att.global.attributes,
+  att.divLike.attributes,
+  att.typed.attributes,
+  att.declaring.attributes
+# doc:(level-1 text division) contains a first-level subdivision of the front, body, or back of a text.
+div1 =
+  element div1 {
+    attlist.div1,
+    (model.divTop | model.global)*,
+    ((((model.div2Like | model.divGenLike), model.global*)+
+      | ((model.common, model.global*)+,
+         ((model.div2Like | model.divGenLike), model.global*)*)),
+     (model.divBottom, model.global*)*)?
+  }
+attlist.div1 &=
+  att.global.attributes,
+  att.divLike.attributes,
+  att.typed.attributes,
+  att.declaring.attributes
+# doc:(level-2 text division) contains a second-level subdivision of the front, body, or back of a
+# text.
+div2 =
+  element div2 {
+    attlist.div2,
+    (model.divTop | model.global)*,
+    ((((model.div3Like | model.divGenLike), model.global*)+
+      | ((model.common, model.global*)+,
+         ((model.div3Like | model.divGenLike), model.global*)*)),
+     (model.divBottom, model.global*)*)?
+  }
+attlist.div2 &=
+  att.global.attributes,
+  att.divLike.attributes,
+  att.typed.attributes,
+  att.declaring.attributes
+# doc:(level-3 text division) contains a third-level subdivision of the front, body, or back of a text.
+div3 =
+  element div3 {
+    attlist.div3,
+    (model.divTop | model.global)*,
+    ((((model.div4Like | model.divGenLike), model.global*)+
+      | ((model.common, model.global*)+,
+         ((model.div4Like | model.divGenLike), model.global*)*)),
+     (model.divBottom, model.global*)*)?
+  }
+attlist.div3 &=
+  att.global.attributes,
+  att.divLike.attributes,
+  att.typed.attributes,
+  att.declaring.attributes
+# doc:(level-4 text division) contains a fourth-level subdivision of the front, body, or back of a text.
+div4 =
+  element div4 {
+    attlist.div4,
+    (model.divTop | model.global)*,
+    ((((model.div5Like | model.divGenLike), model.global*)+
+      | ((model.common, model.global*)+,
+         ((model.div5Like | model.divGenLike), model.global*)*)),
+     (model.divBottom, model.global*)*)?
+  }
+attlist.div4 &=
+  att.global.attributes,
+  att.divLike.attributes,
+  att.typed.attributes,
+  att.declaring.attributes
+# doc:(level-5 text division) contains a fifth-level subdivision of the front, body, or back of a text.
+div5 =
+  element div5 {
+    attlist.div5,
+    (model.divTop | model.global)*,
+    ((((model.div6Like | model.divGenLike), model.global*)+
+      | ((model.common, model.global*)+,
+         ((model.div6Like | model.divGenLike), model.global*)*)),
+     (model.divBottom, model.global*)*)?
+  }
+attlist.div5 &=
+  att.global.attributes,
+  att.divLike.attributes,
+  att.typed.attributes,
+  att.declaring.attributes
+# doc:(level-6 text division) contains a sixth-level subdivision of the front, body, or back of a text.
+div6 =
+  element div6 {
+    attlist.div6,
+    (model.divTop | model.global)*,
+    ((((model.div7Like | model.divGenLike), model.global*)+
+      | ((model.common, model.global*)+,
+         ((model.div7Like | model.divGenLike), model.global*)*)),
+     (model.divBottom, model.global*)*)?
+  }
+attlist.div6 &=
+  att.global.attributes,
+  att.divLike.attributes,
+  att.typed.attributes,
+  att.declaring.attributes
+# doc:(level-7 text division) contains the smallest possible subdivision of the front, body or back of a text, larger than
+# a paragraph.
+div7 =
+  element div7 {
+    attlist.div7,
+    (model.divTop | model.global)*,
+    ((model.common, model.global*)+, (model.divBottom, model.global*)*)?
+  }
+attlist.div7 &=
+  att.global.attributes,
+  att.divLike.attributes,
+  att.typed.attributes,
+  att.declaring.attributes
+# doc:(automatically generated text division) indicates the location at which a textual division generated
+# automatically by a text-processing application is to appear.
+divGen = element divGen { attlist.divGen, model.headLike* }
+attlist.divGen &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:(document author) contains the name of the author of the document, as given on the
+# title page (often but not always contained in a byline).
+docAuthor = element docAuthor { attlist.docAuthor, macro.phraseSeq }
+attlist.docAuthor &= att.global.attributes, att.canonical.attributes
+# doc:(document date) contains the date of a document, as given
+# (usually) on a title page.
+docDate = element docDate { attlist.docDate, macro.phraseSeq }
+attlist.docDate &=
+  att.global.attributes,
+  attribute when { text }?
+# doc:(document edition) contains an edition statement as presented on a title page of a
+# document.
+docEdition =
+  element docEdition { attlist.docEdition, macro.paraContent }
+attlist.docEdition &= att.global.attributes
+# doc:(document imprint) contains the imprint statement (place and date of publication,
+# publisher name), as given
+# (usually) at the foot of a title page.
+docImprint =
+  element docImprint {
+    attlist.docImprint,
+    (text
+     | _DUMMY_model.gLike
+     | model.phrase
+     | pubPlace
+     | docDate
+     | publisher
+     | model.global)*
+  }
+attlist.docImprint &= att.global.attributes
+# doc:(document title) contains the title of a document, including all its
+# constituents, as given on a title page.
+docTitle =
+  element docTitle {
+    attlist.docTitle, model.global*, (titlePart, model.global*)+
+  }
+attlist.docTitle &= att.global.attributes, att.canonical.attributes
+# doc:(domain of use) describes the most important social context in which the text was
+# realized or for which it is intended, for example private vs. public,
+# education, religion, etc.
+domain = element domain { attlist.domain, macro.phraseSeq.limited }
+attlist.domain &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:(edition) describes the particularities of one edition of a text.
+edition = element edition { attlist.edition, macro.phraseSeq }
+attlist.edition &= att.global.attributes
+# doc:(edition statement) groups information relating to one edition of a text.
+editionStmt =
+  element editionStmt {
+    attlist.editionStmt,
+    (model.pLike+ | (edition, respStmt*))
+  }
+attlist.editionStmt &= att.global.attributes
+# doc:secondary statement of responsibility for a
+# bibliographic item, for example the name of an individual, institution
+# or organization, (or of several such) acting as editor, compiler,
+# translator, etc.
+editor = element editor { attlist.editor, macro.phraseSeq }
+attlist.editor &=
+  att.global.attributes,
+  [ a:defaultValue = "editor" ] attribute role { xsd:NMTOKEN }?
+# doc:(editorial practice declaration) provides details of editorial principles and practices applied
+# during the encoding of a text.
+editorialDecl =
+  element editorialDecl {
+    attlist.editorialDecl, (model.pLike+ | model.editorialDeclPart+)
+  }
+attlist.editorialDecl &=
+  att.global.attributes, att.declarable.attributes
+# doc:contains a description of the educational experience of a person.
+education = element education { attlist.education, macro.phraseSeq }
+attlist.education &=
+  att.global.attributes,
+  att.editLike.attributes,
+  att.datable.attributes,
+  att.naming.attributes
+# doc:(electronic mail address) contains an e-mail address identifying a location to which
+# e-mail messages can be delivered.
+email = element email { attlist.email, macro.phraseSeq }
+attlist.email &= att.global.attributes
+# doc:(emphasized) marks words or phrases which are stressed or emphasized for
+# linguistic or rhetorical effect.
+emph = element emph { attlist.emph, macro.paraContent }
+attlist.emph &= att.global.attributes
+# doc:(encoding description) documents the relationship between an electronic text and the
+# source or sources from which it was derived.
+encodingDesc =
+  element encodingDesc {
+    attlist.encodingDesc, (model.encodingPart | model.pLike)+
+  }
+attlist.encodingDesc &= att.global.attributes
+# doc:contains a quotation, anonymous or attributed, appearing at the start of a section or
+# chapter, or on a title page.
+epigraph =
+  element epigraph { attlist.epigraph, (model.common | model.global)* }
+attlist.epigraph &= att.global.attributes
+# doc:(event) contains data relating to any kind of significant event associated with a person, place, or
+# organization.
+event =
+  element event {
+    attlist.event,
+    model.headLike*,
+    (model.pLike+ | model.labelLike+),
+    (model.noteLike | model.biblLike)*,
+    event*
+  }
+attlist.event &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.typed.attributes,
+  att.naming.attributes,
+  attribute where { text }?
+# doc:(editorial expansion) contains a sequence of letters added by an editor or
+# transcriber when expanding an abbreviation.
+ex = element ex { attlist.ex, macro.xtext }
+attlist.ex &= att.global.attributes, att.editLike.attributes
+# doc:(expansion) contains the expansion of an abbreviation.
+expan = element expan { attlist.expan, macro.phraseSeq }
+attlist.expan &= att.global.attributes, att.editLike.attributes
+# doc:contains the  explicit of a
+# manuscript item, that is, the closing words of the text proper,
+# exclusive of any rubric or colophon which might follow it.
+explicit = element explicit { attlist.explicit, macro.phraseSeq }
+attlist.explicit &=
+  att.global.attributes, att.typed.attributes, att.msExcerpt.attributes
+# doc:describes the approximate size of a text as stored on
+# some carrier medium, whether digital or non-digital, specified in any convenient units.
+extent = element extent { attlist.extent, macro.phraseSeq }
+attlist.extent &= att.global.attributes
+# doc:contains a representation of some written source in the form of
+# a set of images rather than as transcribed or encoded text.
+facsimile =
+  element facsimile {
+    attlist.facsimile, front?, (model.graphicLike | surface)+, back?
+  }
+attlist.facsimile &= att.global.attributes, att.declaring.attributes
+# doc:describes the extent to which the text may be regarded as
+# imaginative or non-imaginative, that is, as describing a fictional
+# or a non-fictional world.
+factuality =
+  element factuality { attlist.factuality, macro.phraseSeq.limited }
+attlist.factuality &=
+  att.global.attributes,
+  attribute type { "fiction" | "fact" | "mixed" | "inapplicable" }?
+# doc:specifies the faith, religion, or belief set of a person.
+faith = element faith { attlist.faith, macro.phraseSeq }
+attlist.faith &=
+  att.global.attributes, att.editLike.attributes, att.datable.attributes
+# doc:(description of figure) contains a brief prose description of the appearance or content
+# of a graphic figure, for use when documenting an image without
+# displaying it.
+figDesc = element figDesc { attlist.figDesc, macro.limitedContent }
+attlist.figDesc &= att.global.attributes
+# doc:groups elements representing or containing graphic information such as an illustration or
+# figure.
+figure =
+  element figure {
+    attlist.figure,
+    (model.headLike
+     | model.pLike
+     | figDesc
+     | model.graphicLike
+     | _DUMMY_model.egLike
+     | floatingText
+     | figure
+     | model.global)*
+  }
+attlist.figure &= att.global.attributes, att.placement.attributes
+# doc:(file description) contains a full bibliographic description of an electronic
+# file.
+fileDesc =
+  element fileDesc {
+    attlist.fileDesc,
+    (titleStmt,
+     editionStmt?,
+     extent?,
+     publicationStmt,
+     seriesStmt?,
+     notesStmt?),
+    sourceDesc+
+  }
+attlist.fileDesc &= att.global.attributes
+# doc:contains information concerning the manuscript's filiation, i.e. its relationship to other surviving manuscripts of the same text, its protographs, antigraphs and apographs.
+filiation = element filiation { attlist.filiation, macro.specialPara }
+attlist.filiation &= att.global.attributes, att.typed.attributes
+# doc:contains the string of words that denotes the end of a text division, often with an assertion as to its author and title, usually set off from the text itself by red ink, by a different size or type of script, or by some other such visual device.
+finalRubric =
+  element finalRubric { attlist.finalRubric, macro.phraseSeq }
+attlist.finalRubric &= att.global.attributes, att.typed.attributes
+# doc:contains a single text of any kind, whether unitary or composite, which interrupts the text
+# containing it at any point and after which the surrounding text resumes.
+floatingText =
+  element floatingText {
+    attlist.floatingText,
+    model.global*,
+    (front, model.global*)?,
+    (body | group),
+    model.global*,
+    (back, model.global*)?
+  }
+attlist.floatingText &=
+  att.global.attributes, att.declaring.attributes, att.typed.attributes
+# doc:contains information about a person's period of activity.
+floruit = element floruit { attlist.floruit, macro.phraseSeq }
+attlist.floruit &=
+  att.global.attributes, att.datable.attributes, att.editLike.attributes
+# doc:describes the numbering system or systems used to 
+# count the leaves or pages in a codex.
+foliation = element foliation { attlist.foliation, macro.specialPara }
+attlist.foliation &= att.global.attributes
+# doc:(foreign) identifies a word or phrase as belonging to some language other
+# than that of the surrounding text.
+foreign = element foreign { attlist.foreign, macro.phraseSeq }
+attlist.foreign &= att.global.attributes
+# doc:contains a forename, given or baptismal name.
+forename = element forename { attlist.forename, macro.phraseSeq }
+attlist.forename &=
+  att.global.attributes, att.personal.attributes, att.typed.attributes
+# doc:contains a mathematical or other formula.
+formula =
+  element formula { attlist.formula, (text | model.graphicLike)* }
+attlist.formula &=
+  att.global.attributes,
+  attribute notation { text }?
+# doc:(front matter) contains any prefatory matter (headers,
+# title page, prefaces, dedications, etc.)
+# found  at the start of a document, before the main body.
+front =
+  element front {
+    attlist.front,
+    (model.frontPart | model.pLike.front | model.global)*,
+    ((model.div1Like,
+      (model.frontPart | model.div1Like | model.global)*)
+     | (model.divLike,
+        (model.frontPart | model.divLike | model.global)*))?,
+    (model.divBottomPart, (model.divBottomPart | model.global)*)?
+  }
+attlist.front &= att.global.attributes, att.declaring.attributes
+# doc:(funding body) specifies the name of an individual, institution, or organization
+# responsible for the funding of a project or text.
+funder = element funder { attlist.funder, macro.phraseSeq.limited }
+attlist.funder &= att.global.attributes
+# doc:(forme work) contains a running head (e.g. a header, footer), catchword, or
+# similar material appearing on the current page.
+fw = element fw { attlist.fw, macro.phraseSeq }
+attlist.fw &=
+  att.global.attributes,
+  att.placement.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:(gap) indicates a point where material has been omitted in a
+# transcription, whether for editorial reasons described in the TEI
+# header, as part of sampling practice, or because the material is
+# illegible, invisible, or inaudible.
+gap = element gap { attlist.gap, model.glossLike* }
+attlist.gap &=
+  att.global.attributes,
+  att.editLike.attributes,
+  attribute reason { text }?,
+  attribute hand { text }?,
+  attribute agent { xsd:NMTOKEN }?
+# doc:(generational name component) contains a name component used to distinguish otherwise similar names on the basis of the
+# relative ages or generations of the persons named.
+genName = element genName { attlist.genName, macro.phraseSeq }
+attlist.genName &=
+  att.global.attributes, att.personal.attributes, att.typed.attributes
+# doc:(geographical coordinates) contains any expression of a set of geographic coordinates, representing a point, line, or
+# area on the surface of the earth in some notation.
+geo = element geo { attlist.geo, text }
+attlist.geo &= att.global.attributes
+# doc:(geographic coordinates declaration) documents the notation and the datum used for geographic
+# coordinates expressed as content of the geo element
+# elsewhere within the document.
+geoDecl = element geoDecl { attlist.geoDecl, macro.phraseSeq }
+attlist.geoDecl &=
+  att.global.attributes,
+  att.declarable.attributes,
+  [ a:defaultValue = "WGS84" ] attribute datum { xsd:NMTOKEN }?
+# doc:(geographical feature name) contains a common noun identifying some geographical feature contained within a geographic
+# name, such as valley, mount, etc.
+geogFeat = element geogFeat { attlist.geogFeat, macro.xtext }
+attlist.geogFeat &=
+  att.global.attributes,
+  att.naming.attributes,
+  att.typed.attributes,
+  att.datable.attributes
+# doc:(geographical name) a name associated with some geographical feature such as Windrush Valley or Mount Sinai.
+geogName = element geogName { attlist.geogName, macro.phraseSeq }
+attlist.geogName &=
+  att.global.attributes,
+  att.naming.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:identifies a phrase or word used to provide a gloss or
+# definition for some other word or phrase.
+gloss = element gloss { attlist.gloss, macro.phraseSeq }
+attlist.gloss &=
+  att.global.attributes,
+  att.declaring.attributes,
+  att.translatable.attributes,
+  att.typed.attributes,
+  attribute target { text }?,
+  attribute cRef { text }?
+# doc:indicates the location of an inline graphic, illustration, or figure.
+graphic = element graphic { attlist.graphic, empty }
+attlist.graphic &=
+  att.global.attributes,
+  att.internetMedia.attributes,
+  att.declaring.attributes,
+  attribute width { text }?,
+  attribute height { text }?,
+  attribute scale { text }?,
+  attribute url { text }?
+# doc:contains the body of a composite text, grouping together a sequence of distinct texts (or
+# groups of such texts) which are regarded as a unit for some purpose, for example the collected
+# works of an author, a sequence of prose essays, etc.
+group =
+  element group {
+    attlist.group,
+    (model.divTop | model.global)*,
+    ((\text | group), (\text | group | model.global)*),
+    model.divBottom*
+  }
+attlist.group &= att.global.attributes, att.declaring.attributes
+# doc:(description of hands) contains a description of all the different kinds of writing  used in a manuscript.
+handDesc =
+  element handDesc {
+    attlist.handDesc,
+    (model.pLike+ | (summary?, handNote+))
+  }
+attlist.handDesc &=
+  att.global.attributes,
+  attribute hands { text }?
+# doc:(note on hand) describes a particular style
+# or hand distinguished within a manuscript.
+handNote = element handNote { attlist.handNote, macro.specialPara }
+attlist.handNote &= att.global.attributes, att.handFeatures.attributes
+# doc:contains one or more handNote elements documenting the
+# different hands identified within the source texts.
+handNotes = element handNotes { attlist.handNotes, handNote+ }
+attlist.handNotes &= att.global.attributes
+# doc:marks the beginning of a sequence of text written in a new
+# hand, or the beginning of a scribal stint.
+handShift = element handShift { attlist.handShift, empty }
+attlist.handShift &=
+  att.global.attributes,
+  att.handFeatures.attributes,
+  attribute new { text }?,
+  attribute resp { text }?
+# doc:(heading) contains any type of heading, for example the title of a section,
+# or the heading of a list, glossary, manuscript description, etc.
+head = element head { attlist.head, macro.paraContent }
+attlist.head &= att.global.attributes, att.typed.attributes
+# doc:(heading for list items) contains the heading for the item or gloss column in a glossary list or similar structured
+# list.
+headItem = element headItem { attlist.headItem, macro.phraseSeq }
+attlist.headItem &= att.global.attributes
+# doc:(heading for list labels) contains the heading for the label or term column in a
+# glossary list or similar structured list.
+headLabel = element headLabel { attlist.headLabel, macro.phraseSeq }
+attlist.headLabel &= att.global.attributes
+# doc:contains a measurement measured along the axis parallel to the spine.
+height = element height { attlist.height, macro.xtext }
+attlist.height &= att.global.attributes, att.dimensions.attributes
+# doc:contains a heraldic formula
+# or phrase, typically found as part of a blazon, coat of arms, etc. 
+heraldry = element heraldry { attlist.heraldry, macro.phraseSeq }
+attlist.heraldry &= att.global.attributes
+# doc:(highlighted) marks a word or phrase as graphically distinct from the
+# surrounding text, for reasons concerning which no claim is
+# made.
+hi = element hi { attlist.hi, macro.paraContent }
+attlist.hi &= att.global.attributes
+# doc: groups elements
+# describing the full history of a manuscript or manuscript part.
+history =
+  element history {
+    attlist.history,
+    (model.pLike+ | (summary?, origin?, provenance*, acquisition?))
+  }
+attlist.history &= att.global.attributes
+# doc:summarizes the way in which hyphenation in a source text has been
+# treated in an encoded version of it.
+hyphenation = element hyphenation { attlist.hyphenation, model.pLike+ }
+attlist.hyphenation &=
+  att.global.attributes,
+  att.declarable.attributes,
+  [ a:defaultValue = "some" ]
+  attribute eol { "all" | "some" | "hard" | "none" }?
+# doc:(identifying number) supplies any standard or non-standard number used to identify a
+# bibliographic item.
+idno = element idno { attlist.idno, text }
+attlist.idno &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:contains a formal statement authorizing the publication of a work, sometimes required to
+# appear on a title page or its verso.
+imprimatur =
+  element imprimatur { attlist.imprimatur, macro.paraContent }
+attlist.imprimatur &= att.global.attributes
+# doc:groups information relating to the publication or distribution
+# of a bibliographic item.
+imprint =
+  element imprint {
+    attlist.imprint,
+    ((model.imprintPart | model.dateLike), model.global*)+
+  }
+attlist.imprint &= att.global.attributes
+# doc:contains the incipit of a manuscript item, that is the opening words of the text proper, exclusive of any rubric which might precede it, of sufficient length to identify the work uniquely; such incipts were, in fomer times, frequently used a means of reference to a work, in place of a title.
+incipit = element incipit { attlist.incipit, macro.phraseSeq }
+attlist.incipit &=
+  att.global.attributes, att.typed.attributes, att.msExcerpt.attributes
+# doc:(index entry) marks a location to be indexed for whatever purpose.
+index = element index { attlist.index, (term, index?)* }
+attlist.index &=
+  att.global.attributes,
+  att.spanning.attributes,
+  attribute indexName { xsd:NMTOKEN }?
+# doc:contains the name of an organization such as a university or
+# library, with which a manuscript is identified, generally its
+# holding institution.
+institution = element institution { attlist.institution, macro.xtext }
+attlist.institution &= att.global.attributes, att.naming.attributes
+# doc:describes the extent, cardinality and nature of any interaction
+# among those producing and experiencing the text, for example in the
+# form of response or interjection, commentary, etc.
+interaction =
+  element interaction { attlist.interaction, macro.phraseSeq.limited }
+attlist.interaction &=
+  att.global.attributes,
+  attribute type { "none" | "partial" | "complete" | "inapplicable" }?,
+  attribute active { xsd:NMTOKEN }?,
+  attribute passive { xsd:NMTOKEN }?
+# doc:(interpretation) summarizes a specific interpretative annotation which can be
+# linked to a span of text.
+interp =
+  element interp {
+    attlist.interp, (text | _DUMMY_model.gLike | model.glossLike)*
+  }
+attlist.interp &= att.global.attributes, att.interpLike.attributes
+# doc:(interpretation group) collects together a set of related interpretations which share
+# responsibility or type.
+interpGrp =
+  element interpGrp { attlist.interpGrp, model.glossLike*, interp+ }
+attlist.interpGrp &= att.global.attributes, att.interpLike.attributes
+# doc:describes the scope of any analytic or interpretive information
+# added to the text in addition to the transcription.
+interpretation =
+  element interpretation { attlist.interpretation, model.pLike+ }
+attlist.interpretation &=
+  att.global.attributes, att.declarable.attributes
+# doc:contains one
+# component of a list.
+item = element item { attlist.item, macro.specialPara }
+attlist.item &= att.global.attributes
+# doc:identifies a possibly fragmented segment of text, by pointing
+# at the possibly discontiguous elements which compose it.
+join = element join { attlist.join, model.glossLike* }
+attlist.join &=
+  att.global.attributes,
+  att.pointing.attributes,
+  attribute targets { text },
+  attribute result { xsd:NMTOKEN }?,
+  [ a:defaultValue = "root" ] attribute scope { "root" | "branches" }?
+# doc:(join group) groups a collection of join elements and possibly
+# pointers.
+joinGrp =
+  element joinGrp { attlist.joinGrp, model.glossLike*, (join | ptr)+ }
+attlist.joinGrp &=
+  att.global.attributes,
+  att.pointing.group.attributes,
+  attribute result { xsd:NMTOKEN }?
+# doc:contains a list of keywords or phrases identifying the topic or
+# nature of a text.
+keywords = element keywords { attlist.keywords, (term+ | \list) }
+attlist.keywords &=
+  att.global.attributes,
+  attribute scheme { text }
+# doc:(verse line) contains a single, possibly incomplete, line of verse.
+l = element l { attlist.l, macro.paraContent }
+attlist.l &=
+  att.global.attributes,
+  att.metrical.attributes,
+  att.enjamb.attributes,
+  [ a:defaultValue = "N" ]
+  attribute part { "Y" | "N" | "I" | "M" | "F" }?
+# doc:contains the label associated with an item in a list; in glossaries, marks the term being
+# defined.
+label = element label { attlist.label, macro.phraseSeq }
+attlist.label &= att.global.attributes
+# doc:indicates the end of a lacuna in a mostly complete textual
+# witness.
+lacunaEnd = element lacunaEnd { attlist.lacunaEnd, empty }
+attlist.lacunaEnd &= att.global.attributes, att.rdgPart.attributes
+# doc:indicates the beginning of a lacuna in the text of a mostly
+# complete textual witness.
+lacunaStart = element lacunaStart { attlist.lacunaStart, empty }
+attlist.lacunaStart &= att.global.attributes, att.rdgPart.attributes
+# doc:(language knowledge) summarizes the state of a person's linguistic knowledge, either as prose or by a list of
+# langKnown elements.
+langKnowledge =
+  element langKnowledge {
+    attlist.langKnowledge, (model.pLike | langKnown+)
+  }
+attlist.langKnowledge &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  attribute tags { text }?
+# doc:(language known) summarizes the state of a person's linguistic competence, i.e., knowledge of a single
+# language.
+langKnown =
+  element langKnown { attlist.langKnown, macro.phraseSeq.limited }
+attlist.langKnown &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  attribute tag { text },
+  attribute level { text }?
+# doc:(language usage) describes the languages, sublanguages, registers, dialects, etc.
+# represented within a text.
+langUsage = element langUsage { attlist.langUsage, language+ }
+attlist.langUsage &= att.global.attributes, att.declarable.attributes
+# doc:characterizes a single language or sublanguage used within a
+# text.
+language =
+  element language { attlist.language, macro.phraseSeq.limited }
+attlist.language &=
+  att.global.attributes,
+  attribute ident { text },
+  attribute usage { text }?
+# doc:describes how text is laid out on the
+# page, including information about any ruling, pricking, or other
+# evidence of page-preparation techniques.
+layout = element layout { attlist.layout, macro.specialPara }
+attlist.layout &=
+  att.global.attributes,
+  attribute columns { text }?,
+  attribute ruledLines { text }?,
+  attribute writtenLines { text }?
+# doc:(layout description) collects the set of layout descriptions applicable to a manuscript.
+layoutDesc =
+  element layoutDesc { attlist.layoutDesc, (model.pLike+ | layout+) }
+attlist.layoutDesc &= att.global.attributes
+# doc:(line break) marks the start of a new (typographic) line in some edition or version of a text.
+lb = element lb { attlist.lb, empty }
+attlist.lb &=
+  att.global.attributes, att.typed.attributes, att.sourced.attributes
+# doc:(lemma) contains the lemma, or base text, of a textual variation.
+lem =
+  element lem {
+    attlist.lem,
+    (text
+     | _DUMMY_model.gLike
+     | model.phrase
+     | model.inter
+     | model.global
+     | model.rdgPart)*
+  }
+attlist.lem &= att.global.attributes, att.textCritical.attributes
+# doc:(line group) contains a group of verse lines functioning as a formal unit, e.g. a stanza, refrain,
+# verse paragraph, etc.
+lg =
+  element lg {
+    attlist.lg,
+    (model.divTop | model.global)*,
+    (model.lLike | lg),
+    (model.lLike | lg | model.global)*,
+    (model.divBottom, model.global*)*
+  }
+attlist.lg &=
+  att.global.attributes,
+  att.divLike.attributes,
+  att.typed.attributes,
+  att.declaring.attributes
+# doc:defines an association or hypertextual link
+# among elements or passages, of some type
+# not more precisely specifiable by other elements.
+link = element link { attlist.link, empty }
+attlist.link &=
+  att.global.attributes,
+  att.pointing.attributes,
+  attribute targets { text }
+# doc:(link group) defines a collection of associations or hypertextual links.
+linkGrp = element linkGrp { attlist.linkGrp, (link | ptr)+ }
+attlist.linkGrp &= att.global.attributes, att.pointing.group.attributes
+# doc:(list) contains any sequence of items organized as a list.
+\list =
+  element list {
+    attlist.list,
+    (model.divTop | model.global)*,
+    ((item, model.global*)+
+     | (headLabel?,
+        headItem?,
+        (label, model.global*, item, model.global*)+)),
+    (model.divBottom, model.global*)*
+  }
+attlist.list &=
+  att.global.attributes,
+  [ a:defaultValue = "simple" ] attribute type { xsd:NMTOKEN }?
+# doc:(citation list) contains a list of bibliographic citations of any kind.
+listBibl =
+  element listBibl {
+    attlist.listBibl,
+    model.headLike*,
+    (model.biblLike | model.milestoneLike | listBibl)+
+  }
+attlist.listBibl &=
+  att.global.attributes, att.declarable.attributes, att.typed.attributes
+# doc: (list of events) contains a list of descriptions, each of which provides
+# information about an identifiable event.
+listEvent =
+  element listEvent {
+    attlist.listEvent,
+    model.headLike*,
+    (event | listEvent)+,
+    (relation | relationGrp)*
+  }
+attlist.listEvent &=
+  att.global.attributes, att.typed.attributes, att.declarable.attributes
+# doc:(list of canonical names) contains a list of nyms, that is, standardized names for any thing.
+listNym =
+  element listNym {
+    attlist.listNym,
+    model.headLike*,
+    (nym | listNym)+,
+    (relationGrp | relation)*
+  }
+attlist.listNym &=
+  att.global.attributes, att.typed.attributes, att.declarable.attributes
+# doc:(list of organizations) contains a list of elements, each of which provides information about an identifiable
+# organization.
+listOrg =
+  element listOrg {
+    attlist.listOrg,
+    model.headLike*,
+    (org | listOrg)+,
+    (relationGrp | relation)*
+  }
+attlist.listOrg &=
+  att.global.attributes, att.typed.attributes, att.declarable.attributes
+# doc:(list of persons) contains a list of descriptions, each of which provides information about an identifiable
+# person or a group of people, for example the participants in a language interaction, or the
+# people referred to in a historical source.
+listPerson =
+  element listPerson {
+    attlist.listPerson,
+    model.headLike*,
+    (model.personLike | listPerson)+,
+    (relation | relationGrp)*
+  }
+attlist.listPerson &=
+  att.global.attributes, att.typed.attributes, att.declarable.attributes
+# doc:(list of places) contains a list of places, optionally followed by a list of relationships (other than
+# containment) defined amongst them.
+listPlace =
+  element listPlace {
+    attlist.listPlace,
+    model.headLike*,
+    (model.placeLike | listPlace)+,
+    (relationGrp | relation)*
+  }
+attlist.listPlace &=
+  att.global.attributes, att.typed.attributes, att.declarable.attributes
+# doc:(witness list) lists definitions for all the witnesses referred to by a critical
+# apparatus, optionally grouped hierarchically.
+listWit =
+  element listWit {
+    attlist.listWit, model.headLike?, (witness | listWit)+
+  }
+attlist.listWit &= att.global.attributes
+# doc:contains a brief informal description of the kind of
+# place concerned, for example: a room, a restaurant, a park bench, etc.
+locale = element locale { attlist.locale, macro.phraseSeq.limited }
+attlist.locale &= att.global.attributes
+# doc:defines the location of a place as a set of geographical coordinates, in terms of a other named geo-political entities, or as an
+# address.
+location =
+  element location {
+    attlist.location,
+    (model.labelLike
+     | model.placeNamePart
+     | model.offsetLike
+     | model.measureLike
+     | model.addressLike
+     | model.noteLike
+     | model.biblLike)*
+  }
+attlist.location &=
+  att.global.attributes,
+  att.typed.attributes,
+  att.datable.attributes,
+  att.editLike.attributes
+# doc:defines a location  within a manuscript or manuscript part, usually as a (possibly discontinuous) sequence of folio references.
+locus = element locus { attlist.locus, macro.xtext }
+attlist.locus &=
+  att.global.attributes,
+  attribute scheme { text }?,
+  attribute from { text }?,
+  attribute to { text }?,
+  attribute target { text }?
+# doc:groups a number of locations which together form a
+# distinct but discontinuous item within a manuscript or manuscript
+# part, according to a specific foliation.
+locusGrp = element locusGrp { attlist.locusGrp, locus+ }
+attlist.locusGrp &=
+  att.global.attributes,
+  attribute scheme { text }?
+# doc:(morpheme) represents a grammatical morpheme.
+m =
+  element m {
+    attlist.m,
+    (text | _DUMMY_model.gLike | model.segLike | model.global)*
+  }
+attlist.m &=
+  att.global.attributes,
+  att.segLike.attributes,
+  att.typed.attributes,
+  attribute baseForm { text }?
+# doc:contains a word or phrase describing the
+# material of which  a manuscript (or part of a manuscript) is composed.
+material = element material { attlist.material, macro.phraseSeq }
+attlist.material &= att.global.attributes
+# doc:contains a word or phrase referring to some quantity of an object or commodity, usually
+# comprising a number, a unit, and a commodity name.
+measure = element measure { attlist.measure, macro.phraseSeq }
+attlist.measure &=
+  att.global.attributes,
+  att.measurement.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:(measure group) contains a group of dimensional specifications which relate to the same object, for example
+# the height and width of a manuscript page.
+measureGrp =
+  element measureGrp {
+    attlist.measureGrp, (text | _DUMMY_model.gLike | model.measureLike)*
+  }
+attlist.measureGrp &=
+  att.global.attributes,
+  att.measurement.attributes,
+  att.typed.attributes
+# doc:contains the formalized descriptive title for a meeting or conference, for use in a
+# bibliographic description for an item derived from such a meeting, or as a heading or
+# preamble to publications emanating from it.
+meeting = element meeting { attlist.meeting, macro.limitedContent }
+attlist.meeting &= att.global.attributes
+# doc:marks words or phrases mentioned, not used.
+mentioned = element mentioned { attlist.mentioned, macro.phraseSeq }
+attlist.mentioned &= att.global.attributes
+# doc:(metrical notation declaration) documents the notation employed to represent a metrical
+# pattern when this is specified as the value of a met,
+# real, or rhyme attribute on any structural
+# element of a metrical text (e.g. lg, l, or
+# seg).
+metDecl =
+  element metDecl {
+    attlist.metDecl,
+    ((model.pLike | model.noteLike)+ | metSym+)
+  }
+attlist.metDecl &=
+  att.global.attributes,
+  att.declarable.attributes,
+  [ a:defaultValue = "met real" ] attribute type { xsd:NMTOKENS }?,
+  attribute pattern { text }?
+# doc:(metrical notation symbol) documents the intended significance of a particular character or
+# character sequence within a metrical notation, either explicitly or in
+# terms of other symbol elements in the same metDecl.
+metSym = element metSym { attlist.metSym, macro.phraseSeq.limited }
+attlist.metSym &=
+  att.global.attributes,
+  attribute value { text },
+  [ a:defaultValue = "true" ] attribute terminal { text }?
+# doc:marks a boundary point separating any kind of section of a text, typically but not
+# necessarily indicating a point at which some part of a standard reference system
+# changes, where the change is not represented by a structural element.
+milestone = element milestone { attlist.milestone, empty }
+attlist.milestone &=
+  att.global.attributes,
+  att.typed.attributes,
+  att.sourced.attributes,
+  attribute unit { xsd:NMTOKEN }
+# doc:(monographic level) contains bibliographic elements describing an item (e.g. a book or journal) published as
+# an independent item (i.e. as a separate physical object).
+monogr =
+  element monogr {
+    attlist.monogr,
+    (((author | editor | respStmt),
+      (author | editor | respStmt)*,
+      title+,
+      (idno | editor | respStmt)*)
+     | (title+, (idno | author | editor | respStmt)*))?,
+    (model.noteLike | meeting)*,
+    (edition, (idno | editor | respStmt)*)*,
+    imprint,
+    (imprint | extent | biblScope)*
+  }
+attlist.monogr &= att.global.attributes
+# doc:(manuscript contents) describes the intellectual content of
+# a manuscript or manuscript part, either as a series of paragraphs or
+# as a series of structured manuscript items.
+msContents =
+  element msContents {
+    attlist.msContents,
+    (model.pLike+
+     | (summary?, textLang?, titlePage?, (msItem | msItemStruct)*))
+  }
+attlist.msContents &=
+  att.global.attributes,
+  att.msExcerpt.attributes,
+  attribute class { text }?
+# doc:(manuscript description) contains a description of a single identifiable
+# manuscript.
+msDesc =
+  element msDesc {
+    attlist.msDesc,
+    msIdentifier,
+    model.headLike*,
+    (model.pLike+
+     | (msContents?, physDesc?, history?, additional?, msPart*))
+  }
+attlist.msDesc &= att.global.attributes
+# doc:(manuscript identifier) contains the information required to identify
+# the  manuscript being described.
+msIdentifier =
+  element msIdentifier {
+    attlist.msIdentifier,
+    ((model.placeNamePart_sequenceOptional,
+      institution?,
+      repository,
+      collection?,
+      idno?)
+     | msName),
+    (altIdentifier | msName)*
+  }
+attlist.msIdentifier &= att.global.attributes
+# doc:(manuscript item) describes an individual work or item within the intellectual
+# content of a manuscript or manuscript part.
+msItem =
+  element msItem {
+    attlist.msItem,
+    (locus | locusGrp)*,
+    (model.pLike+
+     | (model.titlepagePart | model.msItemPart | model.global)+)
+  }
+attlist.msItem &=
+  att.global.attributes,
+  att.msExcerpt.attributes,
+  attribute class { text }?
+# doc:(structured manuscript item) contains a structured description for an
+# individual work or item within the intellectual content of a
+# manuscript or manuscript part.
+msItemStruct =
+  element msItemStruct {
+    attlist.msItemStruct,
+    locus?,
+    (model.pLike+
+     | (author*,
+        respStmt*,
+        title*,
+        rubric?,
+        incipit?,
+        msItemStruct*,
+        explicit?,
+        finalRubric?,
+        colophon*,
+        decoNote*,
+        listBibl*,
+        bibl*,
+        filiation*,
+        model.noteLike*,
+        textLang?))
+  }
+attlist.msItemStruct &=
+  att.global.attributes,
+  att.msExcerpt.attributes,
+  attribute class { text }?
+# doc:(alternative name) contains any form of unstructured alternative
+# name used for a manuscript, such as an  ocellus
+# nominum, or nickname.
+msName = element msName { attlist.msName, macro.xtext }
+attlist.msName &= att.global.attributes, att.typed.attributes
+# doc:(manuscript part) contains information about an originally
+# distinct manuscript or part of a manuscript, now forming part of a composite manuscript.
+msPart =
+  element msPart {
+    attlist.msPart,
+    altIdentifier,
+    model.headLike*,
+    (model.pLike+
+     | (msContents?, physDesc?, history?, additional?, msPart*))
+  }
+attlist.msPart &= att.global.attributes
+# doc:contains description of type of musical notation.
+musicNotation =
+  element musicNotation { attlist.musicNotation, macro.specialPara }
+attlist.musicNotation &= att.global.attributes
+# doc:(name, proper noun) contains a proper noun or noun phrase.
+name = element name { attlist.name, macro.phraseSeq }
+attlist.name &=
+  att.global.attributes, att.naming.attributes, att.typed.attributes
+# doc:(name link) contains a connecting phrase or link used within a name but not regarded as part of it, such as van der or
+# of.
+nameLink = element nameLink { attlist.nameLink, macro.phraseSeq }
+attlist.nameLink &= att.global.attributes, att.typed.attributes
+# doc:supplies the formal name of the namespace to which the elements
+# documented by its children belong.
+\namespace = element namespace { attlist.namespace, tagUsage+ }
+attlist.namespace &=
+  att.global.attributes,
+  attribute name { text }
+# doc:contains an informal description of a person's present
+# or past nationality or citizenship.
+nationality =
+  element nationality { attlist.nationality, macro.phraseSeq }
+attlist.nationality &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.naming.attributes
+# doc:indicates the extent of normalization or regularization of the
+# original source carried out in converting it to electronic form.
+normalization =
+  element normalization { attlist.normalization, model.pLike+ }
+attlist.normalization &=
+  att.global.attributes,
+  att.declarable.attributes,
+  attribute source { text }?,
+  [ a:defaultValue = "silent" ]
+  attribute method { "silent" | "markup" }?
+# doc:contains a note or annotation.
+note = element note { attlist.note, macro.specialPara }
+attlist.note &=
+  att.global.attributes,
+  att.placement.attributes,
+  attribute type { xsd:NMTOKEN }?,
+  attribute resp { text }?,
+  [ a:defaultValue = "true" ] attribute anchored { text }?,
+  attribute target { text }?,
+  attribute targetEnd { text }?
+# doc:(notes statement) collects together any notes providing information about a text
+# additional to that recorded in other parts of the bibliographic
+# description.
+notesStmt = element notesStmt { attlist.notesStmt, model.noteLike+ }
+attlist.notesStmt &= att.global.attributes
+# doc:(number) contains a number, written in any form.
+num = element num { attlist.num, macro.phraseSeq }
+attlist.num &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?,
+  attribute value { text }?
+# doc:(canonical name) contains the definition for a canonical name or namepart of any kind.
+nym =
+  element nym {
+    attlist.nym, _DUMMY_model.entryPart*, model.pLike*, nym*
+  }
+attlist.nym &=
+  att.global.attributes,
+  att.typed.attributes,
+  attribute parts { text }?
+# doc:contains a description of the physical
+# components making up the object which is being described.
+objectDesc =
+  element objectDesc {
+    attlist.objectDesc,
+    (model.pLike+ | (supportDesc?, layoutDesc?))
+  }
+attlist.objectDesc &=
+  att.global.attributes,
+  attribute form { xsd:NMTOKEN }?
+# doc:contains an informal description of a person's trade, profession or occupation.
+occupation = element occupation { attlist.occupation, macro.phraseSeq }
+attlist.occupation &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.naming.attributes,
+  attribute scheme { text }?,
+  attribute code { text }?
+# doc:that part of a relative temporal or spatial expression which indicates the direction of
+# the offset between the two place names, dates, or times involved in the expression.
+offset = element offset { attlist.offset, macro.xtext }
+attlist.offset &= att.global.attributes, att.typed.attributes
+# doc:groups together dateline, byline, salutation, and similar phrases appearing as a preliminary
+# group at the start of a division, especially of a letter.
+opener =
+  element opener {
+    attlist.opener,
+    (text
+     | _DUMMY_model.gLike
+     | model.phrase
+     | argument
+     | byline
+     | dateline
+     | epigraph
+     | salute
+     | signed
+     | model.global)*
+  }
+attlist.opener &= att.global.attributes
+# doc:(organization) provides information about an identifiable organization such as a business, a tribe, or
+# any other grouping of people.
+org =
+  element org {
+    attlist.org,
+    model.headLike*,
+    (model.pLike*
+     | (model.labelLike | model.nameLike | model.placeLike)*),
+    (model.noteLike | model.biblLike)*,
+    model.personLike*
+  }
+attlist.org &=
+  att.global.attributes,
+  att.typed.attributes,
+  att.editLike.attributes,
+  attribute role { text }?
+# doc:(organization name) contains an organizational name.
+orgName = element orgName { attlist.orgName, macro.phraseSeq }
+attlist.orgName &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.personal.attributes,
+  att.typed.attributes
+# doc:(original form) contains a reading which is marked as following the original, rather than being normalized
+# or corrected.
+orig = element orig { attlist.orig, macro.paraContent }
+attlist.orig &= att.global.attributes
+# doc:(origin date) contains any form of date, used to
+# identify the date of origin for a manuscript or manuscript part.
+origDate = element origDate { attlist.origDate, text }
+attlist.origDate &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.typed.attributes
+# doc:(origin place) contains any form of place name, used to identify the
+# place of origin for a manuscript or manuscript part.
+origPlace = element origPlace { attlist.origPlace, macro.xtext }
+attlist.origPlace &=
+  att.global.attributes, att.datable.attributes, att.editLike.attributes
+# doc:contains any descriptive or other information
+# concerning the origin of  a manuscript or manuscript part.
+origin = element origin { attlist.origin, macro.specialPara }
+attlist.origin &=
+  att.global.attributes, att.editLike.attributes, att.datable.attributes
+# doc:(paragraph) marks paragraphs in prose.
+p = element p { attlist.p, macro.paraContent }
+attlist.p &= att.global.attributes, att.declaring.attributes
+# doc:(participation description) describes the identifiable speakers, voices, or other participants
+# in a linguistic interaction.
+particDesc =
+  element particDesc {
+    attlist.particDesc,
+    (model.pLike+ | (model.personLike | listPerson)+)
+  }
+attlist.particDesc &= att.global.attributes, att.declarable.attributes
+# doc:(page break) marks the boundary between one page of a text and the next in a standard reference system.
+pb = element pb { attlist.pb, empty }
+attlist.pb &=
+  att.global.attributes, att.typed.attributes, att.sourced.attributes
+# doc:(personal name) contains a proper noun or proper-noun phrase referring to a person, possibly including any
+# or all of the person's forenames, surnames, honorifics, added names, etc.
+persName = element persName { attlist.persName, macro.phraseSeq }
+attlist.persName &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.personal.attributes,
+  att.typed.attributes
+# doc:provides information about an identifiable individual, for example a participant in a language interaction, or a person referred to in a
+# historical source.
+person =
+  element person {
+    attlist.person,
+    (model.pLike+ | (model.personPart | model.global)*)
+  }
+attlist.person &=
+  att.global.attributes,
+  att.editLike.attributes,
+  attribute role { xsd:NMTOKEN }?,
+  attribute sex { text }?,
+  attribute age { xsd:NMTOKEN }?
+# doc:(personal group) describes a group of individuals treated as a single person for analytic purposes.
+personGrp =
+  element personGrp {
+    attlist.personGrp, (model.pLike+ | model.personPart*)
+  }
+attlist.personGrp &=
+  att.global.attributes,
+  attribute role { xsd:NMTOKEN }?,
+  attribute sex { text }?,
+  attribute age { xsd:NMTOKEN }?,
+  attribute size { text }?
+# doc:(phrase) represents a grammatical phrase.
+phr = element phr { attlist.phr, macro.phraseSeq }
+attlist.phr &=
+  att.global.attributes, att.segLike.attributes, att.typed.attributes
+# doc:(physical description) contains a full physical description of a
+# manuscript or manuscript part, optionally subdivided using more
+# specialised elements from the model.physDescPart class.
+physDesc =
+  element physDesc {
+    attlist.physDesc, model.pLike*, model.physDescPart_sequenceOptional
+  }
+attlist.physDesc &= att.global.attributes
+# doc:contains data about a geographic location
+place =
+  element place {
+    attlist.place,
+    model.headLike*,
+    (model.pLike*
+     | (model.labelLike
+        | model.placeStateLike
+        | model.placeTraitLike
+        | model.placeEventLike)*),
+    (model.noteLike | model.biblLike)*,
+    (model.placeLike | listPlace)*
+  }
+attlist.place &=
+  att.global.attributes, att.typed.attributes, att.editLike.attributes
+# doc:contains an absolute or relative place name.
+placeName = element placeName { attlist.placeName, macro.phraseSeq }
+attlist.placeName &=
+  att.global.attributes,
+  att.naming.attributes,
+  att.typed.attributes,
+  att.datable.attributes,
+  att.editLike.attributes
+# doc:contains information about the population of a place.
+population =
+  element population {
+    attlist.population,
+    model.headLike*,
+    ((model.pLike+ | model.labelLike+),
+     (model.noteLike | model.biblLike)*)?,
+    population*
+  }
+attlist.population &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.naming.attributes,
+  att.typed.attributes
+# doc:(postal box or post office box) contains a number or other identifier for some postal delivery
+# point other than a street address.
+postBox = element postBox { attlist.postBox, text }
+attlist.postBox &= att.global.attributes
+# doc:(postal code) contains a numerical or alphanumeric code used as part of a postal address to simplify
+# sorting or delivery of mail.
+postCode = element postCode { attlist.postCode, text }
+attlist.postCode &= att.global.attributes
+# doc:contains a postscript, e.g. to a letter.
+postscript =
+  element postscript {
+    attlist.postscript, (model.common | model.global)*
+  }
+attlist.postscript &= att.global.attributes
+# doc:describes the extent to which a text may be regarded as
+# prepared or spontaneous.
+preparedness =
+  element preparedness { attlist.preparedness, macro.phraseSeq.limited }
+attlist.preparedness &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:(principal researcher) supplies the name of the principal researcher responsible for the
+# creation of an electronic text.
+principal =
+  element principal { attlist.principal, macro.phraseSeq.limited }
+attlist.principal &= att.global.attributes
+# doc:(text-profile description) provides a detailed description of non-bibliographic aspects of a
+# text, specifically the languages and sublanguages used, the situation in
+# which it was produced, the participants and their setting.
+profileDesc =
+  element profileDesc {
+    attlist.profileDesc, creation?, model.profileDescPart*
+  }
+attlist.profileDesc &= att.global.attributes
+# doc:(project description) describes in detail the aim or purpose for which an electronic
+# file was encoded, together with any other relevant information
+# concerning the process by which it was assembled or collected.
+projectDesc = element projectDesc { attlist.projectDesc, model.pLike+ }
+attlist.projectDesc &= att.global.attributes, att.declarable.attributes
+# doc:contains any descriptive or other information
+# concerning a single identifiable episode during the history of a manuscript
+# or manuscript part, after its creation but before its acquisition.
+provenance =
+  element provenance { attlist.provenance, macro.specialPara }
+attlist.provenance &= att.global.attributes, att.datable.attributes
+# doc:(pointer) defines a pointer to another location.
+ptr = element ptr { attlist.ptr, empty }
+attlist.ptr &=
+  att.global.attributes,
+  att.pointing.attributes,
+  att.declaring.attributes,
+  attribute target { text }?,
+  attribute cRef { text }?
+# doc:(publication place) contains the name of the place where a bibliographic item was published.
+pubPlace = element pubPlace { attlist.pubPlace, macro.phraseSeq }
+attlist.pubPlace &= att.global.attributes, att.naming.attributes
+# doc:(publication statement) groups information concerning the publication or distribution
+# of an electronic or other text.
+publicationStmt =
+  element publicationStmt {
+    attlist.publicationStmt, (model.pLike+ | model.publicationStmtPart+)
+  }
+attlist.publicationStmt &= att.global.attributes
+# doc:provides the name of the organization responsible for the publication or distribution of a
+# bibliographic item.
+publisher = element publisher { attlist.publisher, macro.phraseSeq }
+attlist.publisher &= att.global.attributes
+# doc:characterizes a single purpose or communicative function of the
+# text.
+purpose = element purpose { attlist.purpose, macro.phraseSeq.limited }
+attlist.purpose &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?,
+  attribute degree { text }?
+# doc:(separated from the surrounding text with quotation marks) contains material which is marked as (ostensibly) being somehow different than the
+# surrounding text, for any one of a variety of reasons including, but not limited to: direct
+# speech or thought, technical terms or jargon, authorial distance, quotations from elsewhere, and
+# passages that are mentioned but not used.
+q = element q { attlist.q, macro.specialPara }
+attlist.q &=
+  att.global.attributes,
+  att.ascribed.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:specifies editorial practice adopted with respect to quotation
+# marks in the original.
+quotation = element quotation { attlist.quotation, model.pLike+ }
+attlist.quotation &=
+  att.global.attributes,
+  att.declarable.attributes,
+  [ a:defaultValue = "all" ]
+  attribute marks { "none" | "some" | "all" }?,
+  [ a:defaultValue = "unknown" ] attribute form { text }?
+# doc:(quotation) contains a phrase or passage attributed by the narrator or author to some agency external
+# to the text.
+quote = element quote { attlist.quote, macro.specialPara }
+attlist.quote &=
+  att.global.attributes, att.typed.attributes, att.msExcerpt.attributes
+# doc:(reading) contains a single reading within a textual variation.
+rdg =
+  element rdg {
+    attlist.rdg,
+    (text
+     | _DUMMY_model.gLike
+     | model.phrase
+     | model.inter
+     | model.global
+     | model.rdgPart)*
+  }
+attlist.rdg &= att.global.attributes, att.textCritical.attributes
+# doc:(reading group) within a textual variation,
+# groups two or more readings perceived to have a genetic
+# relationship or other affinity.
+rdgGrp =
+  element rdgGrp {
+    attlist.rdgGrp,
+    ((rdgGrp, wit?)
+     | ((lem, wit?)?, (model.rdgLike, wit?))*)+
+  }
+attlist.rdgGrp &= att.global.attributes, att.textCritical.attributes
+# doc:(recorded history) provides information about the source and
+# revision status of the parent manuscript description itself.
+recordHist =
+  element recordHist {
+    attlist.recordHist,
+    (model.pLike+ | (source, change*))
+  }
+attlist.recordHist &= att.global.attributes
+# doc:(reference) defines a reference to another location, possibly modified by additional text or comment.
+ref = element ref { attlist.ref, macro.paraContent }
+attlist.ref &=
+  att.global.attributes,
+  att.pointing.attributes,
+  att.declaring.attributes,
+  attribute target { text }?,
+  attribute cRef { text }?
+# doc:(reference state) specifies one component of a canonical reference defined by
+# the milestone method.
+refState = element refState { attlist.refState, empty }
+attlist.refState &=
+  att.global.attributes,
+  att.sourced.attributes,
+  attribute unit { xsd:NMTOKEN },
+  attribute length { text }?,
+  attribute delim { text }?
+# doc:(references declaration) specifies how canonical references are constructed for this
+# text.
+refsDecl =
+  element refsDecl {
+    attlist.refsDecl, (model.pLike+ | cRefPattern+ | refState+)
+  }
+attlist.refsDecl &= att.global.attributes, att.declarable.attributes
+# doc:(regularization) contains a reading which has been regularized or normalized in some sense.
+reg = element reg { attlist.reg, macro.paraContent }
+attlist.reg &=
+  att.global.attributes, att.editLike.attributes, att.typed.attributes
+# doc:contains the name of an administrative unit such as a state, province, or county, larger
+# than a settlement, but smaller than a country.
+region = element region { attlist.region, macro.phraseSeq }
+attlist.region &=
+  att.global.attributes,
+  att.naming.attributes,
+  att.typed.attributes,
+  att.datable.attributes
+# doc:contains or references some other bibliographic item which is related to the present one
+# in some specified manner, for example as a constituent or alternative version of it.
+relatedItem =
+  element relatedItem {
+    attlist.relatedItem, (model.biblLike | model.ptrLike)
+  }
+attlist.relatedItem &= att.global.attributes, att.typed.attributes
+# doc:(relationship) describes any kind of relationship or linkage amongst a specified
+# group of participants.
+relation = element relation { attlist.relation, desc? }
+attlist.relation &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.naming.attributes,
+  [ a:defaultValue = "personal" ] attribute type { xsd:NMTOKEN }?,
+  attribute name { xsd:NMTOKEN },
+  attribute passive { text }?,
+  attribute active { text }?,
+  attribute mutual { text }?
+# doc:(relation group) provides information about relationships identified amongst people, places, and
+# organizations, either informally as prose or as formally expressed relation links.
+relationGrp =
+  element relationGrp {
+    attlist.relationGrp, (model.pLike+ | relation+)
+  }
+attlist.relationGrp &= att.global.attributes, att.typed.attributes
+# doc:supplies information about the rendition or appearance of one or more
+# elements in the source text.
+rendition =
+  element rendition { attlist.rendition, macro.limitedContent }
+attlist.rendition &=
+  att.global.attributes,
+  attribute scheme { "css" | "xslfo" | "free" | "other" }?
+# doc:contains the name of a repository within which manuscripts are stored, possibly forming part of an institution.
+repository = element repository { attlist.repository, macro.xtext }
+attlist.repository &= att.global.attributes, att.naming.attributes
+# doc:(residence) describes a person's present or past places of residence.
+residence = element residence { attlist.residence, macro.phraseSeq }
+attlist.residence &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.naming.attributes
+# doc:(responsibility) contains a phrase describing the nature of a person's intellectual responsibility.
+resp = element resp { attlist.resp, macro.phraseSeq.limited }
+attlist.resp &= att.global.attributes, att.canonical.attributes
+# doc:(statement of responsibility) supplies a statement of responsibility for the intellectual content of a text, edition,
+# recording, or series, where the specialized elements for authors, editors, etc. do not suffice
+# or do not apply.
+respStmt =
+  element respStmt {
+    attlist.respStmt,
+    ((resp+, model.nameLike.agent+) | (model.nameLike.agent+, resp+))
+  }
+attlist.respStmt &= att.global.attributes
+# doc:(responsibility) identifies the individual(s) responsible for some aspect of the
+# markup of particular element(s).
+respons = element respons { attlist.respons, model.glossLike* }
+attlist.respons &=
+  att.global.attributes,
+  attribute target { text },
+  attribute locus { xsd:NMTOKEN },
+  attribute resp { text }
+# doc:indicates restoration of text to an earlier state by
+# cancellation of an editorial or authorial marking or instruction.
+restore = element restore { attlist.restore, macro.paraContent }
+attlist.restore &=
+  att.global.attributes,
+  att.transcriptional.attributes,
+  att.typed.attributes
+# doc:(revision description) summarizes the revision history for a file.
+revisionDesc =
+  element revisionDesc { attlist.revisionDesc, (\list | change+) }
+attlist.revisionDesc &= att.global.attributes
+# doc:marks the rhyming part of  a metrical line.
+rhyme = element rhyme { attlist.rhyme, macro.paraContent }
+attlist.rhyme &=
+  att.global.attributes,
+  att.typed.attributes,
+  attribute label { text }?
+# doc:contains a name component which indicates that the referent has a particular role or
+# position in society, such as an official title or rank.
+roleName = element roleName { attlist.roleName, macro.phraseSeq }
+attlist.roleName &=
+  att.global.attributes, att.personal.attributes, att.typed.attributes
+# doc:contains one row of a table.
+row = element row { attlist.row, cell+ }
+attlist.row &= att.global.attributes, att.tableDecoration.attributes
+# doc:(referencing string) contains a general purpose name or referring string.
+rs = element rs { attlist.rs, macro.phraseSeq }
+attlist.rs &=
+  att.global.attributes,
+  att.naming.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:contains the text of any rubric or heading attached to a particular manuscript item, that is, a string of words through which a
+# manuscript signals the beginning of a text division, often with an assertion as to its author and title, which is in some way set off from the text itself, usually in red ink, or by use of different size or type of script, or some other such visual device.
+rubric = element rubric { attlist.rubric, macro.phraseSeq }
+attlist.rubric &= att.global.attributes, att.typed.attributes
+# doc:(s-unit) contains a sentence-like division of a text.
+s = element s { attlist.s, macro.phraseSeq }
+attlist.s &=
+  att.global.attributes, att.segLike.attributes, att.typed.attributes
+# doc:(speech or thought) indicates passages thought or spoken aloud, whether
+# explicitly indicated in the source or not, whether directly
+# or indirectly reported, whether by real people or
+# fictional characters.
+said = element said { attlist.said, macro.specialPara }
+attlist.said &=
+  att.global.attributes,
+  att.ascribed.attributes,
+  [ a:defaultValue = "unknown" ] attribute aloud { text }?,
+  [ a:defaultValue = "true" ] attribute direct { text }?
+# doc:(salutation) contains a salutation or greeting prefixed to a foreword, dedicatory epistle, or other
+# division of a text, or the salutation in the closing of a letter, preface, etc.
+salute = element salute { attlist.salute, macro.phraseSeq }
+attlist.salute &= att.global.attributes
+# doc:(sampling declaration) contains a prose description of the rationale and methods used
+# in sampling texts in the creation of a corpus or collection.
+samplingDecl =
+  element samplingDecl { attlist.samplingDecl, model.pLike+ }
+attlist.samplingDecl &= att.global.attributes, att.declarable.attributes
+# doc:contains a description of one seal or similar
+# attachment applied to a manuscript.
+seal = element seal { attlist.seal, (model.pLike | decoNote)+ }
+attlist.seal &=
+  att.global.attributes,
+  att.typed.attributes,
+  att.datable.attributes,
+  attribute contemporary { text }?
+# doc:(seal description) describes the seals or other external items attached to a manuscript, either
+# as a series of paragraphs or as a series of distinct seal elements,
+# possibly with additional decoNotes.
+sealDesc =
+  element sealDesc {
+    attlist.sealDesc,
+    (model.pLike+ | (decoNote | seal | condition)+)
+  }
+attlist.sealDesc &= att.global.attributes
+# doc:(second folio) The word or words taken from a fixed point
+# in a codex (typically the beginning of the
+# second leaf) in order
+# to provide a unique identifier for it.
+secFol = element secFol { attlist.secFol, macro.phraseSeq }
+attlist.secFol &= att.global.attributes
+# doc:(arbitrary segment) represents any  segmentation of text below the
+# chunk level.
+seg = element seg { attlist.seg, macro.paraContent }
+attlist.seg &=
+  att.global.attributes, att.segLike.attributes, att.typed.attributes
+# doc:describes the principles according to which the text has been
+# segmented, for example into sentences, tone-units, graphemic strata,
+# etc.
+segmentation =
+  element segmentation { attlist.segmentation, model.pLike+ }
+attlist.segmentation &= att.global.attributes, att.declarable.attributes
+# doc:(series information) contains information about the series in which a book or other bibliographic item has
+# appeared.
+series =
+  element series {
+    attlist.series,
+    (text
+     | _DUMMY_model.gLike
+     | title
+     | editor
+     | respStmt
+     | biblScope
+     | model.global)*
+  }
+attlist.series &= att.global.attributes
+# doc:(series statement) groups information about the series, if any, to which
+# a publication belongs.
+seriesStmt =
+  element seriesStmt {
+    attlist.seriesStmt,
+    (model.pLike+
+     | (title+, (idno | respStmt)*))
+  }
+attlist.seriesStmt &= att.global.attributes
+# doc:describes one particular setting in which a language
+# interaction takes place.
+setting =
+  element setting {
+    attlist.setting,
+    (model.pLike+
+     | (model.nameLike.agent | model.dateLike | model.settingPart)*)
+  }
+attlist.setting &= att.global.attributes, att.ascribed.attributes
+# doc:(setting description) describes the setting or settings within which a language
+# interaction takes place, either as a prose description or as a
+# series of setting elements.
+settingDesc =
+  element settingDesc { attlist.settingDesc, (model.pLike+ | setting+) }
+attlist.settingDesc &= att.global.attributes, att.declarable.attributes
+# doc:contains the name of a settlement such as a city, town, or village identified as a single
+# geo-political or administrative unit.
+settlement = element settlement { attlist.settlement, macro.phraseSeq }
+attlist.settlement &=
+  att.global.attributes,
+  att.naming.attributes,
+  att.typed.attributes,
+  att.datable.attributes
+# doc:specifies the sex of a person.
+sex = element sex { attlist.sex, macro.phraseSeq }
+attlist.sex &=
+  att.global.attributes,
+  att.editLike.attributes,
+  att.datable.attributes,
+  attribute value { text }?
+# doc:(latin for thus or so) contains text reproduced although apparently incorrect or inaccurate.
+sic = element sic { attlist.sic, macro.paraContent }
+attlist.sic &= att.global.attributes
+# doc:contains discussion of the leaf or quire signatures found within a codex.
+signatures = element signatures { attlist.signatures, macro.phraseSeq }
+attlist.signatures &= att.global.attributes
+# doc:(signature) contains the closing salutation, etc., appended to a foreword,
+# dedicatory epistle, or other division of a text.
+signed = element signed { attlist.signed, macro.phraseSeq }
+attlist.signed &= att.global.attributes
+# doc:contains a word or phrase for which the author or narrator
+# indicates a disclaiming of responsibility, for example by the use
+# of scare quotes or italics.
+soCalled = element soCalled { attlist.soCalled, macro.phraseSeq }
+attlist.soCalled &= att.global.attributes
+# doc:(socio-economic status) contains an informal description of a person's perceived social or
+# economic status.
+socecStatus =
+  element socecStatus { attlist.socecStatus, macro.phraseSeq }
+attlist.socecStatus &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.naming.attributes,
+  attribute scheme { text }?,
+  attribute code { text }?
+# doc:describes the original source for the information contained with a manuscript description.
+source = element source { attlist.source, macro.specialPara }
+attlist.source &= att.global.attributes
+# doc:(source description) describes the source from
+# which an electronic text was derived or generated, typically a bibliographic description in the case of a digitized text, or a phrase such as "born digital" for a text which has no previous existence.
+sourceDesc =
+  element sourceDesc {
+    attlist.sourceDesc,
+    (model.pLike+
+     | (model.biblLike | _DUMMY_model.sourceDescPart | model.listLike)+)
+  }
+attlist.sourceDesc &= att.global.attributes, att.declarable.attributes
+# doc:(speech) An individual speech in a performance text, or a passage presented as such in a prose or
+# verse text.
+sp =
+  element sp {
+    attlist.sp,
+    model.global*,
+    (speaker, model.global*)?,
+    ((model.lLike | lg | model.pLike | model.stageLike | model.qLike),
+     model.global*)+
+  }
+attlist.sp &= att.global.attributes, att.ascribed.attributes
+# doc:indicates the location of a significant space in the copy text.
+space = element space { attlist.space, empty }
+attlist.space &=
+  att.global.attributes,
+  att.dimensions.attributes,
+  attribute dim { "horizontal" | "vertical" }?,
+  attribute resp { text }?
+# doc:associates an interpretative annotation directly with a span
+# of text.
+span = element span { attlist.span, macro.phraseSeq.limited }
+attlist.span &=
+  att.global.attributes,
+  att.interpLike.attributes,
+  attribute from { text },
+  attribute to { text }?
+# doc:(span group) collects together span tags.
+spanGrp = element spanGrp { attlist.spanGrp, span* }
+attlist.spanGrp &= att.global.attributes, att.interpLike.attributes
+# doc:A specialized form of heading or label, giving the name of one or more speakers in a
+# dramatic text or fragment.
+speaker = element speaker { attlist.speaker, macro.phraseSeq }
+attlist.speaker &= att.global.attributes
+# doc:specifies the name of a sponsoring organization or
+# institution.
+sponsor = element sponsor { attlist.sponsor, macro.phraseSeq.limited }
+attlist.sponsor &= att.global.attributes
+# doc:(stage direction) contains any kind of stage direction within a dramatic text or fragment.
+stage = element stage { attlist.stage, macro.specialPara }
+attlist.stage &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:contains a word or phrase describing a
+# stamp or similar device.
+stamp = element stamp { attlist.stamp, macro.phraseSeq }
+attlist.stamp &=
+  att.global.attributes, att.typed.attributes, att.datable.attributes
+# doc:contains a description of some status or quality
+# attributed to a person, place, or organization at some specific time.
+state =
+  element state {
+    attlist.state,
+    (state+
+     | (model.headLike*,
+        model.pLike+,
+        (model.noteLike | model.biblLike)*)
+     | (model.labelLike | model.noteLike | model.biblLike)*)
+  }
+attlist.state &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.typed.attributes,
+  att.naming.attributes
+# doc:(standard values) specifies the format used when standardized date or number
+# values are supplied.
+stdVals = element stdVals { attlist.stdVals, model.pLike+ }
+attlist.stdVals &= att.global.attributes, att.declarable.attributes
+# doc:a full street address including any name or number identifying a
+# building as well as the name of the street or route on which it is
+# located.
+street = element street { attlist.street, macro.phraseSeq }
+attlist.street &= att.global.attributes
+# doc:(substitution) groups one or more deletions with one or more additions when
+# the combination is to be regarded as a single intervention in the text.
+subst =
+  element subst {
+    attlist.subst,
+    model.pPart.transcriptional,
+    model.pPart.transcriptional+
+  }
+attlist.subst &= att.global.attributes, att.transcriptional.attributes
+# doc:contains a brief summary of the
+# intellectual content of an item, provided by the cataloguer.
+summary = element summary { attlist.summary, macro.phraseSeq }
+attlist.summary &= att.global.attributes
+# doc:signifies text supplied by the transcriber or editor for any
+# reason, typically because the original cannot be read because of
+# physical damage or loss to the original.
+supplied = element supplied { attlist.supplied, macro.paraContent }
+attlist.supplied &=
+  att.global.attributes,
+  att.editLike.attributes,
+  attribute reason { text }?
+# doc:contains a description of the materials
+# etc. which make up the physical support for the written part of a manuscript.
+support = element support { attlist.support, macro.specialPara }
+attlist.support &= att.global.attributes
+# doc:(support description) groups elements describing the physical support for the written part of a manuscript.
+supportDesc =
+  element supportDesc {
+    attlist.supportDesc,
+    (model.pLike+
+     | (support?, extent?, foliation*, collation?, condition?))
+  }
+attlist.supportDesc &=
+  att.global.attributes,
+  attribute material { xsd:NMTOKEN }?
+# doc:defines a written surface in terms of a rectangular
+# coordinate space, optionally  grouping one or more graphic representations of
+# that space, and rectangular zones of interest
+# within it.
+surface =
+  element surface {
+    attlist.surface, model.glossLike*, model.graphicLike*, zone*
+  }
+attlist.surface &=
+  att.global.attributes,
+  att.coordinated.attributes,
+  att.declaring.attributes,
+  attribute start { text }?
+# doc:contains a family (inherited) name, as opposed to a given,
+# baptismal, or nick name.
+surname = element surname { attlist.surname, macro.phraseSeq }
+attlist.surname &=
+  att.global.attributes, att.personal.attributes, att.typed.attributes
+# doc:contains information about any digital or
+# photographic representations of the manuscript being described which
+# may exist in the holding institution or elsewhere.
+surrogates =
+  element surrogates { attlist.surrogates, macro.specialPara }
+attlist.surrogates &= att.global.attributes
+# doc:contains text displayed in tabular form, in rows and columns.
+table =
+  element table {
+    attlist.table,
+    (model.headLike | model.global)*,
+    (row, model.global*)+
+  }
+attlist.table &=
+  att.global.attributes,
+  attribute rows { text }?,
+  attribute cols { text }?
+# doc:supplies information about the usage of a specific element
+# within a text.
+tagUsage = element tagUsage { attlist.tagUsage, macro.limitedContent }
+attlist.tagUsage &=
+  att.global.attributes,
+  attribute gi { xsd:NMTOKEN },
+  attribute occurs { text }?,
+  attribute withId { text }?,
+  attribute render { text }?
+# doc:(tagging declaration) provides detailed information about the tagging applied to a document.
+tagsDecl =
+  element tagsDecl { attlist.tagsDecl, rendition*, \namespace* }
+attlist.tagsDecl &= att.global.attributes
+# doc:defines a typology used to classify texts either implicitly, by
+# means of a bibliographic citation, or explicitly by a structured
+# taxonomy.
+taxonomy =
+  element taxonomy {
+    attlist.taxonomy,
+    (model.glossLike* | category+ | (model.biblLike, category*))
+  }
+attlist.taxonomy &= att.global.attributes
+# doc:contains the whole of a TEI encoded corpus, comprising a single corpus header and one or
+# more TEI elements, each containing a single text header and a text.
+teiCorpus =
+  element teiCorpus { attlist.teiCorpus, teiHeader, (TEI | teiCorpus)+ }
+attlist.teiCorpus &=
+  att.global.attributes,
+  [ a:defaultValue = "5.0" ] attribute version { text }?
+attlist.teiCorpus &= attribute xsi:schemaLocation { text }?
+# doc:(TEI Header) supplies the descriptive and declarative information making
+# up an electronic title page prefixed to every TEI-conformant
+# text.
+teiHeader =
+  element teiHeader {
+    attlist.teiHeader, fileDesc, model.headerPart*, revisionDesc?
+  }
+attlist.teiHeader &=
+  att.global.attributes,
+  [ a:defaultValue = "text" ] attribute type { xsd:NMTOKEN }?
+# doc:contains a single-word, multi-word, or symbolic designation which is regarded as a
+# technical term.
+term = element term { attlist.term, macro.phraseSeq }
+attlist.term &=
+  att.global.attributes,
+  att.declaring.attributes,
+  att.typed.attributes,
+  att.canonical.attributes,
+  attribute sortKey { text }?,
+  attribute target { text }?,
+  attribute cRef { text }?
+# doc:contains information about the physical terrain of a place.
+terrain =
+  element terrain {
+    attlist.terrain,
+    model.headLike*,
+    (model.pLike+ | model.labelLike+),
+    (model.noteLike | model.biblLike)*,
+    terrain*
+  }
+attlist.terrain &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.naming.attributes,
+  att.typed.attributes
+# doc:contains a single text of any kind, whether unitary or composite, for example a poem or
+# drama, a collection of essays, a novel, a dictionary, or a corpus sample.
+\text =
+  element text {
+    attlist.text,
+    model.global*,
+    (front, model.global*)?,
+    (body | group),
+    model.global*,
+    (back, model.global*)?
+  }
+attlist.text &=
+  att.global.attributes, att.declaring.attributes, att.typed.attributes
+# doc:(text classification) groups information which describes the nature or topic of a text
+# in terms of a standard classification scheme, thesaurus, etc.
+textClass =
+  element textClass {
+    attlist.textClass, (classCode | catRef | keywords)*
+  }
+attlist.textClass &= att.global.attributes, att.declarable.attributes
+# doc:(text description) provides a description of a text in terms of its
+# situational parameters.
+textDesc =
+  element textDesc {
+    attlist.textDesc, model.textDescPart_sequence, purpose+
+  }
+attlist.textDesc &= att.global.attributes, att.declarable.attributes
+# doc:(text language) describes the languages and writing systems used by a
+# manuscript (as opposed to its description, which is described in the langUsage element).
+textLang = element textLang { attlist.textLang, macro.phraseSeq }
+attlist.textLang &=
+  att.global.attributes,
+  attribute mainLang { text }?,
+  attribute otherLangs { text }?
+# doc:contains a phrase defining a time of day in any format.
+time =
+  element time {
+    attlist.time,
+    (text | _DUMMY_model.gLike | model.phrase | model.global)*
+  }
+attlist.time &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.typed.attributes
+# doc:(timeline) provides a set of ordered points in time which can be linked to
+# elements of a spoken text to create a temporal alignment of that text.
+timeline = element timeline { attlist.timeline, when+ }
+attlist.timeline &=
+  att.global.attributes,
+  attribute origin { text },
+  attribute unit { xsd:NMTOKEN }?,
+  attribute interval { text }?
+# doc:contains a title for any kind of work.
+title = element title { attlist.title, macro.paraContent }
+attlist.title &=
+  att.global.attributes,
+  att.canonical.attributes,
+  attribute level { "a" | "m" | "j" | "s" | "u" }?,
+  attribute type { xsd:NMTOKEN }?
+# doc:(title page) contains the title page of a text, appearing within the front or back matter.
+titlePage =
+  element titlePage {
+    attlist.titlePage,
+    model.global*,
+    model.titlepagePart,
+    (model.titlepagePart | model.global)*
+  }
+attlist.titlePage &=
+  att.global.attributes,
+  attribute type { xsd:NMTOKEN }?
+# doc:contains a subsection or division of the title of a work, as
+# indicated on a title page.
+titlePart = element titlePart { attlist.titlePart, macro.paraContent }
+attlist.titlePart &=
+  att.global.attributes,
+  [ a:defaultValue = "main" ] attribute type { xsd:NMTOKEN }?
+# doc:(title statement) groups information about the title of a work and those
+# responsible for its intellectual content.
+titleStmt =
+  element titleStmt { attlist.titleStmt, title+, model.respLike* }
+attlist.titleStmt &= att.global.attributes
+# doc:contains a closing title or footer appearing at the end of a division of a text.
+trailer = element trailer { attlist.trailer, macro.phraseSeq }
+attlist.trailer &= att.global.attributes
+# doc:contains a description of some culturally-determined and in
+# principle unchanging characteristic attributed to a person or place .
+trait =
+  element trait {
+    attlist.trait,
+    (trait+
+     | (model.headLike*,
+        model.pLike+,
+        (model.noteLike | model.biblLike)*)
+     | (model.labelLike | model.noteLike | model.biblLike)*)
+  }
+attlist.trait &=
+  att.global.attributes,
+  att.datable.attributes,
+  att.editLike.attributes,
+  att.naming.attributes,
+  att.typed.attributes
+# doc:contains a description of the typefaces or other aspects of
+# the printing of an incunable or other printed source.
+typeDesc =
+  element typeDesc {
+    attlist.typeDesc,
+    (model.pLike+ | (summary?, typeNote+))
+  }
+attlist.typeDesc &= att.global.attributes
+# doc:describes a particular font or other significant typographic
+# feature distinguished within the description of a printed resource.
+typeNote = element typeNote { attlist.typeNote, macro.specialPara }
+attlist.typeNote &= att.global.attributes, att.handFeatures.attributes
+# doc:contains a word, phrase, or passage which cannot be transcribed with certainty because it
+# is illegible or inaudible in the source.
+unclear = element unclear { attlist.unclear, macro.paraContent }
+attlist.unclear &=
+  att.global.attributes,
+  att.editLike.attributes,
+  attribute reason { text }?,
+  attribute hand { text }?,
+  attribute agent { xsd:NMTOKEN }?
+# doc:declares the method used to encode text-critical variants.
+variantEncoding =
+  element variantEncoding { attlist.variantEncoding, empty }
+attlist.variantEncoding &=
+  att.global.attributes,
+  attribute method {
+    "location-referenced" | "double-end-point" | "parallel-segmentation"
+  },
+  attribute location { "internal" | "external" }
+# doc:(word) represents a grammatical (not necessarily orthographic) word.
+w =
+  element w {
+    attlist.w,
+    (text
+     | _DUMMY_model.gLike
+     | model.segLike
+     | model.global
+     | model.lPart
+     | model.hiLike
+     | model.pPart.edit)*
+  }
+attlist.w &=
+  att.global.attributes,
+  att.segLike.attributes,
+  att.typed.attributes,
+  attribute lemma { text }?,
+  attribute lemmaRef { text }?
+# doc:contains a word or phrase describing a
+# watermark or similar device.
+watermark = element watermark { attlist.watermark, macro.phraseSeq }
+attlist.watermark &= att.global.attributes
+# doc:indicates a point in time either relative to other elements in the
+# same timeline tag, or absolutely.
+when = element when { attlist.when, empty }
+attlist.when &=
+  att.global.attributes,
+  attribute absolute { text }?,
+  attribute unit { xsd:NMTOKEN }?,
+  attribute interval { text }?,
+  attribute since { text }?
+# doc:contains a measurement measured along the axis perpendicular to the spine.
+width = element width { attlist.width, macro.xtext }
+attlist.width &= att.global.attributes, att.dimensions.attributes
+# doc:contains a list of one or more sigla of witnesses attesting a
+# given reading, in a textual variation.
+wit = element wit { attlist.wit, macro.phraseSeq }
+attlist.wit &= att.global.attributes, att.rdgPart.attributes
+# doc:(witness detail) gives further information about a particular witness, or
+# witnesses, to a particular reading.
+witDetail = element witDetail { attlist.witDetail, macro.phraseSeq }
+attlist.witDetail &=
+  att.global.attributes,
+  att.placement.attributes,
+  attribute target { text },
+  attribute resp { text }?,
+  attribute wit { text },
+  attribute type { xsd:NMTOKEN }?
+# doc:(fragmented witness end) indicates the end, or suspension, of the text of a fragmentary
+# witness.
+witEnd = element witEnd { attlist.witEnd, empty }
+attlist.witEnd &= att.global.attributes, att.rdgPart.attributes
+# doc:(fragmented witness start) indicates the beginning, or resumption, of the text of a
+# fragmentary witness.
+witStart = element witStart { attlist.witStart, empty }
+attlist.witStart &= att.global.attributes, att.rdgPart.attributes
+# doc:contains either a description of a single witness referred to
+# within the critical apparatus, or a list of witnesses which is to be
+# referred to by a single sigil.
+witness = element witness { attlist.witness, macro.limitedContent }
+attlist.witness &= att.global.attributes
+# doc:defines a rectangular area contained within a surface
+# element.
+zone =
+  element zone { attlist.zone, model.glossLike*, model.graphicLike* }
+attlist.zone &= att.global.attributes, att.coordinated.attributes
+_DUMMY_model.egLike |= notAllowed
+_DUMMY_model.entryPart |= notAllowed
+_DUMMY_model.gLike |= notAllowed
+_DUMMY_model.sourceDescPart |= notAllowed
+start =
+  summary
+  | opener
+  | editorialDecl
+  | said
+  | langUsage
+  | fw
+  | accMat
+  | surname
+  | dateline
+  | time
+  | principal
+  | event
+  | taxonomy
+  | place
+  | revisionDesc
+  | textDesc
+  | langKnown
+  | decoNote
+  | forename
+  | death
+  | cell
+  | normalization
+  | listBibl
+  | provenance
+  | editor
+  | explicit
+  | physDesc
+  | classCode
+  | binding
+  | damageSpan
+  | graphic
+  | desc
+  | rhyme
+  | choice
+  | sealDesc
+  | collection
+  | altIdentifier
+  | date
+  | witness
+  | witStart
+  | hyphenation
+  | binaryObject
+  | authority
+  | figure
+  | surrogates
+  | colophon
+  | cRefPattern
+  | sourceDesc
+  | domain
+  | projectDesc
+  | profileDesc
+  | emph
+  | publicationStmt
+  | textClass
+  | geogName
+  | nameLink
+  | objectDesc
+  | joinGrp
+  | ex
+  | sic
+  | factuality
+  | c
+  | back
+  | settlement
+  | front
+  | l
+  | typeDesc
+  | join
+  | supplied
+  | m
+  | secFol
+  | incipit
+  | catchwords
+  | material
+  | headItem
+  | particDesc
+  | history
+  | w
+  | ref
+  | num
+  | bibl
+  | s
+  | variantEncoding
+  | reg
+  | listPlace
+  | q
+  | p
+  | foliation
+  | zone
+  | interp
+  | body
+  | edition
+  | imprimatur
+  | cb
+  | msName
+  | appInfo
+  | teiCorpus
+  | change
+  | docEdition
+  | roleName
+  | placeName
+  | height
+  | imprint
+  | rdg
+  | langKnowledge
+  | linkGrp
+  | climate
+  | relationGrp
+  | listPerson
+  | \text
+  | index
+  | keywords
+  | geo
+  | sp
+  | condition
+  | certainty
+  | notesStmt
+  | width
+  | relation
+  | abbr
+  | label
+  | country
+  | salute
+  | watermark
+  | email
+  | msItemStruct
+  | cl
+  | rs
+  | foreign
+  | editionStmt
+  | constitution
+  | filiation
+  | ptr
+  | span
+  | listEvent
+  | sex
+  | measure
+  | geoDecl
+  | caesura
+  | correction
+  | corr
+  | education
+  | lacunaStart
+  | setting
+  | analytic
+  | milestone
+  | author
+  | funder
+  | pubPlace
+  | byline
+  | repository
+  | wit
+  | alt
+  | msPart
+  | name
+  | headLabel
+  | locus
+  | supportDesc
+  | offset
+  | activity
+  | institution
+  | population
+  | terrain
+  | titlePage
+  | stamp
+  | listOrg
+  | rdgGrp
+  | msItem
+  | orgName
+  | sponsor
+  | postBox
+  | seg
+  | nationality
+  | source
+  | teiHeader
+  | catDesc
+  | am
+  | locusGrp
+  | meeting
+  | ab
+  | altGrp
+  | origPlace
+  | floruit
+  | birth
+  | person
+  | surface
+  | origDate
+  | textLang
+  | floatingText
+  | street
+  | measureGrp
+  | settingDesc
+  | monogr
+  | distinct
+  | msDesc
+  | soCalled
+  | samplingDecl
+  | addSpan
+  | typeNote
+  | titleStmt
+  | phr
+  | layoutDesc
+  | rendition
+  | affiliation
+  | recordHist
+  | support
+  | catRef
+  | persName
+  | respons
+  | fileDesc
+  | interaction
+  | table
+  | custEvent
+  | finalRubric
+  | row
+  | category
+  | pb
+  | biblFull
+  | seriesStmt
+  | biblScope
+  | language
+  | gap
+  | epigraph
+  | region
+  | creation
+  | series
+  | postscript
+  | link
+  | metSym
+  | timeline
+  | mentioned
+  | handNote
+  | lacunaEnd
+  | listWit
+  | space
+  | org
+  | docAuthor
+  | classDecl
+  | rubric
+  | closer
+  | publisher
+  | acquisition
+  | msIdentifier
+  | msContents
+  | title
+  | TEI
+  | stdVals
+  | docTitle
+  | dimensions
+  | witDetail
+  | del
+  | interpretation
+  | district
+  | note
+  | app
+  | expan
+  | handNotes
+  | faith
+  | speaker
+  | signed
+  | lem
+  | delSpan
+  | gloss
+  | residence
+  | additional
+  | item
+  | unclear
+  | nym
+  | preparedness
+  | location
+  | handDesc
+  | segmentation
+  | orig
+  | tagUsage
+  | custodialHist
+  | interpGrp
+  | \namespace
+  | anchor
+  | adminInfo
+  | additions
+  | docImprint
+  | subst
+  | when
+  | age
+  | head
+  | trait
+  | argument
+  | occupation
+  | tagsDecl
+  | relatedItem
+  | damage
+  | addrLine
+  | respStmt
+  | heraldry
+  | depth
+  | derivation
+  | restore
+  | handShift
+  | biblStruct
+  | lg
+  | geogFeat
+  | lb
+  | quotation
+  | refsDecl
+  | idno
+  | titlePart
+  | figDesc
+  | resp
+  | trailer
+  | encodingDesc
+  | locale
+  | \div
+  | state
+  | purpose
+  | hi
+  | add
+  | stage
+  | collation
+  | bindingDesc
+  | metDecl
+  | refState
+  | seal
+  | witEnd
+  | extent
+  | quote
+  | layout
+  | div7
+  | div6
+  | distributor
+  | cit
+  | docDate
+  | div5
+  | div4
+  | div3
+  | div2
+  | div1
+  | availability
+  | listNym
+  | application
+  | facsimile
+  | origin
+  | postCode
+  | signatures
+  | \list
+  | addName
+  | musicNotation
+  | bloc
+  | decoDesc
+  | term
+  | address
+  | genName
+  | socecStatus
+  | spanGrp
+  | personGrp
+  | group
+  | divGen
+  | channel
+  | formula
+# end elements
