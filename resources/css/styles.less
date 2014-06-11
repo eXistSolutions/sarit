@@ -1,10 +1,47 @@
 @import "exist.less";
 
 body a {
-    color: #428BCA;
-    text-decoration: none;
+  color: #428BCA;
+  text-decoration: none;
 }
 
+header,.navbar,footer{
+  background-color: #F1F1F1;
+
+  img{
+    margin-left:-10px;
+  }
+}
+.banner{
+  background:url("http://i.istockimg.com/file_thumbview_approve/27195083/2/stock-photo-27195083-mantras-on-the-wall.jpg") no-repeat scroll center center;
+  background-size: cover ;
+  height: 200px;
+  width: 100%;
+}
+
+.navbar .container{
+  padding:0;
+
+  li{
+    font-size:1.4em;
+  }
+}
+.container{
+  padding:0 31px;
+}
+.content p{
+  margin-bottom:20px;
+}
+
+h1,h2,h3,h4,h5,h6{
+  font-family: Ovo, serif;
+  color:#777777;
+  letter-spacing: 1.5;
+}
+p,li{
+  font-family: Ovo, serif;
+  font-size: 16px;
+}
 .color{
   width:100px;
   height: 100px;
@@ -34,6 +71,30 @@ body a {
 }
 .gray5{
   background-color: @gray5;
+}
+
+footer{
+  border-top: thin solid #bcbcbc;
+  padding: 20px 0;
+
+  h6{
+    font-size: 16px;
+    color:black;
+    font-style: italic;
+  }
+  p{
+    color:black;
+    font-size: 10px;
+    margin:0;
+    display: block;
+    padding: 0;
+
+    a, a:visited{
+      color:black;
+      display: inline;
+    }
+  }
+
 }
 
 
