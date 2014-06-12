@@ -26,6 +26,11 @@ header,.navbar,footer{
     font-size:1.4em;
   }
 }
+.stripe{
+  background-color: #F1F1F1;
+  margin: 70px 0 20px 0;
+  padding-bottom: 40px;
+}
 .container{
   padding:0 31px;
 }
@@ -38,10 +43,18 @@ h1,h2,h3,h4,h5,h6{
   color:#777777;
   letter-spacing: 1.5;
 }
-p,li{
+p,li,a{
   font-family: Ovo, serif;
   font-size: 16px;
 }
+dt{
+  font-size: 1.4em;
+  margin-top:10px;
+}
+dd{
+  font-size:1.2em;
+}
+
 .color{
   width:100px;
   height: 100px;
@@ -73,6 +86,17 @@ p,li{
   background-color: @gray5;
 }
 
+.callout{
+  background-color: #F4F8FA;
+  border-left:3px solid #5BC0DE;
+  padding: 20px;
+}
+
+.callout-alert{
+  background-color: #F2DEDE;
+  border-color:#d9534f;
+}
+
 footer{
   border-top: thin solid #bcbcbc;
   padding: 20px 0;
@@ -90,6 +114,7 @@ footer{
     padding: 0;
 
     a, a:visited{
+      font-size: 10px;
       color:black;
       display: inline;
     }
@@ -97,4 +122,14 @@ footer{
 
 }
 
-
+.help{
+  h3{
+    margin-top:60px;
+  }
+   h4,h5,h6{
+     margin-top: 30px;
+   }
+  thead td{
+    font-weight:700;
+  }
+}
