@@ -32,7 +32,7 @@ declare function app:list-downloads($node as node(), $model as map(*)) {
                                     let $size := if($bytes lt 1048576) 
                                                     then (format-number($bytes div 1024,"#,###.##") || "kB") 
                                                     else (format-number($bytes div 1048576,"#,###.##") || "MB" )
-                                    let $downloadPath := request:get-server-name() || ":" || request:get-server-port() || substring-before(request:get-effective-uri(),"/db/apps/sarit/modules/view.xql") || $config:remote-download-root || "/" || substring-before($file,".xml") || ".zip"
+                                    let $downloadPath := request:get-scheme() ||"://" || request:get-server-name() || ":" || request:get-server-port() || substring-before(request:get-effective-uri(),"/db/apps/sarit/modules/view.xql") || $config:remote-download-root || "/" || substring-before($file,".xml") || ".zip"
                                     
                                     return 
                                         <div style="border:1px solid red;">
@@ -41,7 +41,7 @@ declare function app:list-downloads($node as node(), $model as map(*)) {
                                             <p>File: {xmldb:decode($file)}</p>
                                             <p>Size: {$size} </p>
                                             <p>Author(s): {$author}</p>
-                                            <p><a href="http://{$downloadPath}" target="_blank">Download</a></p>
+                                            <p><a href="{$downloadPath}">Download</a></p>
                                         </div>
                                 )
                                 else ()
