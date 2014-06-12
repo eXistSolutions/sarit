@@ -28,6 +28,10 @@ declare variable $config:app-root :=
     return
         substring-before($modulePath, "/modules")
 ;
+declare variable $config:remote-root:= substring-before($config:app-root,"sarit") || "sarit-data";
+declare variable $config:remote-data-root:= $config:remote-root || "/data";
+declare variable $config:remote-download-root:= $config:remote-root || "/download";
+
 
 declare variable $config:data-root := $config:app-root || "/data";
 
