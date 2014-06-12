@@ -10,5 +10,5 @@
     <target>sarit</target>
     <prepare>pre-install.xql</prepare>
     <finish/>
-    <deployed/>
+    <deployed>2014-06-12T14:10:23.087+02:00</deployed>
 </meta>

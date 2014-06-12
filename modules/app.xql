@@ -26,31 +26,42 @@ declare function app:list-downloads($node as node(), $model as map(*)) {
                                 then (
                                     let $header := doc($config:remote-data-root || "/" || $file)//tei:titleStmt
                                     let $title := $header//tei:title[@type eq "main"]
-                                    let $subtitle := $header//tei:title[@type eq "sub"]
-                                    let $author := string-join($header//tei:author,', ')
+                                    let $subtitle := $header//tei:title[@type eq "sub"][1]
+                                    let $author :=  if(exists($header//tei:respStmt/tei:persName)) 
+                                                    then (string-join($header//tei:respStmt/tei:persName,', '))
+                                                    else (
+                                                        if(exists($header//tei:respStmt/tei:orgName))
+                                                        then ($header//tei:respStmt/tei:orgName)
+                                                        else (
+                                                            if(exists($header//tei:respStmt/tei:name))
+                                                            then ($header//tei:respStmt/tei:name)
+                                                            else string-join($header//tei:author,', ')
+                                                            
+                                                        )
+                                                        
+                                                    )
+                                                    
                                     let $bytes := xmldb:size($config:remote-data-root, $file)
+                                    
                                     let $size := if($bytes lt 1048576) 
                                                     then (format-number($bytes div 1024,"#,###.##") || "kB") 
                                                     else (format-number($bytes div 1048576,"#,###.##") || "MB" )
+                                                    
                                     let $downloadPath := request:get-scheme() ||"://" || request:get-server-name() || ":" || request:get-server-port() || substring-before(request:get-effective-uri(),"/db/apps/sarit/modules/view.xql") || $config:remote-download-root || "/" || substring-before($file,".xml") || ".zip"
                                     
                                     return 
-                                        <div style="border:1px solid red;">
-                                            <p>Title: {$title/text()}</p>
-                                            <p>Subtitle: {$subtitle/text()}</p>
-                                            <p>File: {xmldb:decode($file)}</p>
-                                            <p>Size: {$size} </p>
-                                            <p>Author(s): {$author}</p>
-                                            <p><a href="{$downloadPath}">Download</a></p>
+                                        <div style="border-top:1px solid gray;padding-top:5px;" class="row">
+                                            <div class="col-md-12">
+                                                <p><strong>{$title/text()}</strong> - <small>{$subtitle/text()}</small></p>
+                                                <p>Author(s): {$author}</p>
+                                                <p>File: <a href="{$downloadPath}">{xmldb:decode($file)}</a> - Size: {$size}</p>
+                                            </div>
                                         </div>
                                 )
                                 else ()
                             
     return     
-    
-    <div style="border:1px solid gray;">
-        {$xml-resources}
-    </div>    
+        $xml-resources
     
 };
 

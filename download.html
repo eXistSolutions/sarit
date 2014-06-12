@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/html" lang="en">
     <head>
-        <title data-template="config:app-title">App Title</title>
+        <title data-template="config:app-title">Sarit - Search and Retrieval of Indic Texts</title>
         <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
@@ -18,44 +18,46 @@
         <link href="components/animate.css/animate.css" rel="stylesheet"/>
         <link rel="stylesheet" type="text/css" href="resources/css/styles.css"/>
         <!-- /build -->
-        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" type="text/css"/>
+        <link href="http://fonts.googleapis.com/css?family=Ovo" rel="stylesheet" type="text/css"/>
     </head>
-    <body id="grey-top">
-        <div role="navigation" class="navbar navbar-static-top nav-animate">
+    <body class="help">
+        <header>
+            <div class="container">
+                <img src="resources/img/indolib_logo.png"/>
+            </div>
+        </header>
+        <div class="banner"/>
+        <div role="navigation" class="navbar navbar-default">
             <div class="container">
                 <div class="navbar-header">
                     <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="fa fa-bars"/>
                     </button>
-                    <a href="#" class="navbar-brand">
-                        <img src="resources/img/existdb.png" alt="eXistdb" class="logo"/>
-                    </a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="#" data-toggle="collapse" data-target=".navbar-collapse">Home</a>
+                            <a href="index.html" data-toggle="collapse" data-target=".navbar-collapse">Home</a>
                         </li>
                         <li>
-                            <a href="#" data-toggle="collapse" data-target=".navbar-collapse">Search</a>
+                            <a href="search.xhtml" data-toggle="collapse" data-target=".navbar-collapse">Search</a>
                         </li>
                         <li>
-                            <a href="#" data-toggle="collapse" data-target=".navbar-collapse">Help</a>
+                            <a href="help.html" data-toggle="collapse" data-target=".navbar-collapse">Help</a>
                         </li>
                         <li>
-                            <a href="#" data-toggle="collapse" data-target=".navbar-collapse">Downloads</a>
+                            <a href="download.html" data-toggle="collapse" data-target=".navbar-collapse">Downloads</a>
                         </li>
                     </ul>
-                    <form role="search" class="navbar-form navbar-left nav-search">
-                        <div class="form-group">
-                            <input class="form-control" placeholder="Search ..." type="search" value="" name="search" id="search"/>
-                            <span class="fa fa-search"/>
-                        </div>
-                    </form>
-                </div><!--/.nav-collapse -->
-            </div><!--/.container-fluid -->
+                </div>                <!--/.nav-collapse -->
+            </div>
+            <!--/.container-fluid -->
         </div>
+
+    <!-- ######### CONTENT STARTS HERE ########## -->
+    <!-- ######### CONTENT STARTS HERE ########## -->
+    <!-- ######### CONTENT STARTS HERE ########## -->
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -74,9 +76,16 @@
                             <a href="search.xhtml" title="SARIT: Advanced Search Interface">Advanced Search</a>
                         </strong> -- are available for download.</p>
                     <p>
-                        <strong>SARIT</strong> PDF and HTML downloadable texts have been produced automatically from XML files. The web interface can help with complex word searches, word counts and collocations and so on. The downloadable HTML files could be used for local and off-line searches, while the PostScript and PDF files could be printed for personal or class use.
+                        <strong>SARIT</strong> PDF and HTML downloadable texts have been produced automatically from XML
+                        files. The web interface can help with complex word searches, word counts and collocations and
+                        so on. The downloadable HTML files could be used for local and off-line searches, while the
+                        PostScript and PDF files could be printed for personal or class use.
                     </p>
-                    <p>If you download the XML TEI P5 file, you can use a convenient service such as  <a href="http://oxgarage.oucs.ox.ac.uk:8080/ege-webclient/">OxGarage</a> to convert it to another format that is useful to you, for example for editing locally, or reading on an ebook like the Kindle.  OxGarage supports the following output formats, amongst others: ePub, LaTeX, Microsoft Word (.doc and .docx), LibreOffice/OpenOffice (.ods, .sxc, .sxw, .odt), PDF, Plain text, Rich Text Format (.rtf), and xHTML.</p>
+                    <p>If you download the XML TEI P5 file, you can use a convenient service such as <a href="http://oxgarage.oucs.ox.ac.uk:8080/ege-webclient/">OxGarage</a> to convert it to
+                        another format that is useful to you, for example for editing locally, or reading on an ebook
+                        like the Kindle. OxGarage supports the following output formats, amongst others: ePub, LaTeX,
+                        Microsoft Word (.doc and .docx), LibreOffice/OpenOffice (.ods, .sxc, .sxw, .odt), PDF, Plain
+                        text, Rich Text Format (.rtf), and xHTML.</p>
                 </div>
             </div>
             <div class="row">
@@ -85,25 +94,25 @@
                 </div>
             </div>
         </div>
-        <br/>
-        <footer class="row">
-            <div class="copyright col-md-6">
-                <h4>SARIT: Search and Retrieval of Indic Texts</h4>
-                <p>SARIT provides digital tools for philological research into Indic texts.
-http://sarit.indology.info/basic.shtml</p>
-                <p>Publisher &amp; contact for INDOLOGY site:</p>
-                <ul class="fa-ul">
-                    <li>
-                        <i class="fa-li fa fa-caret-right"/>Dominik Wujastyk</li>
-                    <li>
-                        <i class="fa-li fa fa-caret-right"/>Dominik WUJASTYK email address</li>
-                    <li>
-                        <i class="fa-li fa fa-caret-right"/>RSS Feed icon</li>
-                    <li>
-                        <i class="fa-li fa fa-caret-right"/>Last modified: June 2014</li>
-                </ul>
+        <!-- ########## CONTENT ENDS HERE ######### -->
+        <!-- ########## CONTENT ENDS HERE ######### -->
+        <!-- ########## CONTENT ENDS HERE ######### -->
+        <!-- ########## CONTENT ENDS HERE ######### -->
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h6>SARIT: Search and Retrieval of Indic Texts</h6>
+                        <p>SARIT provides digital tools for philological research into Indic texts.</p>
+                        <p>http://sarit.indology.info/basic.shtml</p>
+                        <p>Publisher &amp; contact for INDOLOGY site: <a href="https://univie.academia.edu/DominikWujastyk">Dominik Wujastyk</a>
+                        </p>
+                        <p>Last modified: June 2014</p>
+                    </div>
+                </div>
             </div>
         </footer>
+
 
         <!-- build:js resources/js/app.min.js -->
         <script src="components/jquery/dist/jquery.js" type="text/javascript"/>
