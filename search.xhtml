@@ -1,400 +1,459 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xf="http://www.w3.org/2002/xforms" lang="en">
-    <head>
-        <title data-template="config:app-title">Sarit - Search and Retrieval of Indic Texts</title>
-        <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-        <meta data-template="config:app-meta"/>
-        <link rel="shortcut icon" href="resources/img/favicon.ico"/>
+<head>
+    <title data-template="config:app-title">Sarit - Search and Retrieval of Indic Texts</title>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta data-template="config:app-meta"/>
+    <link rel="shortcut icon" href="resources/img/favicon.ico"/>
 
-        <!-- build:template
-        <%= minifiedCss %>
-        /build -->
+    <!-- build:template
+    <%= minifiedCss %>
+    /build -->
 
-        <!-- build:remove -->
-        <link href="components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
-        <link href="components/animate.css/animate.css" rel="stylesheet"/>
-        <link rel="stylesheet" type="text/css" href="resources/css/styles.css"/>
-        <!-- /build -->
-        <link href="http://fonts.googleapis.com/css?family=Ovo" rel="stylesheet" type="text/css"/>
-        <style type="text/css">
-            .xfSelectorItem {
-                display:block;
-            }
-        </style>
-    </head>
-    <body class="help">
-        <header>
-            <div class="container">
-                <img src="resources/img/indolib_logo.png"/>
-            </div>
-        </header>
-        <div class="banner"/>
-        <div role="navigation" class="navbar navbar-default">
-            <div class="container">
-                <div class="navbar-header">
-                    <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="fa fa-bars"/>
-                    </button>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <a href="index.html" data-toggle="collapse" data-target=".navbar-collapse">Home</a>
-                        </li>
-                        <li>
-                            <a href="search.xhtml" data-toggle="collapse" data-target=".navbar-collapse">Search</a>
-                        </li>
-                        <li>
-                            <a href="help.html" data-toggle="collapse" data-target=".navbar-collapse">Help</a>
-                        </li>
-                        <li>
-                            <a href="download.html" data-toggle="collapse" data-target=".navbar-collapse">Downloads</a>
-                        </li>
-                    </ul>
-                </div>                <!--/.nav-collapse -->
-            </div>
-            <!--/.container-fluid -->
+    <!-- build:remove -->
+    <link href="components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="components/animate.css/animate.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="resources/css/styles.css"/>
+    <!-- /build -->
+    <link href="http://fonts.googleapis.com/css?family=Ovo" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .xfSelectorItem {
+            padding-left:10px;
+        }
+        .xfRadioLabel {
+            padding-left:6px;
+        }
+        .titleAuthor .xfInput .xfLabel {
+            width:120px;
+        }
+        .titleAuthor .xfTrigger .xfValue {
+            width:100px;
+        }
+        .container a {
+            color: #428BCA;
+            text-decoration: none;
+        }
+        .box {
+            border:1px solid gray;
+            padding:10px;
+        }
+        #wordCount .xfValue {
+            width:30px;
+        }
+    </style>
+</head>
+<body class="help">
+<header>
+    <div class="container">
+        <img src="resources/img/indolib_logo.png"/>
+    </div>
+</header>
+<div class="banner"/>
+<div role="navigation" class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="fa fa-bars"/>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="index.html" data-toggle="collapse" data-target=".navbar-collapse">Home</a>
+                </li>
+                <li class="active">
+                    <a href="search.xhtml" data-toggle="collapse" data-target=".navbar-collapse">Search</a>
+                </li>
+                <li>
+                    <a href="help.html" data-toggle="collapse" data-target=".navbar-collapse">Help</a>
+                </li>
+                <li>
+                    <a href="download.html" data-toggle="collapse" data-target=".navbar-collapse">Downloads</a>
+                </li>
+            </ul>
+        </div>                <!--/.nav-collapse -->
+    </div>
+    <!--/.container-fluid -->
+</div>
+
+<!-- ######### CONTENT STARTS HERE ########## -->
+<!-- ######### CONTENT STARTS HERE ########## -->
+<!-- ######### CONTENT STARTS HERE ########## -->
+<div style="display:none">
+    <xf:model>
+        <xf:instance xmlns="" id="i-search">
+            <data>
+                <term/>
+                <resultFormat>context</resultFormat>
+                <wordOrPhrase>wordOrPhrase</wordOrPhrase>
+                <wordCount/>
+                <proximitySearchIn/>
+                <title/>
+                <author/>
+                <!-- refinedSearch authorHideTitles="false" keepHistory="false"/>
+                <bibliographic>
+                    <keywords/>
+                    <pubdate/>
+                    <collection/>
+                    <sourcenote/>
+                    <shrtcite />
+                    <filename/>  
+                    <filesize/>
+                    <sortBy>authorTitle</sortBy>
+                </bibliographic-->
+            </data>
+        </xf:instance>
+        <xf:bind nodeset="refinedSearch">
+            <xf:bind nodeset="@authorHideTitles" type="boolean"/>
+            <xf:bind nodeset="@keepHistory" type="boolean"/>
+        </xf:bind>
+
+        <xf:submission id="s-search" method="post" replace="none" resource="echo:test">
+            <xf:action ev:event="xforms-submit-done">
+                <xf:message>TBD: implement search</xf:message>
+            </xf:action>
+            <xf:message ev:event="xforms-submit-error">Error executing search</xf:message>
+        </xf:submission>
+
+    </xf:model>
+</div>
+<div class="container">
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <h1>Basic Search</h1>
+            <small><!-- hhmts start -->Last modified: Tue Nov 9 00:38:24 CET 2010 <!-- hhmts end --></small>
+            <p>SARIT: Basic Search Interface.</p>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <h3>Term(s)</h3>
+        <ul>
+            <li>Enter utf-8 search term(s): e.g., vyākhyāt.*</li>
+            <li>For a list of available texts leave the field empty and press 'Search'.</li>
+        </ul>
+
+        <div class="box">
+            <xf:input ref="term">
+                <xf:label/>
+            </xf:input>
+            <xf:trigger>
+                <xf:label>Search</xf:label>
+                <xf:send submission="s-search"/>
+            </xf:trigger>
+            <br/>
+            <xf:select1 ref="resultFormat" appearance="full">
+                <xf:label>Result Format:</xf:label>
+                <xf:choices>
+                    <xf:item>
+                        <xf:label>In context</xf:label>
+                        <xf:value>context</xf:value>
+                    </xf:item>
+                    <xf:item>
+                        <xf:label>Line by line</xf:label>
+                        <xf:value>line</xf:value>
+                    </xf:item>
+                    <xf:item>
+                        <xf:label>Similarity</xf:label>
+                        <xf:value>similarity</xf:value>
+                    </xf:item>
+                </xf:choices>
+            </xf:select1>
         </div>
 
-    <!-- ######### CONTENT STARTS HERE ########## -->
-    <!-- ######### CONTENT STARTS HERE ########## -->
-    <!-- ######### CONTENT STARTS HERE ########## -->
-        <div style="display:none">
-            <xf:model>
-                <xf:instance xmlns="" id="i-search">
-                    <data>
-                        <term/>
-                        <resultFormat>context</resultFormat>
-                        <wordOrPhrase>wordOrPhrase</wordOrPhrase>
-                        <wordCount/>
-                        <proximitySearchIn/>
-                        <title/>
-                        <author/>
-                        <!-- refinedSearch authorHideTitles="false" keepHistory="false"/>
-                        <bibliographic>
-                            <keywords/>
-                            <pubdate/>
-                            <collection/>
-                            <sourcenote/>
-                            <shrtcite />
-                            <filename/>  
-                            <filesize/>
-                            <sortBy>authorTitle</sortBy>
-                        </bibliographic-->
-                    </data>
-                </xf:instance>
-                <xf:bind nodeset="refinedSearch">
-                    <xf:bind nodeset="@authorHideTitles" type="boolean"/>
-                    <xf:bind nodeset="@keepHistory" type="boolean"/>
-                </xf:bind>
-            </xf:model>
+        <h3>Context</h3>
+        <div class="box">
+            <xf:select1 ref="wordOrPhrase" appearance="full">
+                <xf:label/>
+                <xf:choices>
+                    <xf:item>
+                        <xf:label>Word or phrase</xf:label>
+                        <xf:value>wordOrPhrase</xf:value>
+                    </xf:item>
+                    <xf:item>
+                        <xf:label>Phrase separated by</xf:label>
+                        <xf:value>phraseSeparatedBy</xf:value>
+                    </xf:item>
+                </xf:choices>
+            </xf:select1>
+
+            <xf:input id="wordCount" ref="wordCount">
+                <xf:label/>
+            </xf:input>
+            <span>words</span>
+            <p>Proximity search in:</p>
+            <xf:select1 ref="proximitySearchIn" appearance="full">
+                <xf:label/>
+                <xf:choices>
+                    <xf:item>
+                        <xf:label>Sentence</xf:label>
+                        <xf:value>sentence</xf:value>
+                    </xf:item>
+                    <xf:item>
+                        <xf:label>Paragraph</xf:label>
+                        <xf:value>paragraph</xf:value>
+                    </xf:item>
+                </xf:choices>
+            </xf:select1>
         </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1>Search</h1>
-                    <h2>Term(s)</h2>
-                    <p>Enter utf-8 search term(s): e.g., vyākhyāt.*</p>
-                    <p>For a list of available texts leave the field empty and press 'Search'.</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <xf:input ref="term">
-                        <xf:label>Search</xf:label>
-                    </xf:input>
-                    <xf:trigger>
-                        <xf:label>Go</xf:label>
-                        <xf:message>searching</xf:message>
-                    </xf:trigger>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <xf:select1 ref="resultFormat" appearance="full">
-                        <xf:label>Result Format</xf:label>
-                        <xf:choices>
-                            <xf:item>
-                                <xf:label>In context</xf:label>
-                                <xf:value>context</xf:value>
-                            </xf:item>
-                            <xf:item>
-                                <xf:label>Line by line</xf:label>
-                                <xf:value>line</xf:value>
-                            </xf:item>
-                            <xf:item>
-                                <xf:label>Similarity</xf:label>
-                                <xf:value>similarity</xf:value>
-                            </xf:item>
-                        </xf:choices>
-                    </xf:select1>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h2>Context</h2>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <xf:select1 ref="wordOrPhrase" appearance="full">
+
+        <h3>Title &amp; Author</h3>
+        <div class="box titleAuthor">
+            <xf:input ref="title">
+                <xf:label>Title:</xf:label>
+            </xf:input>
+            <xf:trigger>
+                <xf:label>List Titles</xf:label>
+                <xf:send submission="s-search"/>
+            </xf:trigger>
+            <br/>
+            <xf:input ref="author">
+                <xf:label>Author:</xf:label>
+            </xf:input>
+            <xf:trigger>
+                <xf:label>List Authors</xf:label>
+                <xf:send submission="s-search"/>
+            </xf:trigger>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <h3>
+            <a href="help.html" title="Search Term Help">Brief Search Term Help</a>
+        </h3>
+        <ul>
+            <li>
+                <p>
+                    <a href="help.html#diacritics" title="Search Term Help: Diacritics and Special Characters">Enter search terms with utf-8 characters</a>: e.g., ā  ī  ū  ṛ  ḷ  ṅ  ñ  ṭ  ḍ  ṇ  ś  ṣ  ṁ  ḥ</p>
+            </li>
+            <li>
+                <p>
+                    <a href="help.html#wildcard" title="Search Term Help: Wildcard Characters and Boolean (Logical) Operators">Match patterns with wildcard characters</a>: e.g.,
+                    <em>rūp.*</em>to retrieve
+                    <em>rūpam</em>,
+                    <em>rūpeṇāpi</em>&amp;c..</p>
+            </li>
+            <li>
+                <p>
+                    <a href="help.html#punctuation" title="Search Term Help: Punctuation Marks and Searching">Do not use punctuation marks</a>: e.g., search for
+                    <em>apāya hetu</em>rather than
+                    <em>apāya-hetu</em>.</p>
+            </li>
+            <li>
+                <p>Similar word search searches the whole database.</p>
+            </li>
+            <li>
+                <p>
+                    <a href="/advanced.shtml" title="SARIT: Advanced Search Interface">For the advanced search interface, follow this link</a>.</p>
+            </li>
+            <li>
+                <p>
+                    <a href="http://sites.google.com/site/philologic3/manual" title="External Link - PhiloLogic™ User Manual (University of Chicago)">For additional instruction, follow this link</a>.</p>
+            </li>
+            <li>Currently text search, retrieval and analysis is available for
+                <a href="/newphilo/search3t?dbname=indologica&amp;word=&amp;OUTPUT=conc&amp;CONJUNCT=PHRASE&amp;DISTANCE=3&amp;title=&amp;author=" title="SARIT currently available works">these works</a>.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- div class="row">
+    <div class="col-md-12">
+        <xf:trigger>
+            <xf:label>Refined Search</xf:label>
+            <xf:toggle case="c-refined"/>
+        </xf:trigger>
+        <xf:trigger>
+            <xf:label>Bibliographic Fields</xf:label>
+            <xf:toggle case="c-bibliographic"/>
+        </xf:trigger>
+        <xf:trigger>
+            <xf:label>Text Object Fields</xf:label>
+        </xf:trigger>
+        <xf:trigger>
+            <xf:label>Help</xf:label>
+        </xf:trigger>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <xf:switch>
+            <xf:case id="c-empty" selected="true">
+            </xf:case>
+            <xf:case id="c-refined">
+                <h4>Frequency, collocation, position, sorting &c.</h4>
+                <p>TBD: Issues with controls within xf:select1, see original 'Refined Search'</p>
+                <xf:group appearance="full">
+                    <xf:select1 ref="refinedSearch" appearance="full">
                         <xf:label/>
                         <xf:choices>
                             <xf:item>
-                                <xf:label>Word or phrase</xf:label>
-                                <xf:value>wordOrPhrase</xf:value>
+                                <xf:label>Frequency by Title</xf:label>
+                                <xf:value>frequencyByTitle</xf:value>
                             </xf:item>
                             <xf:item>
-                                <xf:label>Phrase separated by</xf:label>
-                                <xf:value>phraseSeparatedBy</xf:value>
-                            </xf:item>
-                        </xf:choices>
-                    </xf:select1>
-                    <xf:input ref="wordCount">
-                        <xf:label/>
-                    </xf:input>
-                    <span>words</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <xf:select1 ref="proximitySearchIn" appearance="full">
-                        <xf:label>Proximity search in:</xf:label>
-                        <xf:choices>
-                            <xf:item>
-                                <xf:label>Sentence</xf:label>
-                                <xf:value>sentence</xf:value>
+                                <xf:label>Frequency by Title per 10,000</xf:label>
+                                <xf:value>frequencyByTitle10000</xf:value>
                             </xf:item>
                             <xf:item>
-                                <xf:label>Paragraph</xf:label>
-                                <xf:value>paragraph</xf:value>
+                                <xf:label>Frequency by Author</xf:label>
+                                <xf:value>frequencyByAuthor</xf:value>
                             </xf:item>
-                        </xf:choices>
-                    </xf:select1>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h2>Title &amp; author</h2>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <xf:input ref="title">
-                        <xf:label>Title:</xf:label>
-                    </xf:input>
-                    <xf:trigger>
-                        <xf:label>List Titles</xf:label>
-                    </xf:trigger>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <xf:input ref="author">
-                        <xf:label>Author:</xf:label>
-                    </xf:input>
-                    <xf:trigger>
-                        <xf:label>List Authors</xf:label>
-                    </xf:trigger>
-                </div>
-            </div>
-            <!-- div class="row">
-                <div class="col-md-12">
-                    <xf:trigger>
-                        <xf:label>Refined Search</xf:label>
-                        <xf:toggle case="c-refined"/>
-                    </xf:trigger>
-                    <xf:trigger>
-                        <xf:label>Bibliographic Fields</xf:label>
-                        <xf:toggle case="c-bibliographic"/>
-                    </xf:trigger>
-                    <xf:trigger>
-                        <xf:label>Text Object Fields</xf:label>
-                    </xf:trigger>
-                    <xf:trigger>
-                        <xf:label>Help</xf:label>
-                    </xf:trigger>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <xf:switch>
-                        <xf:case id="c-empty" selected="true">
-                        </xf:case>
-                        <xf:case id="c-refined">
-                            <h4>Frequency, collocation, position, sorting &c.</h4>
-                            <p>TBD: Issues with controls within xf:select1, see original 'Refined Search'</p>
-                            <xf:group appearance="full">
-                                <xf:select1 ref="refinedSearch" appearance="full">
-                                    <xf:label/>
-                                    <xf:choices>
-                                        <xf:item>
-                                            <xf:label>Frequency by Title</xf:label>
-                                            <xf:value>frequencyByTitle</xf:value>
-                                        </xf:item>
-                                        <xf:item>
-                                            <xf:label>Frequency by Title per 10,000</xf:label>
-                                            <xf:value>frequencyByTitle10000</xf:value>
-                                        </xf:item>
-                                        <xf:item>
-                                            <xf:label>Frequency by Author</xf:label>
-                                            <xf:value>frequencyByAuthor</xf:value>
-                                        </xf:item>
-                                        <xf:item>
-                                            <xf:label>Frequency by Author per 10,000[ Check <xf:input ref="@authorHideTitles"><xf:label/></xf:input> to hide titles]</xf:label>
-                                            <xf:value>frequencyByAuthor10000</xf:value>
-                                        </xf:item>
-                                        
-                                        <xf:item>
-                                            <xf:label>Frequency by Years</xf:label>
-                                            <xf:value>frequencyByYears</xf:value>
-                                        </xf:item>
-                                        <xf:item>
-                                            <xf:label>Frequency by Years per 10,000 Select Year Group   [Check  to hide titles] </xf:label>
-                                            <xf:value>frequencyByYears10000</xf:value>
-                                        </xf:item>
-                                        <xf:item>
-                                            <xf:label>Frequency by Div Object (Headword in Dictionaries)</xf:label>
-                                            <xf:value>frequencyByObject</xf:value>
-                                        </xf:item>
-                                        <xf:item>
-                                            <xf:label>Collocation Table Spanning  words. Turn Filter Off:</xf:label>
-                                            <xf:value>collocationTableSpanning</xf:value>
-                                        </xf:item>
-                                        <xf:item>
-                                            <xf:label>Word in Clause Position (Theme-Rheme) Display Options:</xf:label>
-                                            <xf:value>wordClausePosition</xf:value>
-                                        </xf:item>
-                                        <xf:item>
-                                            <xf:label>Line by Line (KWIC) Sorted by keyword and word to its   Display up to  occurrences.</xf:label>
-                                            <xf:value>lineByLine</xf:value>
-                                        </xf:item>
-                                        <xf:item>
-                                            <xf:label>Sort by bibiliographic information, order by:</xf:label>
-                                            <xf:value>sortByBibiliographic</xf:value>
-                                        </xf:item>
-                                    </xf:choices>
-                                </xf:select1>
-                            </xf:group>
-                            <xf:input ref="refinedSearch/@authorHideTitles">
-                                <xf:label>Keep History</xf:label>
-                            </xf:input>
-                            <xf:trigger appearance="minimal">
-                                <xf:label>Open Saved Searches</xf:label>
-                            </xf:trigger>
-                        </xf:case>
-                        <xf:case id="c-bibliographic">
-                            
-                            <p>Find documents or limit word searches (press `Terms' for available terms | use AND, OR, and NOT)</p>
-                            <xf:group ref="bibliographic">
-                                <xf:input ref="pubdate">
-                                    <xf:label>Pubdate:</xf:label>
-                                </xf:input>
-                                <xf:trigger>
-                                    <xf:label>Terms</xf:label>
-                                </xf:trigger>
-                                <xf:input ref="keywords">
-                                    <xf:label>Keywords:</xf:label>
-                                </xf:input>
-                                <xf:trigger>
-                                    <xf:label>Terms</xf:label>
-                                </xf:trigger>
-                                <xf:input ref="collection">
-                                    <xf:label>Collection:</xf:label>
-                                </xf:input>
-                                <xf:trigger>
-                                    <xf:label>Terms</xf:label>
-                                </xf:trigger>
-                                <xf:input ref="sourcenote">
-                                    <xf:label>Sourcenote:</xf:label>
-                                </xf:input>
-                                <xf:trigger>
-                                    <xf:label>Terms</xf:label>
-                                </xf:trigger>
-                                <xf:input ref="shrtcite">
-                                    <xf:label>Shrtcite:</xf:label>
-                                </xf:input>
-                                <xf:trigger>
-                                    <xf:label>Terms</xf:label>
-                                </xf:trigger>
-                                <xf:input ref="filename">
-                                    <xf:label>Filename:</xf:label>
-                                </xf:input>
-                                <xf:trigger>
-                                    <xf:label>Terms</xf:label>
-                                </xf:trigger>
-                                <xf:input ref="filesize">
-                                    <xf:label>Filesize:</xf:label>
-                                </xf:input>
-                                <xf:trigger>
-                                    <xf:label>Terms</xf:label>
-                                </xf:trigger>
+                            <xf:item>
+                                <xf:label>Frequency by Author per 10,000[ Check <xf:input ref="@authorHideTitles"><xf:label/></xf:input> to hide titles]</xf:label>
+                                <xf:value>frequencyByAuthor10000</xf:value>
+                            </xf:item>
 
-                                <p>One may also use the bibliographic fields on their own to find documents and sort the results. 
-Sort bibliographic searches only by: 
-                                    <xf:select1 ref="sortBy" appearance="minimal">
-                                        <xf:label/>
-                                        <xf:choices>
-                                            <xf:item>
-                                                <xf:label>Author, Title</xf:label>
-                                                <xf:value>authorTitle</xf:value>
-                                            </xf:item>
-                                            <xf:item>
-                                                <xf:label>Author, Year of Publication</xf:label>
-                                                <xf:value>authorYearPublication</xf:value>
-                                            </xf:item>
-                                            <xf:item>
-                                                <xf:label>Title, Author</xf:label>
-                                                <xf:value>titleAuthor</xf:value>
-                                            </xf:item>
-                                            <xf:item>
-                                                <xf:label>Year of Publication, Author</xf:label>
-                                                <xf:value>yearPublicationAuthor</xf:value>
-                                            </xf:item>
-                                        </xf:choices>
-                                    </xf:select1>
-                                </p>  
-                            </xf:group>
-                        
-                        </xf:case>
-                        <xf:case id="c-textobject">
-                        
-                        </xf:case>
-                        <xf:case id="c-help">
-                        
-                        </xf:case>
-                    </xf:switch>
-            
-                </div>
-            </div-->
+                            <xf:item>
+                                <xf:label>Frequency by Years</xf:label>
+                                <xf:value>frequencyByYears</xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label>Frequency by Years per 10,000 Select Year Group   [Check  to hide titles] </xf:label>
+                                <xf:value>frequencyByYears10000</xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label>Frequency by Div Object (Headword in Dictionaries)</xf:label>
+                                <xf:value>frequencyByObject</xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label>Collocation Table Spanning  words. Turn Filter Off:</xf:label>
+                                <xf:value>collocationTableSpanning</xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label>Word in Clause Position (Theme-Rheme) Display Options:</xf:label>
+                                <xf:value>wordClausePosition</xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label>Line by Line (KWIC) Sorted by keyword and word to its   Display up to  occurrences.</xf:label>
+                                <xf:value>lineByLine</xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label>Sort by bibiliographic information, order by:</xf:label>
+                                <xf:value>sortByBibiliographic</xf:value>
+                            </xf:item>
+                        </xf:choices>
+                    </xf:select1>
+                </xf:group>
+                <xf:input ref="refinedSearch/@authorHideTitles">
+                    <xf:label>Keep History</xf:label>
+                </xf:input>
+                <xf:trigger appearance="minimal">
+                    <xf:label>Open Saved Searches</xf:label>
+                </xf:trigger>
+            </xf:case>
+            <xf:case id="c-bibliographic">
+
+                <p>Find documents or limit word searches (press `Terms' for available terms | use AND, OR, and NOT)</p>
+                <xf:group ref="bibliographic">
+                    <xf:input ref="pubdate">
+                        <xf:label>Pubdate:</xf:label>
+                    </xf:input>
+                    <xf:trigger>
+                        <xf:label>Terms</xf:label>
+                    </xf:trigger>
+                    <xf:input ref="keywords">
+                        <xf:label>Keywords:</xf:label>
+                    </xf:input>
+                    <xf:trigger>
+                        <xf:label>Terms</xf:label>
+                    </xf:trigger>
+                    <xf:input ref="collection">
+                        <xf:label>Collection:</xf:label>
+                    </xf:input>
+                    <xf:trigger>
+                        <xf:label>Terms</xf:label>
+                    </xf:trigger>
+                    <xf:input ref="sourcenote">
+                        <xf:label>Sourcenote:</xf:label>
+                    </xf:input>
+                    <xf:trigger>
+                        <xf:label>Terms</xf:label>
+                    </xf:trigger>
+                    <xf:input ref="shrtcite">
+                        <xf:label>Shrtcite:</xf:label>
+                    </xf:input>
+                    <xf:trigger>
+                        <xf:label>Terms</xf:label>
+                    </xf:trigger>
+                    <xf:input ref="filename">
+                        <xf:label>Filename:</xf:label>
+                    </xf:input>
+                    <xf:trigger>
+                        <xf:label>Terms</xf:label>
+                    </xf:trigger>
+                    <xf:input ref="filesize">
+                        <xf:label>Filesize:</xf:label>
+                    </xf:input>
+                    <xf:trigger>
+                        <xf:label>Terms</xf:label>
+                    </xf:trigger>
+
+                    <p>One may also use the bibliographic fields on their own to find documents and sort the results.
+Sort bibliographic searches only by:
+                        <xf:select1 ref="sortBy" appearance="minimal">
+                            <xf:label/>
+                            <xf:choices>
+                                <xf:item>
+                                    <xf:label>Author, Title</xf:label>
+                                    <xf:value>authorTitle</xf:value>
+                                </xf:item>
+                                <xf:item>
+                                    <xf:label>Author, Year of Publication</xf:label>
+                                    <xf:value>authorYearPublication</xf:value>
+                                </xf:item>
+                                <xf:item>
+                                    <xf:label>Title, Author</xf:label>
+                                    <xf:value>titleAuthor</xf:value>
+                                </xf:item>
+                                <xf:item>
+                                    <xf:label>Year of Publication, Author</xf:label>
+                                    <xf:value>yearPublicationAuthor</xf:value>
+                                </xf:item>
+                            </xf:choices>
+                        </xf:select1>
+                    </p>
+                </xf:group>
+
+            </xf:case>
+            <xf:case id="c-textobject">
+
+            </xf:case>
+            <xf:case id="c-help">
+
+            </xf:case>
+        </xf:switch>
+
+    </div>
+</div-->
+</div>
+<!-- ########## CONTENT ENDS HERE ######### -->
+<!-- ########## CONTENT ENDS HERE ######### -->
+<!-- ########## CONTENT ENDS HERE ######### -->
+<!-- ########## CONTENT ENDS HERE ######### -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h6>SARIT: Search and Retrieval of Indic Texts</h6>
+                <p>SARIT provides digital tools for philological research into Indic texts.</p>
+                <p>http://sarit.indology.info/basic.shtml</p>
+                <p>Publisher &amp; contact for INDOLOGY site: <a href="https://univie.academia.edu/DominikWujastyk">Dominik Wujastyk</a>
+                </p>
+                <p>Last modified: June 2014</p>
+            </div>
         </div>
-          <!-- ########## CONTENT ENDS HERE ######### -->
-        <!-- ########## CONTENT ENDS HERE ######### -->
-        <!-- ########## CONTENT ENDS HERE ######### -->
-        <!-- ########## CONTENT ENDS HERE ######### -->
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h6>SARIT: Search and Retrieval of Indic Texts</h6>
-                        <p>SARIT provides digital tools for philological research into Indic texts.</p>
-                        <p>http://sarit.indology.info/basic.shtml</p>
-                        <p>Publisher &amp; contact for INDOLOGY site: <a href="https://univie.academia.edu/DominikWujastyk">Dominik Wujastyk</a>
-                        </p>
-                        <p>Last modified: June 2014</p>
-                    </div>
-                </div>
-            </div>
-        </footer>
+    </div>
+</footer>
 
 
-        <!-- build:js resources/js/app.min.js -->
-        <script src="components/jquery/dist/jquery.js" type="text/javascript"/>
-        <script src="components/bootstrap/dist/js/bootstrap.js" type="text/javascript"/>
-        <script src="resources/js/app.js" type="text/javascript"/>
-        <!-- /build -->
-    </body>
+<!-- build:js resources/js/app.min.js -->
+<script src="components/jquery/dist/jquery.js" type="text/javascript"/>
+<script src="components/bootstrap/dist/js/bootstrap.js" type="text/javascript"/>
+<script src="resources/js/app.js" type="text/javascript"/>
+<!-- /build -->
+</body>
 </html>
