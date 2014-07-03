@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div data-template="templates:surround" data-template-with="template.html" data-template-at="content">
+    <h2>List of Works</h2>
+    <table class="toc table">
+        <thead>
+            <tr>
+                <th/>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Script</th>
+                <th>Download</th>
+                <th>Open</th>
+            </tr>
+        </thead>
+        <tbody data-template="app:list-works">
+            <tr data-template="templates:each" data-template-from="works" data-template-to="work">
+                <td>
+                    <input type="checkbox" name="target-texts" data-template="app:checkbox"/>
+                </td>
+                <td>
+                    <a href="" data-template="app:work-title"/>
+                </td>
+                <td>
+                    <a href="" data-template="app:work-author"/>
+                </td>
+                <td class="work-type">
+                    <a href="" data-template="app:work-lang"/>
+                </td>
+                <td>
+                    <a href="" data-template="app:epub-link">epub</a>, 
+                <a href="" data-template="app:pdf-link">pdf</a>
+                </td>
+                <td>
+                    <a href="" data-template="app:xml-link">XML</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
