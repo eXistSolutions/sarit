@@ -7,6 +7,22 @@ import module namespace config="http://exist-db.org/apps/appblueprint/config" at
 import module namespace request="http://exist-db.org/xquery/request";
 
 declare namespace tei="http://www.tei-c.org/ns/1.0";
+declare namespace h="http://www.w3.org/1999/xhtml";
+
+declare
+    %templates:wrap
+function app:nav-set-active($node as node(), $model as map(*)) {
+    let $resource := request:get-attribute("$exist:resource")
+    for $li in $node/h:li
+    return
+        element { node-name($li) } {
+            if ($li/h:a[@href = $resource]) then
+                attribute class { "active" }
+            else
+                (),
+            $li/node()
+        }
+};
 
 (:~
  : This is a sample templating function. It will be called by the templating module if
