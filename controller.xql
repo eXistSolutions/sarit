@@ -11,6 +11,61 @@ if ($exist:path eq "/") then
     <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
         <redirect url="index.html"/>
     </dispatch>
+    
+else if (contains($exist:path, "/resources")) then
+    <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
+        <forward url="{$exist:controller}/resources/{substring-after($exist:path, '/resources/')}"/>
+    </dispatch>
+
+else if (contains($exist:path, "/components")) then
+    <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
+        <forward url="{$exist:controller}/components/{substring-after($exist:path, '/components/')}"/>
+    </dispatch>
+    
+else if (starts-with($exist:path, "/works/")) then
+    let $id := replace(xmldb:decode($exist:resource), "^(.*)\.\w+$", "$1")
+    let $html :=
+        if ($exist:resource = "") then
+            "browse.html"
+        else if (ends-with($exist:resource, ".html")) then
+            "view-play.html"
+        else
+            "view-work.html"
+    return
+        if (ends-with($exist:resource, ".epub")) then
+            <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
+                <forward url="{$exist:controller}/modules/get-epub.xql">
+                    <add-parameter name="id" value="{$id}"/>
+                </forward>
+                <error-handler>
+                    <forward url="{$exist:controller}/error-page.html" method="get"/>
+                    <forward url="{$exist:controller}/modules/view.xql"/>
+                </error-handler>
+            </dispatch>
+        else if (ends-with($exist:resource, ".pdf")) then
+            <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
+                <forward url="{$exist:controller}/modules/tei2fo.xql">
+                    <add-parameter name="id" value="{$id}"/>
+                </forward>
+                <error-handler>
+                    <forward url="{$exist:controller}/error-page.html" method="get"/>
+                    <forward url="{$exist:controller}/modules/view.xql"/>
+                </error-handler>
+            </dispatch>
+        else
+            <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
+                <forward url="{$exist:controller}/{$html}"></forward>
+                <view>
+                    <forward url="{$exist:controller}/modules/view.xql">
+                        <add-parameter name="id" value="{$id}"/>
+                    </forward>
+                </view>
+                <error-handler>
+                    <forward url="{$exist:controller}/error-page.html" method="get"/>
+                    <forward url="{$exist:controller}/modules/view.xql"/>
+                </error-handler>
+            </dispatch>
+
 else if (ends-with($exist:resource, ".html")) then
     (: the html page is run through view.xql to expand templates :)
     <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
@@ -22,6 +77,7 @@ else if (ends-with($exist:resource, ".html")) then
 			<forward url="{$exist:controller}/modules/view.xql"/>
 		</error-handler>
     </dispatch>
+    
 (: Resource paths starting with $shared are loaded from the shared-resources app :)
 else if (contains($exist:path, "/$shared/")) then
     <dispatch xmlns="http://exist.sourceforge.net/NS/exist">

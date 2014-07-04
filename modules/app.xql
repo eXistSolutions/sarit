@@ -12,19 +12,38 @@ declare namespace tei="http://www.tei-c.org/ns/1.0";
 declare namespace h="http://www.w3.org/1999/xhtml";
 declare namespace functx="http://www.functx.com";
 
+(:~
+ : Process navbar links to cope with browsing.
+ :)
 declare
     %templates:wrap
 function app:nav-set-active($node as node(), $model as map(*)) {
-    let $resource := request:get-attribute("$exist:resource")
+    let $path := request:get-attribute("$exist:path")
     for $li in $node/h:li
+    let $link := $li/h:a
+    let $href := $link/@href
     return
-        element { node-name($li) } {
-            if ($li/h:a[@href = $resource]) then
-                attribute class { "active" }
-            else
-                (),
-            $li/node()
-        }
+            element { node-name($li) } {
+                if ($href = $path or ($href = "works/" and starts-with($path, "/works/"))) then
+                    attribute class { "active" }
+                else
+                    (),
+                <h:a>
+                {
+                    $link/@* except $link/@href,
+                    attribute href {
+                        if ($link/@href = "works/" and starts-with($path, "/works/")) then
+                            "."
+                        else if (starts-with($path, "/works/")) then
+                            "../" || $link/@href
+                        else
+                            $link/@href
+                    },
+                    $link/node()
+                }
+                </h:a>
+            },
+            $model
 };
 
 declare function functx:contains-any-of
@@ -67,7 +86,7 @@ function app:list-works($node as node(), $model as map(*)) {
 
 declare
     %templates:wrap
-function app:work($node as node(), $model as map(*), $id as xs:string?) {
+function app:work($node as node(), $model as map(*), $id as xs:string) {
     let $work := collection($config:remote-data-root)//id($id)
     return
         map { "work" := $work }
