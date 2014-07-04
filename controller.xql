@@ -21,12 +21,14 @@ else if (contains($exist:path, "/components")) then
     <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
         <forward url="{$exist:controller}/components/{substring-after($exist:path, '/components/')}"/>
     </dispatch>
-    
+
 else if (starts-with($exist:path, "/works/")) then
     let $id := replace(xmldb:decode($exist:resource), "^(.*)\.\w+$", "$1")
     let $html :=
         if ($exist:resource = "") then
             "browse.html"
+        else if ($exist:resource = "search.html") then
+            "search.html"
         else if (ends-with($exist:resource, ".html")) then
             "view-play.html"
         else
@@ -58,6 +60,7 @@ else if (starts-with($exist:path, "/works/")) then
                 <view>
                     <forward url="{$exist:controller}/modules/view.xql">
                         <add-parameter name="id" value="{$id}"/>
+                        <set-header name="Cache-Control" value="no-cache"/>
                     </forward>
                 </view>
                 <error-handler>

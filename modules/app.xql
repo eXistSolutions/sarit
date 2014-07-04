@@ -2,6 +2,8 @@ xquery version "3.0";
 
 module namespace app="http://exist-db.org/apps/appblueprint/templates";
 
+
+import module namespace console="http://exist-db.org/xquery/console" at "java:org.exist.console.xquery.ConsoleModule";
 import module namespace templates="http://exist-db.org/xquery/templates" ;
 import module namespace config="http://exist-db.org/apps/appblueprint/config" at "config.xqm";
 import module namespace request="http://exist-db.org/xquery/request";
@@ -179,7 +181,7 @@ declare function app:work-title($node as node(), $model as map(*), $type as xs:s
         <a xmlns="http://www.w3.org/1999/xhtml" href="{$node/@href}{$work/@xml:id}{$suffix}">{ app:work-title($work) }</a>
 };
 
-declare %private function app:work-title($work as element(tei:TEI)) {
+declare %private function app:work-title($work as element(tei:TEI)?) {
     $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1]/text()
 };
 
@@ -270,26 +272,40 @@ declare function app:work-authors($node as node(), $model as map(*)) {
         templates:form-control($control, $model)
 };
 
-declare function app:navigation($node as node(), $model as map(*)) {
+declare 
+    %templates:wrap
+function app:navigation($node as node(), $model as map(*)) {
     let $div := $model("work")
     let $prevDiv := $div/preceding::tei:div[parent::tei:div][1]
     let $nextDiv := $div/following::tei:div[parent::tei:div][1]
     let $work := $div/ancestor-or-self::tei:TEI
     return
-        element { node-name($node) } {
-            $node/@*,
-            if ($prevDiv) then
-                <a xmlns="http://www.w3.org/1999/xhtml" href="{$prevDiv/@xml:id}.html" class="previous">
-                    <i class="glyphicon glyphicon-chevron-left"/> Previous</a>
-            else
-                (),
-            if ($nextDiv) then
-                <a xmlns="http://www.w3.org/1999/xhtml" href="{$nextDiv/@xml:id}.html" class="next">
-                    Next<i class="glyphicon glyphicon-chevron-right"/></a>
-            else
-                (),
-            <h5 xmlns="http://www.w3.org/1999/xhtml"><a href="{$work/@xml:id}">{app:work-title($work)}</a></h5>
+        map {
+            "previous" := $prevDiv,
+            "next" := $nextDiv,
+            "work" := $work
         }
+};
+
+declare
+    %templates:wrap
+function app:navigation-title($node as node(), $model as map(*)) {
+    element { node-name($node) } {
+        attribute href { $model('work')/@xml:id },
+        $node/@* except $node/@href,
+        app:work-title($model('work'))
+    }
+};
+
+declare function app:navigation-link($node as node(), $model as map(*), $direction as xs:string) {
+    if ($model($direction)) then
+        element { node-name($node) } {
+            $node/@* except $node/@href,
+            attribute href { $model($direction)/@xml:id },
+            $node/node()
+        }
+    else
+        ()
 };
 
 declare function app:view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
@@ -329,7 +345,9 @@ declare
     %templates:default("target-texts", "all")
 function app:query($node as node()*, $model as map(*), $query as xs:string?, $mode as xs:string, 
     $scripts as xs:string+, $work-authors as xs:string+, $target-texts as xs:string+) {
+    let $log := console:log("Preparing query...")
     let $queryExpr := app:create-query($query, $mode)
+    let $log := console:log($query)
     return
         if (empty($queryExpr) or $queryExpr = "") then
             let $cached := session:get-attribute("apps.zarit")
@@ -364,7 +382,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $mo
                                 (:("target-texts", "not-all")("work-authors", "not-all")("scripts", "not-all"):)
                                 (:If one or more texts and one or more scripts and one or more authors have been selected, search in the union of the three:)
                                 if ($target-texts ne 'all' and $work-authors ne 'all' and $scripts ne 'all')
-                                then ($target-texts, distinct-values(collection($config:remote-data-root-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id), distinct-values(collection($config:remote-data-root)//tei:TEI[tei:text/@xml:lang = $scripts]/@xml:id))
+                                then ($target-texts, distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id), distinct-values(collection($config:remote-data-root)//tei:TEI[tei:text/@xml:lang = $scripts]/@xml:id))
                                 else
                                     (:("target-texts", "not-all")("work-authors", "not-all")("scripts", "all"):)
                                     (:If one or more texts and more authors have been selected, but no scripts have been selected, search in the union of selected texts and texts selected by authors:)

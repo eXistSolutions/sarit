@@ -1,114 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<div xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xf="http://www.w3.org/2002/xforms" lang="en" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
-    <style type="text/css">
-        .box {
-            border:1px solid gray;
-            padding:10px;
-        }
-        input[type="radio"] {
-            margin:10px;
-        }
-    </style>
-<!-- ######### CONTENT STARTS HERE ########## -->
-<!-- ######### CONTENT STARTS HERE ########## -->
-<!-- ######### CONTENT STARTS HERE ########## -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="page-header">
-                <h1>Basic Search</h1>
-                <small><!-- hhmts start -->Last modified: Tue Nov 9 00:38:24 CET 2010 <!-- hhmts end --></small>
-                <p>SARIT: Basic Search Interface.</p>
-            </div>
+<div xmlns="http://www.w3.org/1999/xhtml" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
+    <div class="app:query col-md-12">
+        <div class="center">
+            <a href="." class="nav-link" data-template="app:copy-params">
+                <i class="glyphicon glyphicon-chevron-up"/> Back to Search and Work List
+            </a>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8">
-            <h3>Term(s)</h3>
-            <ul>
-                <li>Enter utf-8 search term(s): e.g., vyākhyāt.*</li>
-                <li>For a list of available texts leave the field empty and press 'Search'.</li>
-            </ul>
-            <div class="box">
-                <div class="input-group" style="width:300px;">
-                    <input id="searchterm" placeholder="search term" type="text" class="form-control"/>
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">search</button>
-                    </span>
-                </div>
-                <p>Result Format:</p>
-                <input type="radio" name="resultFormat" id="rfcontext" value="rfcontext"/>
-                <label for="rfcontext">In context</label>
-                <input type="radio" name="resultFormat" id="lineByLine" value="lineByLine"/>
-                <label for="lineByLine">Line by line</label>
-                <input type="radio" name="resultFormat" id="similarity" value="similarity"/>
-                <label for="similarity">Similarity</label>
-            </div>
-            <h3>Context</h3>
-            <div class="box">
-                <input type="radio" name="context" id="wordOrPhrase" value="wordOrPhrase"/>
-                <label for="wordOrPhrase">Word or Phrase</label>
-                <input type="radio" name="context" id="phraseSeparatedBy" value="phraseSeparatedBy"/>
-                <label for="phraseSeparatedBy">Phrase separated by</label>
-                <input id="wordCount" type="text" class="form-control" style="width:50px;display:inline;"/>
-                <label>words</label>
-                <p>Proximity search in:</p>
-                <input type="radio" name="context" id="sentence" value="sentence"/>
-                <label for="sentence">Sentence</label>
-                <input type="radio" name="context" id="paragraph" value="paragraph"/>
-                <label for="paragraph">Paragraph</label>
-            </div>
-            <h3>Title &amp; Author</h3>
-            <form class="box form-horizontal" role="form">
-                <div class="input-group" style="width:300px;">
-                    <input id="title" placeholder="Title" type="text" class="form-control"/>
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" style="width:100px">List Titles</button>
-                    </span>
-                </div>
-                <div class="input-group" style="width:300px;">
-                    <input id="author" placeholder="Author" type="text" class="form-control"/>
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" style="width:100px">List Authors</button>
-                    </span>
-                </div>
-            </form>
+        <p>Found: <span id="hit-count" data-template="app:hit-count"/> matches.</p>
+        <!-- pagination for small device -->
+        <div class="hidden-md hidden-lg hidden-sm">
+            <ul class="pagination" data-template="app:paginate" data-template-per-page="20" data-template-max-pages="5" data-template-min-hits="21"/>
         </div>
-        <div class="col-md-4">
-            <h3>
-                <a href="help.html" title="Search Term Help">Brief Search Term Help</a>
-            </h3>
-            <ul>
-                <li>
-                    <p>
-                        <a href="help.html#diacritics" title="Search Term Help: Diacritics and Special Characters">Enter search terms with utf-8 characters</a>: e.g., ā  ī  ū  ṛ  ḷ  ṅ  ñ  ṭ  ḍ  ṇ  ś  ṣ  ṁ  ḥ</p>
-                </li>
-                <li>
-                    <p>
-                        <a href="help.html#wildcard" title="Search Term Help: Wildcard Characters and Boolean (Logical) Operators">Match patterns with wildcard characters</a>: e.g.,
-            <em>rūp.*</em>to retrieve
-            <em>rūpam</em>,
-            <em>rūpeṇāpi</em>&amp;c..</p>
-                </li>
-                <li>
-                    <p>
-                        <a href="help.html#punctuation" title="Search Term Help: Punctuation Marks and Searching">Do not use punctuation marks</a>: e.g., search for
-            <em>apāya hetu</em>rather than
-            <em>apāya-hetu</em>.</p>
-                </li>
-                <li>
-                    <p>Similar word search searches the whole database.</p>
-                </li>
-                <li>
-                    <p>
-                        <a href="/advanced.shtml" title="SARIT: Advanced Search Interface">For the advanced search interface, follow this link</a>.</p>
-                </li>
-                <li>
-                    <p>
-                        <a href="http://sites.google.com/site/philologic3/manual" title="External Link - PhiloLogic™ User Manual (University of Chicago)">For additional instruction, follow this link</a>.</p>
-                </li>
-                <li>Currently text search, retrieval and analysis is available for
-                <a href="/newphilo/search3t?dbname=indologica&amp;word=&amp;OUTPUT=conc&amp;CONJUNCT=PHRASE&amp;DISTANCE=3&amp;title=&amp;author=" title="SARIT currently available works">these works</a>.</li>
-            </ul>
+        <!-- pagination for larger device -->
+        <div class="hidden-xs">
+            <ul class="pagination" data-template="app:paginate" data-template-per-page="20" data-template-max-pages="9" data-template-min-hits="21"/>
+        </div>
+        <!-- query results -->
+        <table data-template="app:show-hits" data-template-per-page="20" id="results" class="col-md-8 table"/>
+        <!-- bottom pagination for small device -->
+        <div class="hidden-md hidden-lg hidden-sm">
+            <ul class="pagination" data-template="app:paginate" data-template-per-page="20" data-template-max-pages="5" data-template-min-hits="21"/>
+        </div>
+        <!-- bottom pagination for larger device -->
+        <div class="hidden-xs">
+            <ul class="pagination" data-template="app:paginate" data-template-per-page="20" data-template-max-pages="9" data-template-min-hits="21"/>
         </div>
     </div>
 </div>
