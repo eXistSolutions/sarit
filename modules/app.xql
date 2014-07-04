@@ -21,12 +21,13 @@ declare
     %templates:wrap
 function app:nav-set-active($node as node(), $model as map(*)) {
     let $path := request:get-attribute("$exist:path")
+    let $res := request:get-attribute("$exist:resource")
     for $li in $node/h:li
     let $link := $li/h:a
     let $href := $link/@href
     return
             element { node-name($li) } {
-                if ($href = $path or ($href = "works/" and starts-with($path, "/works/"))) then
+                if ($href = $res or ($href = "works/" and starts-with($path, "/works/"))) then
                     attribute class { "active" }
                 else
                     (),
