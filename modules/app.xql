@@ -91,7 +91,7 @@ declare
 function app:work($node as node(), $model as map(*), $id as xs:string) {
     let $work := collection($config:remote-data-root)//id($id)
     return
-        map { "work" := $work }
+        map { "work" := $work[1] }
 };
 
 declare function app:header($node as node(), $model as map(*)) {
@@ -567,10 +567,11 @@ declare
 function app:show-hits($node as node()*, $model as map(*), $start as xs:integer, $per-page as xs:integer) {
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
     let $id := $hit/ancestor-or-self::tei:div[1]/@xml:id/string()
+    let $id := if ($id) then $id else ($hit/ancestor-or-self::*/@xml:id)[1]/string()
     let $work-title := app:work-title($hit/ancestor::tei:TEI)
     let $doc-id := $hit/ancestor::tei:TEI/@xml:id
     let $div-ancestor-id := $hit/ancestor::tei:div[1]/@xml:id
-    let $div-ancestor-head := $hit/ancestor::tei:div[1]/tei:head/text() 
+    let $div-ancestor-head := $hit/ancestor::tei:div[1]/tei:head/text()
     (:pad hit with surrounding siblings:)
     let $hitExpanded := <hit>{($hit/preceding-sibling::*[1], $hit, $hit/following-sibling::*[1])}</hit>
     let $loc := 

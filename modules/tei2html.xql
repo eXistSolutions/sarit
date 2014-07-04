@@ -197,7 +197,7 @@ declare function tei-to-html:item($node as element(tei:item), $options) as eleme
     <li>{tei-to-html:recurse($node, $options)}</li>
 };
 
-declare function tei-to-html:label($node as element(tei:label), $options) as element() {
+declare function tei-to-html:label($node as element(tei:label), $options) as element()* {
     if ($node/parent::tei:list) then 
         (
         <dt>{$node/text()}</dt>,
