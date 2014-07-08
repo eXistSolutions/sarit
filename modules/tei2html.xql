@@ -33,6 +33,13 @@ declare function tei-to-html:dispatch($nodes as node()*, $options) as item()* {
             case element(tei:back) return tei-to-html:recurse($node, $options)
             
             case element(tei:div) return tei-to-html:div($node, $options)
+            case element(tei:div1) return tei-to-html:div($node, $options)
+            case element(tei:div2) return tei-to-html:div($node, $options)
+            case element(tei:div3) return tei-to-html:div($node, $options)
+            case element(tei:div4) return tei-to-html:div($node, $options)
+            case element(tei:div5) return tei-to-html:div($node, $options)
+            case element(tei:div6) return tei-to-html:div($node, $options)
+            case element(tei:div7) return tei-to-html:div($node, $options)
             case element(tei:head) return tei-to-html:head($node, $options)
             case element(tei:p) return tei-to-html:p($node, $options)
             case element(tei:hi) return tei-to-html:hi($node, $options)
@@ -60,8 +67,7 @@ declare function tei-to-html:dispatch($nodes as node()*, $options) as item()* {
             case element(tei:bibl) return tei-to-html:bibl($node, $options)
             case element(tei:respStmt) return tei-to-html:respStmt($node, $options)
             case element(exist:match) return tei-to-html:exist-match($node, $options)
-            case element() return tei-to-html:recurse($node, $options)
-            default return $node
+            default return tei-to-html:recurse($node, $options)
 };
 
 (: Recurses through the child nodes and sends them tei-to-html:dispatch() :)
@@ -381,7 +387,7 @@ declare function tei-to-html:said($node as element(tei:said), $options) {
 };
 
 declare function tei-to-html:teiHeader($node as element(tei:teiHeader), $options) {
-    tei-to-html:fileDesc($node/tei:fileDesc, $options)
+    <div class="teiHeader">{tei-to-html:fileDesc($node/tei:fileDesc, $options)}</div>
 };
 
 declare function tei-to-html:fileDesc($node as element(tei:fileDesc), $options) {
@@ -462,7 +468,7 @@ declare function tei-to-html:sourceDesc($node as element(tei:sourceDesc), $optio
 declare function tei-to-html:publicationStmt($node as element(tei:publicationStmt), $options) {
         let $authority := $node/tei:authority
         let $date := $node/tei:date
-        let $authority := if ($authority) then <h2>Published by {tei-to-html:serialize-list($authority)}{if ($date) then concat(', ', $date) else ''}.</h2> else ()        
+        let $authority := if ($authority) then <h4>Published by {tei-to-html:serialize-list($authority)}{if ($date) then concat(', ', $date) else ''}.</h4> else ()
         
         let $availability := $node/tei:availability
         let $availability-status : = $availability/@status/string()
@@ -482,7 +488,7 @@ declare function tei-to-html:publicationStmt($node as element(tei:publicationStm
             else ()       
         return
             <div class="publicationStmt">
-            <h4>Publication Statement</h4>
+            <h3>Publication Statement</h3>
                 {$authority}
                 {$availability}
             </div>
@@ -492,7 +498,7 @@ declare function tei-to-html:respStmt($node as element(tei:respStmt)*, $options)
     return
     for $responsibilty in $responsibilties
         return
-            <h3>{replace(normalize-space($responsibilty),'\.+$','')}: 
+            <li>{replace(normalize-space($responsibilty),'\.+$','')}: 
                 {tei-to-html:serialize-list(
                     (
                     $node[tei:resp = $responsibilty]/tei:persName
@@ -501,7 +507,7 @@ declare function tei-to-html:respStmt($node as element(tei:respStmt)*, $options)
                     ,
                     $node[tei:resp = $responsibilty]/tei:name
                     ))}
-            </h3>
+            </li>
 };
 
 declare function tei-to-html:titleStmt($node as element(tei:titleStmt), $options) {
@@ -509,40 +515,43 @@ declare function tei-to-html:titleStmt($node as element(tei:titleStmt), $options
             if ($node/tei:title[@type eq 'main']) 
             then $node/tei:title[@type eq 'main']/text() 
             else $node/tei:title[1]/text()
-        let $subtitles := $node/*:title[@type eq 'sub']/text()
-        let $subtitles := if ($subtitles) then <h3>{string-join($subtitles, ', ')}</h3> else ()  
+        let $subtitles := $node/tei:title[@type eq 'sub']/text()
+        let $subtitles := if ($subtitles) then <h4>{string-join($subtitles, ', ')}</h4> else ()
         
         let $authors := $node/tei:author
-        let $authors := if ($authors) then <h2>By {tei-to-html:serialize-list($authors)}</h2> else ()
+        let $authors := if ($authors) then <h3>By {tei-to-html:serialize-list($authors)}</h3> else ()
         
         let $editors := $node/tei:editor
-        let $editors := if ($editors) then <h3>Editor{if (count($editors) gt 1) then 's' else ''}: {tei-to-html:serialize-list($editors)}</h3> else ()
+        let $editors := if ($editors) then <li>Editor{if (count($editors) gt 1) then 's' else ''}: {tei-to-html:serialize-list($editors)}</li> else ()
         
         let $funders := $node/tei:funder
-        let $funders := if ($funders) then <h3>Funder{if (count($funders) gt 1) then 's' else ''}: {tei-to-html:serialize-list($funders)}</h3> else ()
+        let $funders := if ($funders) then <li>Funder{if (count($funders) gt 1) then 's' else ''}: {tei-to-html:serialize-list($funders)}</li> else ()
         
         let $principals := $node/tei:principal
-        let $principals := if ($principals) then <h3>Principal{if (count($principals) gt 1) then 's' else ''}: {tei-to-html:serialize-list($principals)}</h3> else ()
+        let $principals := if ($principals) then <li>Principal{if (count($principals) gt 1) then 's' else ''}: {tei-to-html:serialize-list($principals)}</li> else ()
         
         let $sponsors := $node/tei:sponsor
-        let $sponsors := if ($sponsors) then <h3>Sponsor{if (count($sponsors) gt 1) then 's' else ''}: {tei-to-html:serialize-list($node/tei:sponsor)}</h3> else ()
+        let $sponsors := if ($sponsors) then <li>Sponsor{if (count($sponsors) gt 1) then 's' else ''}: {tei-to-html:serialize-list($node/tei:sponsor)}</li> else ()
         
         let $meetings := $node/tei:meeting
-        let $meetings := if ($meetings) then <h3>Meetings: {tei-to-html:serialize-list($node/tei:meeting)}</h3> else ()
+        let $meetings := if ($meetings) then <li>Meetings: {tei-to-html:serialize-list($node/tei:meeting)}</li> else ()
         
         let $respStmt := tei-to-html:respStmt($node/tei:respStmt, $options)
         
         return
-            <div xmlns="http://www.w3.org/1999/xhtml" class="titleStmt">
-                <a href="works/{$node/ancestor::tei:TEI/@xml:id}.html"><h1>{$main-title}</h1></a>
-                {$authors}
+            <div class="titleStmt">
+                <h2>{$main-title}</h2>
                 {$subtitles}
+                {$authors}
+                
+                <ul>
                 {$editors}
                 {$funders}
                 {$principals}
                 {$sponsors}
                 {$meetings}
                 {$respStmt}
+                </ul>
             </div>
 };
 
