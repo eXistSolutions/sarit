@@ -284,8 +284,19 @@ function app:navigation($node as node(), $model as map(*)) {
         map {
             "previous" := $prevDiv,
             "next" := $nextDiv,
-            "work" := $work
+            "work" := $work,
+            "div" := $div
         }
+};
+
+declare
+    %templates:wrap
+function app:breadcrumbs($node as node(), $model as map(*)) {
+    let $ancestors := $model("div")/ancestor-or-self::tei:div
+    for $ancestor in $ancestors
+    let $id := $ancestor/@xml:id
+    return
+        <li><a href="{$id}.html">{app:derive-title($ancestor)}</a></li>
 };
 
 declare
@@ -302,7 +313,7 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
     if ($model($direction)) then
         element { node-name($node) } {
             $node/@* except $node/@href,
-            attribute href { $model($direction)/@xml:id },
+            attribute href { $model($direction)/@xml:id || ".html" },
             $node/node()
         }
     else
@@ -331,7 +342,7 @@ declare function app:view($node as node(), $model as map(*), $id as xs:string, $
             $div
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
-        { tei-to-html:recurse($div, <options/>) }
+        { tei-to-html:recurse($div[1], <options/>) }
         </div>
 };
 
@@ -592,10 +603,10 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
 (:~
     Callback function called from the kwic module.
 :)
-declare %private function app:filter($node as node(), $mode as xs:string) as xs:string? {
+declare %private function app:filter($node as node(), $mode as xs:string) as item()? {
   if ($node/parent::tei:speaker or $node/parent::tei:stage or $node/parent::tei:head) then 
       ()
-  else if ($mode eq 'before') then 
+  else if ($mode eq 'before') then
       concat($node, ' ')
   else 
       concat(' ', $node)

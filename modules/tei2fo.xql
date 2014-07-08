@@ -1,6 +1,6 @@
 xquery version "3.0";
 
-import module namespace config="http://exist-db.org/apps/zarit/config" at "config.xqm";
+import module namespace config="http://exist-db.org/apps/appblueprint/config" at "config.xqm";
 
 declare namespace fo="http://www.w3.org/1999/XSL/Format";
 declare namespace tei="http://www.tei-c.org/ns/1.0";

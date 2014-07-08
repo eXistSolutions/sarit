@@ -1,6 +1,6 @@
 xquery version "3.0";
 
-import module namespace config="http://exist-db.org/apps/zarit/config" at "config.xqm";
+import module namespace config="http://exist-db.org/apps/appblueprint/config" at "config.xqm";
 import module namespace epub="http://exist-db.org/xquery/epub" at "epub.xql";
 
 declare namespace tei="http://www.tei-c.org/ns/1.0";
@@ -19,7 +19,7 @@ declare function local:work2epub($id as xs:string, $work as element()) {
 };
 
 let $id := request:get-parameter("id", ())
-let $work := collection($config:data)//id($id)
+let $work := collection($config:remote-data-root)//id($id)
 let $entries := local:work2epub($id, $work)
 return
     (

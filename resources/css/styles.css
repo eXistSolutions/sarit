@@ -617,6 +617,13 @@ footer p a:visited {
   padding: 10px 10px 10px 0;
   border-top: 2px solid #CCC;
 }
+#results .following,
+#results .previous {
+  width: 50%;
+}
+#results .previous {
+  text-align: right;
+}
 #results .reference .number {
   margin-right: 1em;
 }

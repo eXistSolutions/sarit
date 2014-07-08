@@ -14,9 +14,11 @@ xquery version "1.0";
 
 module namespace epub = "http://exist-db.org/xquery/epub";
 
+
+import module namespace config="http://exist-db.org/apps/appblueprint/config" at "config.xqm";
 import module namespace compression = "http://exist-db.org/xquery/compression";
 import module namespace tei-to-html="http://exist-db.org/xquery/app/tei2html" at "tei2html.xql";
-import module namespace config="http://exist-db.org/apps/zarit/config" at "config.xqm";
+
 
 declare namespace tei="http://www.tei-c.org/ns/1.0";
 

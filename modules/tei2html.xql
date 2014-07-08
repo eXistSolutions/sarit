@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 module namespace tei-to-html="http://exist-db.org/xquery/app/tei2html";
 
 declare namespace tei="http://www.tei-c.org/ns/1.0";
@@ -21,7 +23,6 @@ declare function tei-to-html:dispatch($nodes as node()*, $options) as item()* {
     for $node in $nodes
     return
         typeswitch($node)
-            case text() return $node
             case element(tei:TEI) return tei-to-html:recurse($node, $options)
             
             case element(tei:teiHeader) return tei-to-html:teiHeader($node, $options)
@@ -59,13 +60,14 @@ declare function tei-to-html:dispatch($nodes as node()*, $options) as item()* {
             case element(tei:bibl) return tei-to-html:bibl($node, $options)
             case element(tei:respStmt) return tei-to-html:respStmt($node, $options)
             case element(exist:match) return tei-to-html:exist-match($node, $options)
-            default return tei-to-html:recurse($node, $options)
+            case element() return tei-to-html:recurse($node, $options)
+            default return $node
 };
 
 (: Recurses through the child nodes and sends them tei-to-html:dispatch() :)
 declare function tei-to-html:recurse($node as node(), $options) as item()* {
     for $node in $node/node()
-    return 
+    return
         tei-to-html:dispatch($node, $options)
 };
 
@@ -164,7 +166,7 @@ declare function tei-to-html:head($node as element(tei:head), $options) as eleme
         <p class="center">{tei-to-html:recurse($node, $options)}</p>
     (: other heads? :)
     else
-        tei-to-html:recurse($node, $options)
+        <span style="color: red;">{tei-to-html:recurse($node, $options)}</span>
 };
 
 declare function tei-to-html:p($node as element(tei:p), $options) as element() {
@@ -234,10 +236,15 @@ declare function tei-to-html:said($node as element(tei:said), $options) as eleme
 
 declare function tei-to-html:sp($node as element(tei:sp), $options) as element() {
     if ($node/tei:l) then
-        <div xmlns="http://www.w3.org/1999/xhtml" class="sp" id="{tei-to-html:get-id($node)}">{ tei-to-html:recurse($node/node(), <options/>) }</div>
+        <div xmlns="http://www.w3.org/1999/xhtml" class="sp" id="{tei-to-html:get-id($node)}">
+        { 
+            for $l in $node/tei:l
+            return
+                tei-to-html:recurse($l, <options/>) }
+        </div>
     else
         <div xmlns="http://www.w3.org/1999/xhtml" class="sp" id="{tei-to-html:get-id($node)}">
-            { tei-to-html:recurse($node/tei:speaker, <options/>) }
+            { for $speaker in $node/tei:speaker return tei-to-html:recurse($speaker, <options/>) }
             <p class="p-ab">{ tei-to-html:recurse($node/tei:ab, <options/>) }</p>
         </div>                
 };
