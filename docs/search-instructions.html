@@ -1,0 +1,122 @@
+<div xmlns="http://www.w3.org/1999/xhtml" class="templates:surround?with=templates/page.html&amp;at=main">
+    <h1>Simple expressions using the full-text index</h1>
+    <p>In the following example queries, the entire set of Shakespeare plays and works in this demo are queried.</p>
+    <section>
+        <h3>General</h3>
+        <p>When searching SARIT, "Regular Expressions" (also known as "regex" or
+            "regexp") are used. A Regular Expression is a sequence of characters that forms a
+            search pattern, typically employing wildcards. The regex options available with the
+            index used in SARIT (Lucene) will be introduced here. </p>
+        <p> Because Sanskrit is written basically without word boundaries, when you
+            search for something, say 'padma', you want to find it no matter what comes before
+            and what comes after. In regex searches, the period (.) stands for any character
+            (not for a space, however) and the asterisk (*) stands for zero, one or more of what
+            comes before it. ".*" thus means "any number of characters, perhaps none". All
+            searches in SARIT are automatically wrapped up in ".*" before and after the search
+            term you input, so "padma" would be ".*padma.*", meaning that the search has to
+            retrieve records with the string of characters "padma", no matter where they occur.
+            If you input ".*" yourself, at the beginning or end of a search request, this the
+            duplicate ".*" will be removed. </p>
+        <p>The first thing to know about regex searches is therefore the comforting
+            fact that anything you input, except a few characters which are reserved, even
+            without using any of the extra possibilities that regex search offer, will be
+            searched for. The search request "padma" is a full regular expression.</p>
+    </section>
+    <section>
+        <h3>Allowed characters</h3>
+        <p>SARIT employs Unicode throughout and any Unicode character may be used
+            in a search pattern, in Roman as well as Devanagari script, but certain characters
+            are reserved, since they are used by the search mechanism for special purposes, and
+            they must therefore be "escaped". That they are escaped means that they are prefixed
+            with a backflash (\). The reserved characters are:</p>
+        <pre class="literallayout">. ? + * | { } [ ] ( ) " \</pre>
+        <!--Check if this applies! <p>If you enable optional features (see below) then these characters may also be reserved:</p> <pre class="literallayout"># @ & < > ~</pre>-->
+        <p>Any reserved character can thus be escaped with a backslash, so if one
+            wishes to search for an aterisk, one would input <code class="literal">"\*"</code>,
+            and so on. </p>
+        <!--NB! Works with "." Does not work with "?+*|{}[]()\" Single |()[] are removed from search term.-->
+        <!--<p>Additionally, any characters (except double quotes) are interpreted literally when surrounded by double quotes:</p> <pre class="literallayout">"john.smith.com"</pre>. NB: only works if shifting to phrase search. Partial phrase searches (john"@smith.com") are not possible-->
+    </section>
+    <section>
+        <h3>Match any character</h3>
+        <p>The period <code class="literal">"."</code> can be used to represent any
+            character. For string <code class="literal">"padma"</code>:</p>
+        <pre class="literallayout">pa... # match p.d.a # match</pre>
+    </section>
+    <section>
+        <h3>One-or-more</h3>
+        <p>The plus sign <code class="literal">"+"</code> can be used to repeat the
+        preceding shortest pattern once or more times. For string <code class="literal">"aaabbb"</code>:</p>
+        <pre class="literallayout">a+b+ # match aa+bb+ # match a+.+ # match aa+bbb+ # no match</pre>
+    </section>
+    <section>
+        <h3>Zero-or-more</h3>
+        <p>The asterisk <code class="literal">"*"</code> can be used to match
+        the preceding shortest pattern zero-or-more times. For string <code class="literal">"aaabbb</code>":</p>
+        <pre class="literallayout">a*b* # match a*b*c* # match .*bbb.* # match aaa*bbb* # match</pre>
+    Since Sanskrit does not repeat characters/only rarely repeats characters, in SARIT these
+    two wildcards are not of much use if they follow characters; they are however very
+    useful ohterwise (see below). <p>The same applies to "*" as to
+        "+".</p>
+    </section>
+    <section>
+        <h3>Zero-or-one</h3>
+        <p>The question mark <code class="literal">"?"</code> makes the
+            preceding shortest pattern optional. It matches zero or one times. For string <code class="literal">"aaabbb"</code>:</p>
+        <pre class="literallayout">aaa?bbb? # match aaaa?bbbb? # match .....?.? # match aa?bb? # no match</pre>
+    </section>
+    <section>
+        <h3>Min-to-max</h3>
+        <p>Curly brackets <code class="literal">"{}"</code> can be used to
+            specify a minimum and (optionally) a maximum number of times the preceding shortest
+            pattern can repeat. The allowed forms are:</p>
+        <pre class="literallayout">{5} # repeat exactly 5 times {2,5} # repeat at least twice and at most 5 times {2,} # repeat at least twice</pre>
+        <p>For string <code class="literal">"aaabbb"</code>:</p>
+        <pre class="literallayout">a{3}b{3} # match a{2,4}b{2,4} # match a{2,}b{2,} # match .{3}.{3} # match a{4}b{4} # no match a{4,6}b{4,6} # no match a{4,}b{4,} # no match</pre>
+    </section>
+    <section>
+        <h3>Grouping</h3>
+        <p>Parentheses <code class="literal">"()"</code> can be used to form
+            sub-patterns. The quantity operators listed above operate on the shortest previous
+            pattern, which can be a group. For string <code class="literal">"ababab"</code>:</p>
+        <pre class="literallayout">(ab)+ # match ab(ab)+ # match (..)+ # match (...)+ # no match (ab)* # match abab(ab)? # match ab(ab)? # no match (ab){3} # match (ab){1,2} # no match</pre>
+    </section>
+    <section>
+        <h3>Alternation</h3>
+        <p>The pipe symbol <code class="literal">"|"</code> acts as an
+            OR operator. The match will succeed if the pattern on either the left-hand
+            side OR the right-hand side matches. The alternation applies to the <span class="emphasis">
+                <em>longest pattern</em>
+            </span>, not the shortest <!--explain!-->. For
+            string <code class="literal">"aabb"</code>:</p>
+        <pre class="literallayout">aabb|bbaa # match aacc|bb # no match aa(cc|bb) # match a+|b+ # no match a+b+|b+a+ # match a+(b|c)+ # match</pre>
+    </section>
+    <section>
+        <h3>Character classes</h3>
+        <p>Character classes are very important for Sanskrit, since they allow you to mask variation with more control that that offered by wildcards. 
+            You can thus use them to find words even though they are written differently, e.g. have either "e" or "o" in a certain position or have "a" and "ā" in a certain position </p>
+        <p>Ranges of potential characters may be represented as
+            character classes by enclosing them in square brackets <code class="literal">"[]"</code>. A leading <code class="literal">^</code> negates the
+            character class. The allowed forms are:</p>
+        <pre class="literallayout">[abc] # 'a' or 'b' or 'c' [a-c] # 'a' or 'b' or 'c' [-abc] # '-' or 'a' or 'b' or 'c' [abc\-] # '-' or 'a' or 'b' or 'c' [^abc] # any character except 'a' or 'b' or 'c' [^a-c] # any character except 'a' or 'b' or 'c' [^-abc] # any character except '-' or 'a' or 'b' or 'c' [^abc\-] # any character except '-' or 'a' or 'b' or 'c'</pre>
+        <p>Note that the dash <code class="literal">"-"</code> indicates
+            a range of characeters, unless it is the first character or if it is escaped
+            with a backslash.</p>
+        <p>For string <code class="literal">"abcd"</code>:</p>
+        <pre class="literallayout">ab[cd]+ # match [a-d]+ # match [^a-d]+ # no match</pre>
+    </section>
+    <section>
+        <h3>Character classes</h3>
+        <p>Character classes are very important for Sanskrit, since they allow you to mask variation with more control that that offered by wildcards. 
+            You can thus use them to find words even though they are written differently, e.g. have either "e" or "o" in a certain position or have "a" and "ā" in a certain position </p>
+        <p>Ranges of potential characters may be represented as
+            character classes by enclosing them in square brackets <code class="literal">"[]"</code>. A leading <code class="literal">^</code> negates the
+            character class. The allowed forms are:</p>
+        <pre class="literallayout">[abc] # 'a' or 'b' or 'c' [a-c] # 'a' or 'b' or 'c' [-abc] # '-' or 'a' or 'b' or 'c' [abc\-] # '-' or 'a' or 'b' or 'c' [^abc] # any character except 'a' or 'b' or 'c' [^a-c] # any character except 'a' or 'b' or 'c' [^-abc] # any character except '-' or 'a' or 'b' or 'c' [^abc\-] # any character except '-' or 'a' or 'b' or 'c'</pre>
+        <p>Note that the dash <code class="literal">"-"</code> indicates
+            a range of characeters, unless it is the first character or if it is escaped
+            with a backslash.</p>
+        <p>For string <code class="literal">"abcd"</code>:</p>
+        <pre class="literallayout">ab[cd]+ # match [a-d]+ # match [^a-d]+ # no match</pre>
+    </section>
+</div>
