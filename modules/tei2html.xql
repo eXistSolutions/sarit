@@ -23,6 +23,7 @@ declare function tei-to-html:dispatch($nodes as node()*, $options) as item()* {
     for $node in $nodes
     return
         typeswitch($node)
+            case text() return $node
             case element(tei:TEI) return tei-to-html:recurse($node, $options)
             
             case element(tei:teiHeader) return tei-to-html:teiHeader($node, $options)
@@ -37,9 +38,6 @@ declare function tei-to-html:dispatch($nodes as node()*, $options) as item()* {
             case element(tei:div2) return tei-to-html:div($node, $options)
             case element(tei:div3) return tei-to-html:div($node, $options)
             case element(tei:div4) return tei-to-html:div($node, $options)
-            case element(tei:div5) return tei-to-html:div($node, $options)
-            case element(tei:div6) return tei-to-html:div($node, $options)
-            case element(tei:div7) return tei-to-html:div($node, $options)
             case element(tei:head) return tei-to-html:head($node, $options)
             case element(tei:p) return tei-to-html:p($node, $options)
             case element(tei:hi) return tei-to-html:hi($node, $options)
