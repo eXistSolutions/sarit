@@ -27,6 +27,14 @@ declare function tei-to-html:dispatch($nodes as node()*, $options) as item()* {
             case element(tei:TEI) return tei-to-html:recurse($node, $options)
             
             case element(tei:teiHeader) return tei-to-html:teiHeader($node, $options)
+                case element(tei:encodingDesc) return tei-to-html:encodingDesc($node, $options)
+                case element(tei:editorialDecl) return tei-to-html:editorialDecl($node, $options)
+                case element(tei:classDecl) return tei-to-html:classDecl($node, $options)
+                case element(tei:refsDecl) return tei-to-html:refsDecl($node, $options)
+                case element(tei:fileDesc) return tei-to-html:fileDesc($node, $options)
+                case element(tei:profileDesc) return tei-to-html:profileDesc($node, $options)
+                case element(tei:revisionDesc) return tei-to-html:revisionDesc($node, $options)
+            
             
             case element(tei:text) return tei-to-html:recurse($node, $options)
             case element(tei:front) return tei-to-html:recurse($node, $options)
@@ -59,12 +67,16 @@ declare function tei-to-html:dispatch($nodes as node()*, $options) as item()* {
             case element(tei:lg) return tei-to-html:lg($node, $options)
             case element(tei:l) return tei-to-html:l($node, $options)
             case element(tei:name) return tei-to-html:name($node, $options)
+            case element(tei:persName) return tei-to-html:persName($node, $options)
             case element(tei:milestone) return tei-to-html:milestone($node, $options)
             case element(tei:quote) return tei-to-html:quote($node, $options)
             case element(tei:seg) return tei-to-html:seg($node, $options)
             case element(tei:bibl) return tei-to-html:bibl($node, $options)
             case element(tei:respStmt) return tei-to-html:respStmt($node, $options)
+            case element(tei:notesStmt) return tei-to-html:notesStmt($node, $options)
+            case element(tei:note) return tei-to-html:note($node, $options)
             case element(exist:match) return tei-to-html:exist-match($node, $options)
+            
             default return tei-to-html:recurse($node, $options)
 };
 
@@ -356,6 +368,15 @@ declare function tei-to-html:name($node as element(tei:name), $options) {
             <span class="name">{tei-to-html:recurse($node, $options)}</span>
 };
 
+declare function tei-to-html:persName($node as element(tei:persName), $options) {
+    let $rend := $node/@rend
+    return
+        if ($rend eq 'sc') then 
+            <span class="name" style="font-variant: small-caps;">{tei-to-html:recurse($node, $options)}</span>
+        else 
+            <span class="name">{tei-to-html:recurse($node, $options)}</span>
+};
+
 declare function tei-to-html:milestone($node as element(tei:milestone), $options) {
     if ($node/@unit eq 'rule') 
     then
@@ -385,16 +406,81 @@ declare function tei-to-html:said($node as element(tei:said), $options) {
 };
 
 declare function tei-to-html:teiHeader($node as element(tei:teiHeader), $options) {
-    <div class="teiHeader">{tei-to-html:fileDesc($node/tei:fileDesc, $options)}</div>
+    <div class="teiHeader">{tei-to-html:recurse($node, $options)}</div>
+};
+
+declare function tei-to-html:encodingDesc($node as element(tei:encodingDesc), $options) {
+    let $log := util:log("DEBUG", ("##$encodingDescxxx): ", $node))
+return
+    tei-to-html:recurse($node, $options)
 };
 
 declare function tei-to-html:fileDesc($node as element(tei:fileDesc), $options) {
     tei-to-html:titleStmt($node/tei:titleStmt, $options),
     tei-to-html:publicationStmt($node/tei:publicationStmt, $options),
-    tei-to-html:sourceDesc($node/tei:sourceDesc, $options)
-    (:
-    let $encodingDesc := $node/tei:encodingDesc
-    let $revisionDesc := $node/tei:revisionDesc:)
+    tei-to-html:sourceDesc($node/tei:sourceDesc, $options),
+    tei-to-html:notesStmt($node/tei:notesStmt, $options),
+    tei-to-html:extent($node/tei:extent, $options)
+    (:tei-to-html:editionStmt($node/tei:editionStmt, $options)
+    tei-to-html:seriesStmt($node/tei:seriesStmt, $options):)
+};
+
+declare function tei-to-html:profileDesc($node as element(tei:profileDesc), $options) {
+    (:abstract calendarDesc creation langUsage textClass:)
+    let $textClass := $node/tei:textClass
+    return
+        <div class="textClass">
+            <h4>Text Classification</h4>
+            {tei-to-html:recurse($node, $options)}</div>
+};
+
+declare function tei-to-html:revisionDesc($node as element(tei:revisionDesc), $options) {
+    (:listChange:)
+    <div class="revisionDesc">
+    <h4>Revision Description</h4>
+        <ul>{for $change in $node/tei:change
+        order by $change/@when/string() 
+        return
+            tei-to-html:change($change, $options)
+        }</ul></div>
+};
+
+declare function tei-to-html:notesStmt($node as element(tei:notesStmt), $options) {
+    <div class="notesStmt">
+    <h4>Notes Statement</h4>
+        {for $note in $node/tei:note
+        return
+            tei-to-html:note($note, $options)
+        }</div>
+};
+
+declare function tei-to-html:note($node as element(tei:note), $options) {
+    <div class="note">{tei-to-html:recurse($node, $options)}</div>
+};
+
+declare function tei-to-html:extent($node as element(tei:extent), $options) {
+    <div class="extent">
+        <h4>Extent</h4>
+        {tei-to-html:recurse($node, $options)}</div>
+};
+
+declare function tei-to-html:change($node as element(tei:change)*, $options) {
+    let $when := 
+        if ($node/@when) 
+        then $node/@when/string() 
+        else substring($node/@when-iso/string(), 1, 10) 
+    let $who := $node/@who/string()
+    let $who := 
+        if (starts-with($who, '#'))
+        then $who (:TODO: resolve reference:)
+        else 
+            if ($node/tei:persName)
+            then () 
+            else $who
+    return 
+        if (contains($node, ':') and $node/*) (:taken as indicator that the text has been marked fully up:)
+        then <li class="change">({$when}) {tei-to-html:recurse($node, $options)}</li>
+        else <li class="change">{concat($when, if (contains($node, ':')) then '' else ': ', $node/string(), ' by ', $who)}</li>
 };
 
 declare function tei-to-html:bibl($node as element(tei:bibl), $options) {
@@ -414,41 +500,43 @@ declare function tei-to-html:bibl($node as element(tei:bibl), $options) {
     let $result :=
     
         (
+        <table>{
         for $title in $titles
         return 
-            <div class="title">Title: {tei-to-html:recurse($title, $options)}</div>
+            <tr class="title"><td>Title:</td><td>{tei-to-html:recurse($title, $options)}</td></tr>
         ,
         for $author in $authors
         return 
-            <div class="author">Author: {tei-to-html:recurse($author, $options)}</div>
+            <tr class="author"><td>Author:</td><td>{tei-to-html:recurse($author, $options)}</td></tr>
         ,
         for $editor in $editors
         return 
-            <div class="editor">Editor: {tei-to-html:recurse($editor, $options)}</div>
+            <tr class="editor"><td>Editor:</td><td>{tei-to-html:recurse($editor, $options)}</td></tr>
         ,
         for $publisher in $publishers
         return 
-            <div class="publisher">Publisher: {tei-to-html:recurse($publisher, $options)}</div>
+            <tr class="publisher"><td>Publisher:</td><td>{tei-to-html:recurse($publisher, $options)}</td></tr>
         ,
         for $pubPlace in $pubPlaces
         return 
-            <div class="pubPlace">Place of Publication: {tei-to-html:recurse($pubPlace, $options)}</div>
+            <tr class="pubPlace"><td>Place of Publication:</td><td>{tei-to-html:recurse($pubPlace, $options)}</td></tr>
         ,
         for $extent in $extents
         return 
-            <div class="extent">Extent: {tei-to-html:recurse($extent, $options)}</div>
+            <tr class="extent"><td>Extent:</td><td>{tei-to-html:recurse($extent, $options)}</td></tr>
         ,
         for $date in $dates
         return 
-            <div class="date">Date: {tei-to-html:recurse($date, $options)}</div>
+            <tr class="date"><td>Date:</td><td>{tei-to-html:recurse($date, $options)}</td></tr>
         ,
         for $series in $seriess
         return 
-            <div class="series">Series: {tei-to-html:recurse($series, $options)}</div>
+            <tr class="series"><td>Series:</td><td>{tei-to-html:recurse($series, $options)}</td></tr>
         ,
         for $note in $notes
         return 
-            <div class="note">Note: {tei-to-html:recurse($note, $options)}</div>
+            <tr class="note"><td>Note:</td><td>{tei-to-html:recurse($note, $options)}</td></tr>
+        }</table>
         )
     return
         if ($node/../local-name() eq 'note')
@@ -463,7 +551,33 @@ declare function tei-to-html:sourceDesc($node as element(tei:sourceDesc), $optio
         </div>
 };
 
+declare function tei-to-html:editorialDecl($node as element(tei:editorialDecl), $options) {
+        <div class="editorialDesc">
+            <h4>Editorial Description</h4>
+            {tei-to-html:recurse($node, $options)}
+        </div>
+};
+
+declare function tei-to-html:classDecl($node as element(tei:classDecl), $options) {
+        let $log := util:log("DEBUG", ("##$classDeclxxx): ", $node))
+        let $taxonomy := $node/tei:taxonomy/@xml:id/string() (:a little strange that this attribute should be used here:)
+        let $log := util:log("DEBUG", ("##$taxonomyxxx): ", $node/tei:taxonomy/tei:bibl))
+
+        return
+        <div class="classDecl">
+            <h4>Classification Declarations (Taxonomy: {$taxonomy})</h4>
+            <div class="classification">{$node//tei:bibl/text()}</div>
+        </div>
+};
+
+declare function tei-to-html:refsDecl($node as element(tei:refsDecl), $options) {
+        <div class="refsDecl">
+            <h4>References Declarations</h4>
+            <div class="classification">{tei-to-html:recurse($node, $options)}</div>
+        </div>
+};
 declare function tei-to-html:publicationStmt($node as element(tei:publicationStmt), $options) {
+        (:distributor:)
         let $authority := $node/tei:authority
         let $date := $node/tei:date
         let $authority := if ($authority) then <h4>Published by {tei-to-html:serialize-list($authority)}{if ($date) then concat(', ', $date) else ''}.</h4> else ()
@@ -476,21 +590,25 @@ declare function tei-to-html:publicationStmt($node as element(tei:publicationStm
                 (
                 <h4>Availability: {$availability-status}</h4>
                 , 
-                for $p at $i in $availability/tei:p
+                <div class="copyright-notice">
+                {for $p at $i in $availability/tei:p
                 return
-                    (:if ($i = (2, 3, 8))
-                    then tei-to-html:p($p, $options)
-                    else ():)
-                    tei-to-html:p($p, $options)
+                    tei-to-html:p($p, $options)}
+                </div>
                 )
-            else ()       
+            else ()
+        
+        let $idno := <div class="idno"><h4>Identifier</h4>{$node/tei:idno}</div>
+        
         return
             <div class="publicationStmt">
             <h3>Publication Statement</h3>
                 {$authority}
                 {$availability}
+                {$idno}
             </div>
 };
+
 declare function tei-to-html:respStmt($node as element(tei:respStmt)*, $options) {
     let $responsibilties := distinct-values($node/tei:resp)
     return
@@ -509,12 +627,17 @@ declare function tei-to-html:respStmt($node as element(tei:respStmt)*, $options)
 };
 
 declare function tei-to-html:titleStmt($node as element(tei:titleStmt), $options) {
+        (:Wolfgang: please look at why * is required!:)
         let $main-title := 
             if ($node/tei:title[@type eq 'main']) 
             then $node/tei:title[@type eq 'main']/text() 
             else $node/tei:title[1]/text()
-        let $subtitles := $node/tei:title[@type eq 'sub']/text()
+        let $log := util:log("DEBUG", ("##$title1xxx): ", $node/tei:title[@type eq 'main']/text()))
+        let $log := util:log("DEBUG", ("##$title2xxx): ", $node/tei:title[1]/text()))
+        let $subtitles := $node/*:title[@type eq 'sub']/text()
+        let $log := util:log("DEBUG", ("##$subtitles1xxx): ", $subtitles))
         let $subtitles := if ($subtitles) then <h4>{string-join($subtitles, ', ')}</h4> else ()
+        let $log := util:log("DEBUG", ("##$subtitles2xxx): ", $subtitles))
         
         let $authors := $node/tei:author
         let $authors := if ($authors) then <h3>By {tei-to-html:serialize-list($authors)}</h3> else ()
