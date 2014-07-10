@@ -189,10 +189,11 @@ tr.note td ul li {
     font-size:14px;
 }
     
-.copyright-notice {
+.copyright-notice, .revisionDesc, .notesStmt, .sourceDesc, .encodingDesc {
 
-  p, li {
-    font-size:14px;
+  p, li, td, .note, .bibl {
+    font-size:16px;
+    font-family:Ovo,serif;
   }
 }
 
@@ -208,4 +209,22 @@ tr.note td ul li {
 
 .notesStmt {font-family:Ovo,serif;
     
+}
+
+.fileDesc, .titleStmt {
+    margin-bottom:3em;
+}
+
+.titleStmt {
+    ul {
+        margin-top:2em;
+    }
+    .indent {padding-left:30px;
+            margin-top:10px;
+    }
+}
+.sourceDesc {
+    td {
+        vertical-align:top;
+    }
 }

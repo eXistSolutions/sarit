@@ -639,8 +639,32 @@ tr.note td ul li {
   font-size: 14px;
 }
 .copyright-notice p,
-.copyright-notice li {
-  font-size: 14px;
+.revisionDesc p,
+.notesStmt p,
+.sourceDesc p,
+.encodingDesc p,
+.copyright-notice li,
+.revisionDesc li,
+.notesStmt li,
+.sourceDesc li,
+.encodingDesc li,
+.copyright-notice td,
+.revisionDesc td,
+.notesStmt td,
+.sourceDesc td,
+.encodingDesc td,
+.copyright-notice .note,
+.revisionDesc .note,
+.notesStmt .note,
+.sourceDesc .note,
+.encodingDesc .note,
+.copyright-notice .bibl,
+.revisionDesc .bibl,
+.notesStmt .bibl,
+.sourceDesc .bibl,
+.encodingDesc .bibl {
+  font-size: 16px;
+  font-family: Ovo,serif;
 }
 .sourceDesc table {
   font-family: Ovo,serif;
@@ -650,4 +674,18 @@ tr.note td ul li {
 }
 .notesStmt {
   font-family: Ovo,serif;
+}
+.fileDesc,
+.titleStmt {
+  margin-bottom: 3em;
+}
+.titleStmt ul {
+  margin-top: 2em;
+}
+.titleStmt .indent {
+  padding-left: 30px;
+  margin-top: 10px;
+}
+.sourceDesc td {
+  vertical-align: top;
 }
