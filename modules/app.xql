@@ -99,16 +99,75 @@ declare function app:header($node as node(), $model as map(*)) {
     tei-to-html:render($model("work")/tei:teiHeader)
 };
 
-(:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
+(:You can always see three levels: the current level, is siblings, its parent and its children. 
+This means that you can always go up and down (and sideways).
+One could leave out or elide the siblings. :)
 declare function app:outline($node as node(), $model as map(*)) {
+    let $position := $model("work")  
     let $long := $node/@data-template-details/string()
-    let $work := $model("work")/ancestor-or-self::tei:TEI
+    let $work := $position/ancestor-or-self::tei:TEI
+    
     return
         if ($work/tei:text/tei:body/tei:div) 
         then
-            <ul>{
-                for $div in $work/tei:text/tei:body/tei:div
-                return app:toc-div($div, $long)
+            <ul class="contents">{
+                (:if it is not the whole work:)
+                if (local-name($position) eq 'div')
+                then
+                    (:if it has divs below itself:)
+                    <li>{
+                    if ($position/tei:div)
+                    then
+                        (
+                        if ($position/parent::tei:div) 
+                        (:show the parent:)
+                        then app:toc-div($position/parent::tei:div, $long, 'not-current', 'no-list-item') 
+                        (:NB: this creates an empty <li> if there is no div parent:)
+                        (:show nothing:)
+                        else ()
+                        ,
+                        for $div in $position/preceding-sibling::tei:div
+                        return app:toc-div($div, $long, 'not-current', 'list-item')
+                        ,
+                        app:toc-div($position, $long, 'current', 'list-item')
+                        ,
+                        <ul>
+                            {
+                            for $div in $position/tei:div
+                            return app:toc-div($div, $long, 'not-current', 'list-item')
+                            }
+                        </ul>
+                        ,
+                        for $div in $position/following-sibling::*:div
+                        return app:toc-div($div, $long, 'not-current', 'list-item')
+                        )
+                    else
+                    (
+                        (:if it is a leaf:)
+                        (:show its parent:)
+                        app:toc-div($position/parent::tei:div, $long, 'not-current', 'no-list-item')
+                        ,
+                        (:show its preceding siblings:)
+                        <ul>
+                            {
+                            for $div in $position/preceding-sibling::tei:div
+                            return app:toc-div($div, $long, 'not-current', 'list-item')
+                            ,
+                            (:show itself:)
+                            (:NB: should not have link:)
+                            app:toc-div($position, $long, 'current', 'list-item')
+                            ,
+                            (:show its following siblings:)
+                            for $div in $position/following-sibling::*:div
+                            return app:toc-div($div, $long, 'not-current', 'list-item')
+                            }
+                        </ul>
+                        )
+                       }</li> 
+                else
+                    (:if it is the whole work:)
+                    for $div in $work/tei:text/tei:body/tei:div
+                    return app:toc-div($div, $long, 'not-current', 'list-item')
             }</ul>
         else ()
 };
@@ -119,7 +178,7 @@ declare function app:generate-toc-from-divs($node, $long as xs:string?) {
     then
         <ul>{
             for $div in $node/tei:div
-            return app:toc-div($div, $long)
+            return app:toc-div($div, $long, 'no-current', 'list-item')
         }</ul>
     else ()
 };
@@ -162,14 +221,18 @@ declare function app:derive-title($div) {
 };
 
 (:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
-declare function app:toc-div($div, $long as xs:string?) {
+declare function app:toc-div($div, $long as xs:string?, $current as xs:string?, $list-item as xs:string?) {
     let $div-id := $div/@xml:id/string()
     let $title := app:derive-title($div)
     return
-        <li>
-        <a href="{$div-id}.html">{$title}</a> 
-            {if ($long eq 'yes') then app:generate-toc-from-divs($div, $long) else ()}
-        </li>
+        if ($list-item eq 'list-item')
+        then
+            <li class="{if ($current eq 'current') then 'current' else 'not-current'}">
+            <a href="{$div-id}.html">{$title}</a> 
+                {if ($long eq 'yes') then app:generate-toc-from-divs($div, $long) else ()}
+            </li>
+        else
+            <a href="{$div-id}.html">{$title}</a> 
 };
 
 (:~

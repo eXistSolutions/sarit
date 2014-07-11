@@ -261,6 +261,9 @@ li {
   -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
   -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
   transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
+  -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
+  -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
+  transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
   -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
   -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
   transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
@@ -337,6 +340,7 @@ li {
     hides for sm and xs devices */
 .toc-col {
   /* not at all sure if this is the best/right way */
+
   padding-right: 0;
 }
 .toc {
@@ -461,10 +465,10 @@ footer a:hover {
 }
 @media (min-width: 1200px) {
   /*
-      body{
-        background:orange;
-      }
-  */
+        body{
+          background:orange;
+        }
+    */
 }
 body a {
   color: #428BCA;
@@ -479,12 +483,6 @@ header img,
 .navbar img,
 footer img {
   margin-left: -10px;
-}
-.banner {
-  background: url("http://i.istockimg.com/file_thumbview_approve/27195083/2/stock-photo-27195083-mantras-on-the-wall.jpg") no-repeat scroll center center;
-  background-size: cover ;
-  height: 200px;
-  width: 100%;
 }
 .navbar .container {
   padding: 0;
@@ -626,4 +624,79 @@ footer p a:visited {
 }
 #results .reference .number {
   margin-right: 1em;
+}
+/*Jens additions*/
+.teiHeader li {
+  font-size: 20px;
+}
+tr.note td ul li {
+  font-size: 14px;
+}
+.copyright-notice p,
+.revisionDesc p,
+.notesStmt p,
+.sourceDesc p,
+.encodingDesc p,
+.copyright-notice li,
+.revisionDesc li,
+.notesStmt li,
+.sourceDesc li,
+.encodingDesc li,
+.copyright-notice td,
+.revisionDesc td,
+.notesStmt td,
+.sourceDesc td,
+.encodingDesc td,
+.copyright-notice .note,
+.revisionDesc .note,
+.notesStmt .note,
+.sourceDesc .note,
+.encodingDesc .note,
+.copyright-notice .bibl,
+.revisionDesc .bibl,
+.notesStmt .bibl,
+.sourceDesc .bibl,
+.encodingDesc .bibl {
+  font-size: 16px;
+  font-family: Ovo,serif;
+}
+.sourceDesc table {
+  font-family: Ovo,serif;
+  margin-top: 10px;
+}
+.sourceDesc table td {
+  padding: 4px;
+}
+.notesStmt {
+  font-family: Ovo,serif;
+}
+.fileDesc,
+.titleStmt {
+  margin-bottom: 3em;
+}
+.titleStmt ul {
+  margin-top: 2em;
+}
+.titleStmt .indent {
+  padding-left: 30px;
+  margin-top: 10px;
+}
+.sourceDesc td {
+  vertical-align: top;
+}
+.well h3 {
+  text-align: center;
+  margin-top: 0px;
+  font-size: 24px;
+}
+ul.contents {
+  margin-left: -3em;
+  list-style-type: none;
+}
+ul.contents li {
+  list-style-type: none;
+  font-size: 12px;
+}
+li.current {
+  font-weight: bold;
 }
