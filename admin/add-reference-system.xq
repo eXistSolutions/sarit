@@ -69,15 +69,19 @@ declare function local:normalize-space($input)
                         let $initial-space := if (matches(substring($child, 1, 1),  '\s')) then ' ' else ''
                         let $final-space := if (matches(substring($child, string-length($child), 1), '\s')) then ' ' else ''
                         let $child := fn:normalize-space($child)
+                        let $result := 
+                        	if ($child eq ' ') 
+                        	then $child 
+                        	else concat($initial-space, $child, $final-space)
                         return 
-                            concat($initial-space, $child, $final-space)
+                            $result
 
                      else ()
       }
 };
 
 
-let $doc := doc('/db/apps/sarit-data/data/mahabharata-roman.xml')/*
+let $doc := doc('/db/apps/sarit-data/data/tsp.xml')/*
 let $doc := local:normalize-space($doc)
 let $doc := local:add-references-recursively($doc)
 return $doc
