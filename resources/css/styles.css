@@ -622,6 +622,10 @@ footer p a:visited {
 #results .reference .number {
   margin-right: 1em;
 }
+.breadcrumb li {
+  list-style: none;
+  font-size: 85%;
+}
 /* Styles for the off canvas table of contents */
 #toc-toggle {
   cursor: pointer;

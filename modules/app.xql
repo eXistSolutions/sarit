@@ -358,14 +358,19 @@ function app:navigation($node as node(), $model as map(*)) {
         }
 };
 
-declare
+declare 
     %templates:wrap
 function app:breadcrumbs($node as node(), $model as map(*)) {
     let $ancestors := $model("div")/ancestor-or-self::tei:div
-    for $ancestor in $ancestors
-    let $id := $ancestor/@xml:id
     return
-        <li><a href="{$id}.html">{app:derive-title($ancestor)}</a></li>
+        fold-right(function ($div, $result) {
+            <ul>
+                <li>
+                    <a href="{$div/@xml:id}.html">{app:derive-title($div)}</a>
+                </li>
+                {$result}
+            </ul>
+        }, (), $ancestors)
 };
 
 declare
