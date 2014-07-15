@@ -1,23 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<div xmlns="http://www.w3.org/1999/xhtml" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
-    <div class="col-md-12">
-        <div id="content">
-            <div data-template="app:work">
-                <div class="col-md-9">
-                    <div class="center">
-                        <a href="." class="nav-link" data-template="app:copy-params">
-                            <i class="glyphicon glyphicon-chevron-up"/> Back to Search and Work List
-                    </a>
-                    </div>
-                    <div data-template="app:header"/>
-                </div>
-                <div class="col-md-3">
-                    <div class="well well-dark">
-                        <h3>Contents</h3>
-                        <div data-template="app:outline" data-template-details="yes"/>
-                    </div>
-                </div>
+<div xmlns="http://www.w3.org/1999/xhtml" data-template="templates:surround"
+    data-template-with="template.html" data-template-at="content-wrapper">
+    <div class="row row-offcanvas row-offcanvas-left" data-template="app:work">
+        <div class="col-md-8 sidebar-offcanvas">
+            <div class="well well-dark">
+                <h3>Contents</h3>
+                <div data-template="app:outline" data-template-details="no"/>
             </div>
         </div>
+        <div class="col-md-12">
+            <div id="content">
+                <div data-template="app:work">
+                        <div class="center">
+                            <a href="." class="nav-link" data-template="app:copy-params">
+                                <i class="glyphicon glyphicon-chevron-up"/> Back to Search and Work
+                                List </a>
+                        </div>
+                        <div data-template="app:header"/>
+                </div>
+            </div>
+        </div>    
     </div>
+    <div id="toc-toggle">Table of Contents</div>
 </div>
