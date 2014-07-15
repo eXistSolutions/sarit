@@ -340,8 +340,14 @@ declare
     %templates:wrap
 function app:navigation($node as node(), $model as map(*)) {
     let $div := $model("work")
-    let $prevDiv := $div/preceding::tei:div[parent::tei:div][1]
-    let $nextDiv := $div/following::tei:div[parent::tei:div][1]
+    let $parent := $div/parent::tei:div
+    let $prevDiv := $div/preceding::tei:div[1]
+    let $prevDiv :=
+        if (empty($prevDiv) or $parent >> $prevDiv) then
+            $parent
+        else
+            $prevDiv
+    let $nextDiv := ($div//tei:div | $div/following::tei:div)[1]
     let $work := $div/ancestor-or-self::tei:TEI
     return
         map {
@@ -403,9 +409,18 @@ declare function app:view($node as node(), $model as map(*), $id as xs:string, $
             "add-exist-id=all")
         else
             $div
+    let $view := 
+        if ($div/tei:div) then
+            (: If the current section has child divs, display only the text up to the first div. :)
+            element { node-name($div) } {
+                $div/@*,
+                $div/tei:div[1]/preceding-sibling::*
+            }
+        else
+            $div
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
-        { tei-to-html:recurse($div[1], <options/>) }
+        { tei-to-html:recurse($view, <options/>) }
         </div>
 };
 
