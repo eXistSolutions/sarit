@@ -1310,10 +1310,76 @@ declare function tei-to-html:title($node as element(tei:title), $options) as ele
 };
 
 declare function tei-to-html:titlePage($node as element(tei:titlePage), $options) as element()+ {
+    (:argument byline docEdition docImprint docTitle titlePart:)
+    let $docAuthors := $node/tei:docAuthor
+    let $docAuthors := 
+        if ($docAuthors) 
+        then 
+            (', by '
+            ,
+            tei-to-html:serialize-list(
+                for $docAuthor in $docAuthors return tei-to-html:recurse($docAuthor, $options))
+            )
+        else ()
+    let $docDates := $node/tei:docDate
+    let $docDates := 
+        if ($docDates) 
+        then 
+            (' ('
+            ,
+            tei-to-html:serialize-list(
+                for $docDate in $docDates return tei-to-html:recurse($docDate, $options))
+            ,
+            ') '
+            )
+        else ()
+    let $docImprints := $node/tei:docImprint
+    let $docImprints :=  
+        if ($docImprints) 
+        then 
+            (' ('
+            ,
+            tei-to-html:serialize-list(
+                for $docImprint in $docImprints return tei-to-html:recurse($docImprint, $options))
+            ,
+            ') '
+            )
+        else ()
+    let $docTitles := $node/tei:docTitle
+    let $docTitles := 
+        if ($docTitles)
+        then
+            <span class="title-italic">{
+            tei-to-html:serialize-list(
+                for $docTitle in $docTitles 
+                let $titleParts := $docTitle/tei:titlePart
+                return 
+                    for $titlePart in $titleParts
+                    return 
+                        tei-to-html:recurse($titlePart, $options))
+            }</span>
+        else ()
+    let $titleParts := $node/tei:titlePart
+    let $titleParts := 
+        if ($titleParts)
+        then
+            tei-to-html:serialize-list(
+                for $titlePart in $titleParts return tei-to-html:recurse($titlePart, $options))
+        else ()
+    return
     (
     if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
     ,
-    <div class="titlePage" title="tei:titlePage">{tei-to-html:recurse($node, $options)}</div>
+    <div class="titlePage" title="tei:titlePage">
+    <h7>Title Page</h7>
+        <div>
+            {$docTitles}
+            {$titleParts}
+            {$docAuthors}
+            {$docImprints}
+            {$docDates}
+        </div>
+    </div>
     )
 };
 
