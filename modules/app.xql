@@ -393,7 +393,8 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
     else
         ()
 };
-
+(: LUCENE :)
+(:
 declare function app:view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
     for $div in $model("work")/id($id)
     let $div :=
@@ -411,6 +412,43 @@ declare function app:view($node as node(), $model as map(*), $id as xs:string, $
             $div[.//tei:listApp[ft:query(., $query)]],
             $div[.//tei:listBibl[ft:query(., $query)]],
             $div[.//tei:cit[ft:query(., $query)]]),
+            "add-exist-id=all")
+        else
+            $div
+    let $view := 
+        if ($div/tei:div) then
+            (: If the current section has child divs, display only the text up to the first div. :)
+            element { node-name($div) } {
+                $div/@*,
+                $div/tei:div[1]/preceding-sibling::*
+            }
+        else
+            $div
+    return
+        <div xmlns="http://www.w3.org/1999/xhtml" class="play">
+        { tei-to-html:recurse($view, <options/>) }
+        </div>
+};
+:)
+
+(: NGRAM :)
+declare function app:view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
+    for $div in $model("work")/id($id)
+    let $div :=
+        if ($query) then
+            util:expand((
+            $div[.//tei:p[ngram:wildcard-contains(., $query)]],
+            $div[.//tei:head[ngram:wildcard-contains(., $query)]],
+            $div[.//tei:lg[ngram:wildcard-contains(., $query)]],
+            $div[.//tei:trailer[ngram:wildcard-contains(., $query)]],
+            $div[.//tei:note[ngram:wildcard-contains(., $query)]],
+            $div[.//tei:list[ngram:wildcard-contains(., $query)]],
+            $div[.//tei:l[ngram:wildcard-contains(., $query)]],
+            $div[.//tei:quote[ngram:wildcard-contains(., $query)]],
+            $div[.//tei:table[ngram:wildcard-contains(., $query)]],
+            $div[.//tei:listApp[ngram:wildcard-contains(., $query)]],
+            $div[.//tei:listBibl[ngram:wildcard-contains(., $query)]],
+            $div[.//tei:cit[ngram:wildcard-contains(., $query)]]),
             "add-exist-id=all")
         else
             $div
@@ -499,6 +537,8 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $mo
                 if ($target-texts = 'all')
                 then collection($config:remote-data-root)/tei:TEI
                 else collection($config:remote-data-root)//tei:TEI[@xml:id = $target-texts]
+            (: LUCENE :)
+            (:
             let $hits :=
                 if ($scope eq 'narrow')
                 then
@@ -521,6 +561,31 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $mo
                 else
                     for $hit in ($context//tei:div[not(tei:div)][ft:query(., $queryExpr)], $context//tei:div[not(tei:div)][ft:query(., $queryExpr)])
                     order by ft:score($hit) descending
+                    return $hit
+            :)
+            (: NGRAM :)
+            let $hits :=
+                if ($scope eq 'narrow')
+                then
+                    for $hit in (
+                        $context//tei:p[ngram:wildcard-contains(., $queryExpr)],
+                        $context//tei:head[ngram:wildcard-contains(., $queryExpr)],
+                        $context//tei:lg[ngram:wildcard-contains(., $queryExpr)],
+                        $context//tei:trailer[ngram:wildcard-contains(., $queryExpr)],
+                        $context//tei:note[ngram:wildcard-contains(., $queryExpr)],
+                        $context//tei:list[ngram:wildcard-contains(., $queryExpr)],
+                        $context//tei:l[ngram:wildcard-contains(., $queryExpr)],
+                        $context//tei:quote[ngram:wildcard-contains(., $queryExpr)],
+                        $context//tei:table[ngram:wildcard-contains(., $queryExpr)],
+                        $context//tei:listApp[ngram:wildcard-contains(., $queryExpr)],
+                        $context//tei:listBibl[ngram:wildcard-contains(., $queryExpr)],
+                        $context//tei:cit[ngram:wildcard-contains(., $queryExpr)]
+                        )
+                    (: order by ft:score($hit) descending :)
+                    return $hit
+                else
+                    for $hit in ($context//tei:div[not(tei:div)][ngram:wildcard-contains(., $queryExpr)], $context//tei:div[not(tei:div)][ngram:wildcard-contains(., $queryExpr)])
+                    (: order by ft:score($hit) descending :)
                     return $hit
             let $store := (
                 session:set-attribute("apps.zarit", $hits),
