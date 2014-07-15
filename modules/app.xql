@@ -174,8 +174,8 @@ declare function app:outline($node as node(), $model as map(*)) {
                     (
                     if ($work/tei:text/tei:front/tei:titlePage, $work/tei:text/tei:front/tei:div)
                     then
-                        <div>
-                        <head>Front Matter</head>
+                        <div class="text-front">
+                        <h6>Front Matter</h6>
                         {for $div in 
                             (
                             $work/tei:text/tei:front/tei:titlePage, 
@@ -185,8 +185,8 @@ declare function app:outline($node as node(), $model as map(*)) {
                         }</div>
                         else ()
                     ,
-                    <div>
-                    <head>Text</head>
+                    <div class="text-body">
+                    <h6>{if ($work/tei:text/tei:front/tei:titlePage, $work/tei:text/tei:front/tei:div, $work/tei:text/tei:back/tei:div) then 'Text' else ''}</h6>
                     {for $div in 
                         (
                         $work/tei:text/tei:body/tei:div 
@@ -196,14 +196,14 @@ declare function app:outline($node as node(), $model as map(*)) {
                     ,
                     if ($work/tei:text/tei:back/tei:div)
                     then
-                        <div>
-                        <head>Back Matter</head>
+                        <h6 class="text-back">
+                        <h6>Back Matter</h6>
                         {for $div in 
                             (
                             $work/tei:text/tei:back/tei:div 
                             )
                         return app:toc-div($div, $long, 'not-current', 'list-item')
-                        }</div>
+                        }</h6>
                     else ()
                     )
             }</ul>
@@ -223,39 +223,58 @@ declare function app:generate-toc-from-divs($node, $long as xs:string?) {
 
 (:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
 declare function app:derive-title($div) {
-    let $n := $div/@n/string()
-    let $title := 
-        if ($div/tei:head) 
-        then
-            concat(
-                if ($n) then concat($n, ': ') else ''
-                ,
-                string-join(
-                    for $node in $div/tei:head/node() 
-                    return data($node)
-                , ' ')
-            )
-        else
-            if ($div//tei:head) 
-            then 
+    if (local-name($div) eq 'div')
+    then
+        let $n := $div/@n/string()
+        let $title := 
+            (:if the div has a header:)
+            if ($div/tei:head) 
+            then
                 concat(
                     if ($n) then concat($n, ': ') else ''
                     ,
                     string-join(
-                        for $node in $div//tei:head/node() 
+                        for $node in $div/tei:head/node() 
                         return data($node)
                     , ' ')
                 )
-            else 
-                if (string-length(data($div)) gt 0) 
+            else
+                (:if there is a header somewhere further down in the div:)
+                if ($div//tei:head) 
                 then 
                     concat(
-                        if ($div/@type) 
-                        then concat('[', $div/@type/string(), '] ') 
-                        else ''
-                    , substring(data($div), 1, 100), '...') 
-                else concat('[', $div/@type/string(), ']')
-    return $title
+                        if ($n) then concat($n, ': ') else ''
+                        ,
+                        string-join(
+                            for $node in $div//tei:head/node() 
+                            return data($node)
+                        , ' ')
+                    )
+                else
+                    if ($div//tei:head) 
+                    then 
+                        concat(
+                            if ($n) then concat($n, ': ') else ''
+                            ,
+                            string-join(
+                                for $node in $div//tei:head/node() 
+                                return data($node)
+                            , ' ')
+                        )
+                    else
+                        if (string-length(data($div)) gt 0) 
+                        then 
+                            concat(
+                                if ($div/@type) 
+                                then concat('[', $div/@type/string(), '] ') 
+                                else ''
+                            , substring(data($div), 1, 100), '...') 
+                        else concat('[', $div/@type/string(), ']')
+            return $title
+    else
+        if (local-name($div) eq 'titlePage')
+        then tei-to-html:titlePage($div, <options/>)
+        else ()
 };
 
 (:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
