@@ -262,6 +262,9 @@ li {
   -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
   -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
   transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
+  -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
+  -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
+  transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
   -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
   -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
   transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
@@ -338,6 +341,7 @@ li {
     hides for sm and xs devices */
 .toc-col {
   /* not at all sure if this is the best/right way */
+
   padding-right: 0;
 }
 .toc {
@@ -462,10 +466,10 @@ footer a:hover {
 }
 @media (min-width: 1200px) {
   /*
-      body{
-        background:orange;
-      }
-  */
+        body{
+          background:orange;
+        }
+    */
 }
 body a {
   color: #428BCA;
@@ -622,6 +626,52 @@ footer p a:visited {
 #results .reference .number {
   margin-right: 1em;
 }
+/* Styles for the off canvas table of contents */
+#toc-toggle {
+  cursor: pointer;
+  position: fixed;
+  top: 50%;
+  bottom: 50%;
+  height: 40px;
+  margin: 0 0 0 -50px;
+  padding: 4px 8px;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  background: #414141;
+  color: #f0f0f0;
+  border-color: #bfbfbf;
+  -moz-border-radius: 4px 4px 0 0;
+  -webkit-border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0;
+}
+.row-offcanvas {
+  position: relative;
+  -webkit-transition: all 0.25s ease-out;
+  -o-transition: all 0.25s ease-out;
+  transition: all 0.25s ease-out;
+}
+.row-offcanvas-left {
+  left: 0;
+}
+.row-offcanvas-left .sidebar-offcanvas {
+  left: -70%;
+  opacity: 0.0;
+  -webkit-transition: opacity 0.25s ease-out;
+  -o-transition: opacity 0.25s ease-out;
+  transition: opacity 0.25s ease-out;
+}
+.row-offcanvas-left.active {
+  left: 70%;
+}
+.row-offcanvas-left.active .sidebar-offcanvas {
+  opacity: 1.0;
+}
+.sidebar-offcanvas {
+  position: absolute;
+  top: 0;
+  width: 70%;
+}
 /*Jens additions*/
 .teiHeader li {
   font-size: 20px;
@@ -703,50 +753,4 @@ li.current {
 .trailer {
   font-size: 18px;
   text-align: center;
-}
-/* Styles for the off canvas table of contents */
-#toc-toggle {
-  cursor: pointer;
-  position: fixed;
-  top: 50%;
-  bottom: 50%;
-  height: 40px;
-  margin: 0 0 0 -50px;
-  padding: 4px 8px;
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  background: #414141;
-  color: #f0f0f0;
-  border-color: #bfbfbf;
-  -moz-border-radius: 4px 4px 0 0;
-  -webkit-border-radius: 4px 4px 0 0;
-  border-radius: 4px 4px 0 0;
-}
-.row-offcanvas {
-  position: relative;
-  -webkit-transition: all 0.25s ease-out;
-  -o-transition: all 0.25s ease-out;
-  transition: all 0.25s ease-out;
-}
-.row-offcanvas-left {
-  left: 0;
-}
-.row-offcanvas-left .sidebar-offcanvas {
-  left: -70%;
-  opacity: 0.0;
-  -webkit-transition: opacity 0.25s ease-out;
-  -o-transition: opacity 0.25s ease-out;
-  transition: opacity 0.25s ease-out;
-}
-.row-offcanvas-left.active {
-  left: 70%;
-}
-.row-offcanvas-left.active .sidebar-offcanvas {
-  opacity: 1.0;
-}
-.sidebar-offcanvas {
-  position: absolute;
-  top: 0;
-  width: 70%;
 }
