@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Siddhanta';
+  src: url('../fonts/siddhanta.eot'); /* IE9 Compat Modes */
+  src: url('../fonts/siddhanta.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../fonts/siddhanta.woff') format('woff'), /* Modern Browsers */
+       url('../fonts/siddhanta.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('../fonts/siddhanta.svg#fc0798b690238047b52963631035c09a') format('svg'); /* Legacy iOS */
+       
+  font-style:   normal;
+  font-weight:  400;
+}
+

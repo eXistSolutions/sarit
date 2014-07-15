@@ -1,3 +1,4 @@
+@import "font.css";
 /* +++++++++++++++ general eXistdb styles ++++++++++++++ */
 /* +++++++++++++++ general eXistdb styles ++++++++++++++ */
 /* +++++++++++++++ general eXistdb styles ++++++++++++++ */
@@ -261,9 +262,6 @@ li {
   -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
   -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
   transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
-  -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
-  -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
-  transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
   -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
   -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
   transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
@@ -340,7 +338,6 @@ li {
     hides for sm and xs devices */
 .toc-col {
   /* not at all sure if this is the best/right way */
-
   padding-right: 0;
 }
 .toc {
@@ -465,10 +462,10 @@ footer a:hover {
 }
 @media (min-width: 1200px) {
   /*
-        body{
-          background:orange;
-        }
-    */
+      body{
+        background:orange;
+      }
+  */
 }
 body a {
   color: #428BCA;
@@ -507,14 +504,14 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: Ovo, serif;
+  font-family: Siddhanta, serif;
   color: #777777;
   letter-spacing: 1.5;
 }
 p,
 li,
 a {
-  font-family: Ovo, serif;
+  font-family: Siddhanta, serif;
   font-size: 16px;
 }
 dt {
@@ -658,17 +655,17 @@ tr.note td ul li {
 .sourceDesc .bibl,
 .encodingDesc .bibl {
   font-size: 16px;
-  font-family: Ovo,serif;
+  font-family: Siddhanta, serif;
 }
 .sourceDesc table {
-  font-family: Ovo,serif;
+  font-family: Siddhanta, serif;
   margin-top: 10px;
 }
 .sourceDesc table td {
   padding: 4px;
 }
 .notesStmt {
-  font-family: Ovo,serif;
+  font-family: Siddhanta, serif;
 }
 .fileDesc,
 .titleStmt {

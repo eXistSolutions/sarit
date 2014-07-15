@@ -1,4 +1,7 @@
 @import "exist.less";
+@import "font.css";
+
+@serifFont: Siddhanta, serif;
 
 body a {
   color: #428BCA;
@@ -33,12 +36,12 @@ header,.navbar,footer{
 }
 
 h1,h2,h3,h4,h5,h6{
-  font-family: Ovo, serif;
+  font-family: @serifFont;
   color:#777777;
   letter-spacing: 1.5;
 }
 p,li,a{
-  font-family: Ovo, serif;
+  font-family: @serifFont;
   font-size: 16px;
 }
 dt{
@@ -187,13 +190,13 @@ tr.note td ul li {
 
   p, li, td, .note, .bibl {
     font-size:16px;
-    font-family:Ovo,serif;
+    font-family:@serifFont;
   }
 }
 
 .sourceDesc {
     table {
-    font-family:Ovo,serif;
+    font-family:@serifFont;
     margin-top:10px;
   td {
     padding:4px;
@@ -202,7 +205,7 @@ tr.note td ul li {
   }
 }
 
-.notesStmt {font-family:Ovo,serif;
+.notesStmt {font-family:@serifFont;
     
 }
 
@@ -239,5 +242,4 @@ ul.contents {
 }
     li.current {
         font-weight:bold;
-}
 }
