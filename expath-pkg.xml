@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package xmlns="http://expath.org/ns/pkg" name="http://sarit.indology.info/" abbrev="sarit" version="0.0.1" spec="1.0">
-    <title>SARIT: Search and Retrieval of Indic Texts</title>
+    <title>The SARIT provides electronic editions of Sanskrit and other Indian-language texts.</title>
 </package>
