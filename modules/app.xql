@@ -108,11 +108,16 @@ declare function app:outline($node as node(), $model as map(*)) {
     let $work := $position/ancestor-or-self::tei:TEI
     
     return
-        if ($work/tei:text/tei:body/tei:div) 
+        if (
+            $work/tei:text/tei:front/tei:titlePage, 
+            $work/tei:text/tei:front/tei:div, 
+            $work/tei:text/tei:body/tei:div, 
+            $work/tei:text/tei:back/tei:div
+           ) 
         then
             <ul class="contents">{
                 (:if it is not the whole work:)
-                if (local-name($position) eq 'div')
+                if (local-name($position) = ('div', 'titlePage'))
                 then
                     (:if it has divs below itself:)
                     <li>{
@@ -166,8 +171,41 @@ declare function app:outline($node as node(), $model as map(*)) {
                        }</li> 
                 else
                     (:if it is the whole work:)
-                    for $div in $work/tei:text/tei:body/tei:div
+                    (
+                    if ($work/tei:text/tei:front/tei:titlePage, $work/tei:text/tei:front/tei:div)
+                    then
+                        <div>
+                        <head>Front Matter</head>
+                        {for $div in 
+                            (
+                            $work/tei:text/tei:front/tei:titlePage, 
+                            $work/tei:text/tei:front/tei:div 
+                            )
+                        return app:toc-div($div, $long, 'not-current', 'list-item')
+                        }</div>
+                        else ()
+                    ,
+                    <div>
+                    <head>Text</head>
+                    {for $div in 
+                        (
+                        $work/tei:text/tei:body/tei:div 
+                        )
                     return app:toc-div($div, $long, 'not-current', 'list-item')
+                    }</div>
+                    ,
+                    if ($work/tei:text/tei:back/tei:div)
+                    then
+                        <div>
+                        <head>Back Matter</head>
+                        {for $div in 
+                            (
+                            $work/tei:text/tei:back/tei:div 
+                            )
+                        return app:toc-div($div, $long, 'not-current', 'list-item')
+                        }</div>
+                    else ()
+                    )
             }</ul>
         else ()
 };
@@ -178,7 +216,7 @@ declare function app:generate-toc-from-divs($node, $long as xs:string?) {
     then
         <ul>{
             for $div in $node/tei:div
-            return app:toc-div($div, $long, 'no-current', 'list-item')
+            return app:toc-div($div, $long, 'not-current', 'list-item')
         }</ul>
     else ()
 };
@@ -358,19 +396,14 @@ function app:navigation($node as node(), $model as map(*)) {
         }
 };
 
-declare 
+declare
     %templates:wrap
 function app:breadcrumbs($node as node(), $model as map(*)) {
     let $ancestors := $model("div")/ancestor-or-self::tei:div
+    for $ancestor in $ancestors
+    let $id := $ancestor/@xml:id
     return
-        fold-right(function ($div, $result) {
-            <ul>
-                <li>
-                    <a href="{$div/@xml:id}.html">{app:derive-title($div)}</a>
-                </li>
-                {$result}
-            </ul>
-        }, (), $ancestors)
+        <li><a href="{$id}.html">{app:derive-title($ancestor)}</a></li>
 };
 
 declare
@@ -393,6 +426,7 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
     else
         ()
 };
+
 (: LUCENE :)
 (:
 declare function app:view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
@@ -430,6 +464,7 @@ declare function app:view($node as node(), $model as map(*), $id as xs:string, $
         </div>
 };
 :)
+
 
 (: NGRAM :)
 declare function app:view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
