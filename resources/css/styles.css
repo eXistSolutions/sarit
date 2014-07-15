@@ -262,9 +262,6 @@ li {
   -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
   -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
   transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -82, 0, 1);
-  -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
-  -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
-  transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -83, 0, 1);
   -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
   -moz-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
   transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2, -83, 0, 1);
@@ -341,7 +338,6 @@ li {
     hides for sm and xs devices */
 .toc-col {
   /* not at all sure if this is the best/right way */
-
   padding-right: 0;
 }
 .toc {
@@ -466,10 +462,10 @@ footer a:hover {
 }
 @media (min-width: 1200px) {
   /*
-        body{
-          background:orange;
-        }
-    */
+      body{
+        background:orange;
+      }
+  */
 }
 body a {
   color: #428BCA;
@@ -644,6 +640,7 @@ footer p a:visited {
   -moz-border-radius: 4px 4px 0 0;
   -webkit-border-radius: 4px 4px 0 0;
   border-radius: 4px 4px 0 0;
+  z-index: 3;
 }
 .row-offcanvas {
   position: relative;
@@ -660,6 +657,7 @@ footer p a:visited {
   -webkit-transition: opacity 0.25s ease-out;
   -o-transition: opacity 0.25s ease-out;
   transition: opacity 0.25s ease-out;
+  z-index: 2;
 }
 .row-offcanvas-left.active {
   left: 70%;

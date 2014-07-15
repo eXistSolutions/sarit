@@ -5,6 +5,6 @@
 
 $(document).ready(function() {
     $("#toc-toggle").click(function(ev) {
-        $(".sidebar-offcanvas").parent().toggleClass("active");
+        $(".sidebar-offcanvas").parent().toggleClass("active").get(0).scrollIntoView();
     });
 });
