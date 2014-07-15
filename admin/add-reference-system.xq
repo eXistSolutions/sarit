@@ -1,5 +1,7 @@
 xquery version "3.0";
 
+declare boundary-space preserve;
+
 declare namespace tei="http://www.tei-c.org/ns/1.0";
 
 declare function local:change-attributes($node as node(), $new-name as xs:string, $new-content as item(), $action as xs:string, $target-element-names as xs:string+, $target-attribute-names as xs:string+) as node()+ {
@@ -75,8 +77,7 @@ declare function local:normalize-space($input)
                         	else concat($initial-space, $child, $final-space)
                         return 
                             $result
-
-                     else ()
+                     else $child
       }
 };
 
