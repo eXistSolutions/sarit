@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <div data-template="templates:surround" data-template-with="template.html" data-template-at="content">
     <form action="search.html" class="form form-horizontal">
         <div class="col-md-3 col-md-push-9">
+            <h5>Search</h5>
             <div class="well well-sm">
                 <div class="form-group">
                     <div class="col-md-12 col-xs-12">
@@ -16,7 +16,7 @@
                         <input type="hidden" name="field" value="text"/>
                     </div>
                 </div>
-                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search mode">
+                <!--<div class="form-group" data-toggle="tooltip" data-placement="left" title="Search mode">
                     <div class="col-md-12 col-xs-12">
                         <select name="mode" class="form-control" data-template="templates:form-control">
                             <option value="any">Any</option>
@@ -29,7 +29,7 @@
                             <option value="regex">Regex</option>
                         </select>
                     </div>
-                </div>
+                </div>-->
                 <div class="form-group" data-toggle="tooltip" data-placement="left" title="Authors">
                     <div class="col-md-12 col-xs-12">
                         <span class="app:work-authors"/>
@@ -38,7 +38,7 @@
                 <div class="form-group" data-toggle="tooltip" data-placement="left" title="Scripts to search">
                     <div class="col-md-12 col-xs-12">
                         <select multiple="multiple" name="scripts" class="form-control" data-template="templates:form-control">
-                            <option value="all">All</option>
+                            <option value="all" selected="selected">Any Script</option>
                             <option value="sa-Deva">Devanagari</option>
                             <option value="sa-Latn">Roman (IAST)</option>
                         </select>
@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="col-md-9 col-md-pull-3">
-            <h2>List of Works</h2>
+            <h5>List of Works</h5>
             <table class="toc table">
                 <thead>
                     <tr>
@@ -75,7 +75,8 @@
                         </td>
                         <td>
                             <a href="" data-template="app:epub-link">epub</a>, 
-                    <a href="" data-template="app:pdf-link">pdf</a>
+                            <a href="" data-template="app:pdf-link">PDF</a>,
+                            <a href="" data-template="app:zip-link">XML</a>
                         </td>
                         <td>
                             <a href="" data-template="app:xml-link">XML</a>
