@@ -6,7 +6,7 @@
                 <div class="form-group">
                     <div class="col-md-12 col-xs-12">
                         <span class="input-group">
-                            <input name="query" type="search" class="templates:form-control form-control" placeholder="Search string"/>
+                            <input name="query" type="search" class="templates:form-control form-control" placeholder="Search String"/>
                             <span class="input-group-btn">
                                 <button id="f-btn-search" type="submit" class="btn btn-primary">
                                     <span class="glyphicon glyphicon-search"/>
@@ -16,7 +16,15 @@
                         <input type="hidden" name="field" value="text"/>
                     </div>
                 </div>
-                <!--<div class="form-group" data-toggle="tooltip" data-placement="left" title="Search mode">
+                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search Using Index">
+                    <div class="col-md-12 col-xs-12">
+                        <select multiple="multiple" name="index" class="form-control" data-template="templates:form-control">
+                            <option value="narrow" selected="selected">Search Using NGram Index</option>
+                            <option value="broad">Search Using Lucene Full-Text Index</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search Mode">
                     <div class="col-md-12 col-xs-12">
                         <select name="mode" class="form-control" data-template="templates:form-control">
                             <option value="any">Any</option>
@@ -29,13 +37,29 @@
                             <option value="regex">Regex</option>
                         </select>
                     </div>
-                </div>-->
-                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Authors">
+                </div>
+                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search Target">
+                    <div class="col-md-12 col-xs-12">
+                        <select multiple="multiple" name="tei-target" class="form-control" data-template="templates:form-control">
+                            <option value="text" selected="selected">Search Text</option>
+                            <option value="header">Search Header</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search Scope">
+                    <div class="col-md-12 col-xs-12">
+                        <select name="scope" class="form-control" data-template="templates:form-control">
+                            <option value="narrow" selected="selected">Narrow Search</option>
+                            <option value="broad">Broad Search</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Authors to Search">
                     <div class="col-md-12 col-xs-12">
                         <span class="app:work-authors"/>
                     </div>
                 </div>
-                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Scripts to search">
+                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Scripts to Search">
                     <div class="col-md-12 col-xs-12">
                         <select multiple="multiple" name="scripts" class="form-control" data-template="templates:form-control">
                             <option value="all" selected="selected">Any Script</option>
