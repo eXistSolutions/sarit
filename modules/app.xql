@@ -350,6 +350,14 @@ declare function app:pdf-link($node as node(), $model as map(*)) {
         <a xmlns="http://www.w3.org/1999/xhtml" href="{$node/@href}{$id}.pdf">{ $node/node() }</a>
 };
 
+declare function app:zip-link($node as node(), $model as map(*)) {
+    let $id := $model("work")/@xml:id
+    let $file := util:document-name($id)
+    let $downloadPath := request:get-scheme() ||"://" || request:get-server-name() || ":" || request:get-server-port() || substring-before(request:get-effective-uri(),"/db/apps/sarit/modules/view.xql") || $config:remote-download-root || "/" || substring-before($file,".xml") || ".zip"
+    return
+        <a xmlns="http://www.w3.org/1999/xhtml" href="{$downloadPath}">{ $node/node() }</a>
+};
+
 declare function app:xml-link($node as node(), $model as map(*)) {
     let $doc-path := document-uri(root($model("work")))
     let $eXide-link := templates:link-to-app("http://exist-db.org/apps/eXide", "index.html?open=" || $doc-path)
@@ -384,7 +392,7 @@ declare function app:work-authors($node as node(), $model as map(*)) {
     let $authors := distinct-values(collection($config:remote-data-root)//tei:fileDesc/tei:titleStmt/tei:author)
     let $control := 
         <select multiple="multiple" name="work-authors" class="form-control">
-            <option value="all">All</option>
+            <option value="all" selected="selected">Any Author</option>
             {for $author in $authors
             return <option value="{$author}">{$author}</option>
             }

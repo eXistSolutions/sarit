@@ -57,32 +57,47 @@ declare function local:add-references-recursively($now as element()) as element(
     else local:add-references-recursively($next)
 };
 
-declare function local:normalize-space($input)
+(:http://wiki.tei-c.org/index.php/XML_Whitespace
+#1 Retain one leading space if the node isn't first, has non-space content, and has leading space.
+#2 Retain one trailing space if the node isn't last, isn't first, and has trailing space. 
+#3 Retain one trailing space if the node isn't last, is first, has trailing space, and has non-space content.
+#4 Retain a single space if the node is an only child and only has space content.:)
+declare function local:tei-normalize-space($input)
 {
    element {node-name($input)}
       {$input/@*,
           for $child in $input/node()
               return
                if ($child instance of element())
-                 then local:normalize-space($child)
+                 then local:tei-normalize-space($child)
                  else 
                      if ($child instance of text())
                      then 
-                        let $initial-space := if (matches(substring($child, 1, 1),  '\s')) then ' ' else ''
-                        let $final-space := if (matches(substring($child, string-length($child), 1), '\s')) then ' ' else ''
-                        let $child := fn:normalize-space($child)
-                        let $result := 
-                        	if ($child eq ' ') 
-                        	then $child 
-                        	else concat($initial-space, $child, $final-space)
-                        return 
-                            $result
+                        (:#1 Retain one leading space if node isn't first, has non-space content, and has leading space:)
+                        if ($child/position() ne 1 and matches($child,'^\s') and normalize-space($child) ne '')
+                        then (' ', normalize-space($child))
+                        else
+                            (:#4 retain one space, if the node is an only child, and has content but it's all space:)
+                            if ($child/last() eq 1 and string-length($child) ne 0 and normalize-space($child) eq '')
+                            (:NB: this overrules standard normalization:)
+                            then ' ' 
+                            else 
+                                (:#2 if the node isn't last, isn't first, and has trailing space, retain trailing space and collapse and trim the rest:)
+                                if ($child/position() ne 1 and $child/position() ne last() and matches($child,'\s$'))
+                                then (normalize-space($child), ' ')
+                                else 
+                                    (:#3 if the node isn't last, is first, has trailing space, and has non-space content, then keep trailing space:)
+                                    if ($child/position() eq 1 and matches($child,'\s$') and normalize-space($child) ne '')
+                                    then (normalize-space($child), ' ')
+                                    (:if the node is an only child, and has content which is not all space, then trim and collapse, that is, apply standard normalization:)
+                                    else normalize-space($child)
+                     (:output comments and pi's:)
                      else $child
       }
 };
 
 
 let $doc := doc('/db/apps/sarit-data/data/tsp.xml')/*
-let $doc := local:normalize-space($doc)
+let $doc := local:tei-normalize-space($doc)
 let $doc := local:add-references-recursively($doc)
 return $doc
