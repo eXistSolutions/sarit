@@ -20,6 +20,7 @@ declare function tei-to-html:render($content as node()*, $options as element(par
     )
 };
 
+
 (: Typeswitch routine: Takes any node in a TEI content and either dispatches it to a dedicated 
  : function that handles that content (e.g. div), ignores it by passing it to the recurse() function
  : (e.g. text), or handles it directly (none). :)
@@ -611,9 +612,23 @@ declare function tei-to-html:said($node as element(tei:said), $options) {
 
 declare function tei-to-html:teiHeader($node as element(tei:teiHeader), $options) as element()+ {
     (
-    if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-    ,
-    <div class="teiHeader">{tei-to-html:recurse($node, $options)}</div>
+        if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
+        ,
+        <div class="teiHeader">
+            {tei-to-html:dispatch($node/tei:fileDesc/tei:titleStmt, $options)}
+            
+            <div class="extHeader">
+                <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#extHeader">
+                    <span class="glyphicon glyphicon-th-list"/> Toggle Full Header
+                </button>
+                <div id="extHeader" class="collapse">
+                    <div class="fileDesc">
+                    { tei-to-html:dispatch($node/tei:fileDesc/*[not(self::tei:titleStmt)], $options) }
+                    </div>
+                    { tei-to-html:dispatch($node/*[not(self::tei:fileDesc)], $options) }
+                </div>
+            </div>
+        </div>
     )
 };
 
