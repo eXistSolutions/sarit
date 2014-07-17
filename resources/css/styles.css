@@ -766,3 +766,26 @@ li.current {
 .titlePage {
   margin-bottom: 1em;
 }
+mark,
+.mark {
+  background-color: #D0DDE8;
+  padding-bottom: 0.1em;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0.1em;
+}
+.content-nav.top {
+  margin-bottom: 1em;
+}
+.content-nav.bottom {
+  margin-top: 1em;
+}
+.navigation-top {
+  vertical-align: middle;
+}
+.navigation-bottom {
+  vertical-align: middle;
+}
+.work-title {
+  font-size: 18px;
+}

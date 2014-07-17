@@ -214,6 +214,7 @@ declare function tei-to-html:dispatch($nodes as node()*, $options) as item()* {
                 (:contains: ( text | lg | model.gLike | model.phrase | model.inter | model.lLike | model.global )*:)
             case element(tei:witDetail) return tei-to-html:witDetail($node, $options)
                 (:contains: macro.phraseSeq:)
+            (:tei:floatingText:)
             
             case element(exist:match) return tei-to-html:exist-match($node, $options)
             
@@ -341,9 +342,13 @@ declare function tei-to-html:p($node as element(tei:p), $options) as element()+ 
         ,
         if ($rend = ('right', 'center') ) 
         then
-            <p>{ attribute class {concat('p', data($rend))}, attribute title {"tei:p"}}{ tei-to-html:recurse($node, $options) }</p>
+            <p>{ attribute class {concat('p', '-', data($rend))}, attribute title {"tei:p"}}{ tei-to-html:recurse($node, $options) }</p>
         else 
-            <p class="p-indent" title="tei:p">{tei-to-html:recurse($node, $options)}</p>
+            if ($rend = ('first', 'no-indent') ) 
+            then
+                <p class="p" title="tei:p">{tei-to-html:recurse($node, $options)}</p>
+            else
+                <p class="p-indent" title="tei:p">{tei-to-html:recurse($node, $options)}</p>
         )
 };
 
@@ -363,8 +368,16 @@ declare function tei-to-html:hi($node as element(tei:hi), $options) as element()
                     <span class="hi" title="tei:hi">{tei-to-html:recurse($node, $options)}</span>
 };
 
-declare function tei-to-html:list($node as element(tei:list), $options) as element() {
-    <ul title="tei:list">{tei-to-html:recurse($node, $options)}</ul>
+declare function tei-to-html:list($node as element(tei:list), $options) as element()+ {
+        (
+        if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
+        ,
+        if ($options/*:param[@name='ordered']/@value eq 'true')
+        then 
+            <ol title="tei:list">{tei-to-html:recurse($node, $options)}</ol>
+        else
+            <ul title="tei:list">{tei-to-html:recurse($node, $options)}</ul>
+        )
 };
 
 declare function tei-to-html:item($node as element(tei:item), $options) as element()+ {
@@ -419,14 +432,14 @@ declare function tei-to-html:sp($node as element(tei:sp), $options) as element()
     ,    
     if ($node/tei:l) 
     then
-        <div xmlns="http://www.w3.org/1999/xhtml" class="sp" id="{tei-to-html:get-id($node)}">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="sp" title="tei:sp" id="{tei-to-html:get-id($node)}">
         { 
             for $l in $node/tei:l
             return
                 tei-to-html:recurse($l, <options/>) }
         </div>
     else
-        <div xmlns="http://www.w3.org/1999/xhtml" class="sp" id="{tei-to-html:get-id($node)}">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="sp" title="tei:sp" id="{tei-to-html:get-id($node)}">
             { for $speaker in $node/tei:speaker return tei-to-html:recurse($speaker, <options/>) }
             <p class="p-ab">{ tei-to-html:recurse($node/tei:ab, <options/>) }</p>
         </div>
@@ -477,8 +490,12 @@ declare function tei-to-html:graphic($node as element(tei:graphic), $options) {
         <span title="tei:graphic"><img src="{if (starts-with($url, '/')) then $url else concat($relative-image-path, $url)}" alt="{normalize-space($head[1])}" width="{$width}"/></span>
 };
 
-declare function tei-to-html:table($node as element(tei:table), $options) as element() {
+declare function tei-to-html:table($node as element(tei:table), $options) as element()+ {
+    (
+    if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
+    ,
     <table title="tei:table">{tei-to-html:recurse($node, $options)}</table>
+    )
 };
 
 declare function tei-to-html:row($node as element(tei:row), $options) as element() {
@@ -740,7 +757,7 @@ declare function tei-to-html:bibl($node as element(tei:bibl), $options) {
     else tei-to-html:bibl-element-only($node, $options)
 };
 
-declare function tei-to-html:bibl-element-only($node as element(tei:bibl), $options) as element() {
+declare function tei-to-html:bibl-element-only($node as element(tei:bibl), $options) as element()+ {
     let $authors := $node/tei:author
     let $titles := $node/tei:title
     let $editors := $node/tei:editor
@@ -861,7 +878,7 @@ declare function tei-to-html:refsDecl($node as element(tei:refsDecl), $options) 
         </div>
         )
 };
-declare function tei-to-html:publicationStmt($node as element(tei:publicationStmt), $options) as element() {
+declare function tei-to-html:publicationStmt($node as element(tei:publicationStmt), $options) as element()+ {
         (:distributor:)
         let $authority := $node/tei:authority
         let $date := $node/tei:date
@@ -1311,6 +1328,7 @@ declare function tei-to-html:title($node as element(tei:title), $options) as ele
 
 declare function tei-to-html:titlePage($node as element(tei:titlePage), $options) as element()+ {
     (:argument byline docEdition docImprint docTitle titlePart:)
+    let $id := $node/@xml:id/string()
     let $docAuthors := $node/tei:docAuthor
     let $docAuthors := 
         if ($docAuthors) 
@@ -1366,12 +1384,16 @@ declare function tei-to-html:titlePage($node as element(tei:titlePage), $options
             tei-to-html:serialize-list(
                 for $titlePart in $titleParts return tei-to-html:recurse($titlePart, $options))
         else ()
+    let $other-elements := $node/(tei:* except (tei:titlePart, tei:docTitle, tei:docImprint, tei:docDate, tei:docAuthor))
+    let $log := util:log("DEBUG", ("##$other-elementsxxx): ", $other-elements))
+
     return
     (
     if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
     ,
     <div class="titlePage" title="tei:titlePage">
     <h7>Title Page</h7>
+        <a href="{$id}.html">
         <div>
             {$docTitles}
             {$titleParts}
@@ -1379,6 +1401,7 @@ declare function tei-to-html:titlePage($node as element(tei:titlePage), $options
             {$docImprints}
             {$docDates}
         </div>
+        </a>
     </div>
     )
 };

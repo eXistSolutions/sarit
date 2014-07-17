@@ -455,8 +455,8 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
 };
 
 (: LUCENE :)
-(:
-declare function app:view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
+
+declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
     for $div in $model("work")/id($id)
     let $div :=
         if ($query) then
@@ -478,7 +478,7 @@ declare function app:view($node as node(), $model as map(*), $id as xs:string, $
             $div
     let $view := 
         if ($div/tei:div) then
-            (: If the current section has child divs, display only the text up to the first div. :)
+             (:If the current section has child divs, display only the text up to the first div.:) 
             element { node-name($div) } {
                 $div/@*,
                 $div/tei:div[1]/preceding-sibling::*
@@ -490,11 +490,17 @@ declare function app:view($node as node(), $model as map(*), $id as xs:string, $
         { tei-to-html:recurse($view, <options/>) }
         </div>
 };
-:)
 
+declare function app:view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
+    let $index-param := request:get-parameter('index', 'ngram')
+    return
+        if ($index-param eq 'ngram')
+        then app:ngram-view($node, $model, $id, $query)
+        else app:lucene-view($node, $model, $id, $query)
+};
 
 (: NGRAM :)
-declare function app:view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
+declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
     for $div in $model("work")/id($id)
     let $div :=
         if ($query) then
@@ -534,15 +540,20 @@ declare function app:view($node as node(), $model as map(*), $id as xs:string, $
     are passed to nested templates through the $model parameter.
 :)
 declare 
+    %templates:default("index", "ngram")
     %templates:default("mode", "any")
+    %templates:default("tei-target", "text")
     %templates:default("scope", "narrow")
-    %templates:default("scripts", "all")
     %templates:default("work-authors", "all")
+    %templates:default("scripts", "all")
     %templates:default("target-texts", "all")
-function app:query($node as node()*, $model as map(*), $query as xs:string?, $mode as xs:string, $scope as xs:string, 
-    $scripts as xs:string+, $work-authors as xs:string+, $target-texts as xs:string+) {
+function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $mode as xs:string, $tei-target as xs:string+, $scope as xs:string, 
+    $work-authors as xs:string+, $scripts as xs:string+, $target-texts as xs:string+) {
     let $log := console:log("Preparing query...")
-    let $queryExpr := app:create-query($query, $mode)
+    let $queryExpr := 
+        if ($index eq 'ngram')
+        then $query
+        else app:create-query($query, $mode)
     let $log := console:log($query)
     return
         if (empty($queryExpr) or $queryExpr = "") then
@@ -597,36 +608,55 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $mo
                                             else ()
             let $context := 
                 if ($target-texts = 'all')
-                then collection($config:remote-data-root)/tei:TEI
-                else collection($config:remote-data-root)//tei:TEI[@xml:id = $target-texts]
+                then 
+                    if ($tei-target = 'text')
+                    then collection($config:remote-data-root)/tei:TEI/tei:text
+                    else collection($config:remote-data-root)/tei:TEI/tei:teiHeader
+                else 
+                    if ($tei-target = 'text')
+                    then collection($config:remote-data-root)//tei:TEI[@xml:id = $target-texts]/tei:text
+                    else collection($config:remote-data-root)//tei:TEI[@xml:id = $target-texts]/tei:teiHeader
+            
             (: LUCENE :)
-            (:
             let $hits :=
-                if ($scope eq 'narrow')
+                if ($index eq 'lucene')
                 then
-                    for $hit in (
-                        $context//tei:p[ft:query(., $queryExpr)],
-                        $context//tei:head[ft:query(., $queryExpr)],
-                        $context//tei:lg[ft:query(., $queryExpr)],
-                        $context//tei:trailer[ft:query(., $queryExpr)],
-                        $context//tei:note[ft:query(., $queryExpr)],
-                        $context//tei:list[ft:query(., $queryExpr)],
-                        $context//tei:l[ft:query(., $queryExpr)],
-                        $context//tei:quote[ft:query(., $queryExpr)],
-                        $context//tei:table[ft:query(., $queryExpr)],
-                        $context//tei:listApp[ft:query(., $queryExpr)],
-                        $context//tei:listBibl[ft:query(., $queryExpr)],
-                        $context//tei:cit[ft:query(., $queryExpr)]
-                        )
-                    order by ft:score($hit) descending
-                    return $hit
-                else
-                    for $hit in ($context//tei:div[not(tei:div)][ft:query(., $queryExpr)], $context//tei:div[not(tei:div)][ft:query(., $queryExpr)])
-                    order by ft:score($hit) descending
-                    return $hit
-            :)
+                    if ($scope eq 'narrow')
+                    then
+                        for $hit in 
+                            if ($tei-target = 'text')
+                            then
+                                (
+                                $context//tei:p[ft:query(., $queryExpr)],
+                                $context//tei:head[ft:query(., $queryExpr)],
+                                $context//tei:lg[ft:query(., $queryExpr)],
+                                $context//tei:trailer[ft:query(., $queryExpr)],
+                                $context//tei:note[ft:query(., $queryExpr)],
+                                $context//tei:list[ft:query(., $queryExpr)],
+                                $context//tei:l[ft:query(., $queryExpr)],
+                                $context//tei:quote[ft:query(., $queryExpr)],
+                                $context//tei:table[ft:query(., $queryExpr)],
+                                $context//tei:listApp[ft:query(., $queryExpr)],
+                                $context//tei:listBibl[ft:query(., $queryExpr)],
+                                $context//tei:cit[ft:query(., $queryExpr)]
+                                )
+                            else $context 
+                            
+                        order by ft:score($hit) descending
+                        return $hit
+                    else
+                        for $hit in 
+                            if ($tei-target = 'text')
+                            then
+                                (
+                                $context//tei:div[not(tei:div)][ft:query(., $queryExpr)], 
+                                $context//tei:div[not(tei:div)][ft:query(., $queryExpr)]
+                                )
+                            else $context
+                        order by ft:score($hit) descending
+                        return $hit
             (: NGRAM :)
-            let $hits :=
+            else
                 if ($scope eq 'narrow')
                 then
                     for $hit in (
