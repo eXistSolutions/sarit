@@ -5,6 +5,8 @@ import module namespace config="http://exist-db.org/apps/appblueprint/config" at
 declare namespace fo="http://www.w3.org/1999/XSL/Format";
 declare namespace tei="http://www.tei-c.org/ns/1.0";
 
+declare variable $fo:fontSerif := "Siddhanta, serif";
+
 declare function fo:tei2fo($nodes as node()*) {
     for $node in $nodes
     return
@@ -65,10 +67,10 @@ declare function fo:speech($speech as element(tei:sp)) {
 
 declare function fo:titlepage($header as element(tei:teiHeader))   {
     <fo:page-sequence master-reference="SARIT">
-        <fo:flow flow-name="xsl-region-body" font-family="Times, Times New Roman, serif">
+        <fo:flow flow-name="xsl-region-body" font-family="{$fo:fontSerif}">
             <fo:block font-size="44pt" text-align="center">
             {                     
-                $header/tei:fileDesc/tei:titleStmt/tei:title/text() 
+                $header/tei:fileDesc/tei:titleStmt/tei:title[@type = "main"]/text() 
             }
             </fo:block> 
             <fo:block text-align="center" font-size="20pt" font-style="italic" space-before="2em" space-after="2em">
@@ -76,7 +78,8 @@ declare function fo:titlepage($header as element(tei:teiHeader))   {
             </fo:block>
             <fo:block text-align="center" font-size="30pt" font-style="italic" space-before="2em" space-after="2em">
             {                  
-                $header/tei:fileDesc/tei:titleStmt/tei:author/text() 
+                $header/tei:fileDesc/tei:titleStmt/tei:author !
+                    <fo:block>{./text()}</fo:block>
             }
             </fo:block>
             <fo:block text-align="center" space-before="2em" space-after="2em">
@@ -88,7 +91,7 @@ declare function fo:titlepage($header as element(tei:teiHeader))   {
 
 declare function fo:table-of-contents($work as element(tei:TEI)) {
     <fo:page-sequence master-reference="SARIT">
-        <fo:flow flow-name="xsl-region-body" font-family="Times, Times New Roman, serif">
+        <fo:flow flow-name="xsl-region-body" font-family="{$fo:fontSerif}">
         <fo:block font-size="30pt" space-after="1em" font-family="Arial, Helvetica, sans-serif">Table of Contents</fo:block>
         {
             for $act at $act-count in $work/tei:text/tei:body/tei:div
@@ -148,7 +151,7 @@ declare function fo:cast-list($work as element(tei:TEI)) {
                     <fo:retrieve-marker retrieve-class-name="titel"/>
                 </fo:block>
             </fo:static-content>
-            <fo:flow flow-name="xsl-region-body" font-family="Times, Times New Roman, serif">
+            <fo:flow flow-name="xsl-region-body" font-family="{$fo:fontSerif}">
                 <fo:marker marker-class-name="titel">{$cast/tei:head/text()}</fo:marker>
                 <fo:block font-size="30pt" space-after="1em" font-family="Arial, Helvetica, sans-serif">{$cast/tei:head/text()}</fo:block>
                 { fo:cast($cast/tei:castList) }
@@ -157,7 +160,7 @@ declare function fo:cast-list($work as element(tei:TEI)) {
 };
 
 declare function fo:main($id as xs:string) {
-    let $play := collection($config:data)/tei:TEI[@xml:id = $id]
+    let $play := collection($config:remote-data-root)/tei:TEI[@xml:id = $id]
     return
         <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
             <fo:layout-master-set>
@@ -183,7 +186,7 @@ declare function fo:main($id as xs:string) {
                         <fo:page-number/>
                     </fo:block>
                 </fo:static-content>
-                <fo:flow flow-name="xsl-region-body" font-family="Times, Times New Roman, serif">
+                <fo:flow flow-name="xsl-region-body" font-family="{$fo:fontSerif}">
                     { fo:tei2fo($play/tei:text/tei:body/tei:div) }
                 </fo:flow>                         
             </fo:page-sequence>
@@ -191,7 +194,28 @@ declare function fo:main($id as xs:string) {
 };
 
 (:fo:main():)
+let $config :=
+    <fop version="1.0">
+      <!-- Strict user configuration -->
+      <strict-configuration>true</strict-configuration>
+    
+      <!-- Strict FO validation -->
+      <strict-validation>true</strict-validation>
+    
+      <!-- Base URL for resolving relative URLs -->
+      <base>./</base>
+    
+      <!-- Font Base URL for resolving relative font URLs -->
+      <font-base>./</font-base>
+      <renderers>
+          <renderer mime="application/pdf">
+            <fonts>
+              <auto-detect/>
+            </fonts>
+            </renderer>
+        </renderers>
+    </fop>
 let $id := request:get-parameter("id", ())
-let $pdf := xslfo:render(fo:main($id), "application/pdf", ())
+let $pdf := xslfo:render(fo:main($id), "application/pdf", (), $config)
 return
     response:stream-binary($pdf, "media-type=application/pdf", $id || ".pdf")
