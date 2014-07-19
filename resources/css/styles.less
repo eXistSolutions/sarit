@@ -219,6 +219,7 @@ footer{
 
 .row-offcanvas-left.active .sidebar-offcanvas {
     opacity: 1.0;
+    z-index: 2;
 }
 
 .sidebar-offcanvas {
@@ -354,4 +355,29 @@ mark, .mark {
 
 .work-title {
     font-size:18px;
+}
+
+// table of contents
+.contents {
+    .hide {
+        display: none;
+    }
+
+    li {
+        position: relative;
+    }
+    
+    li > .toc-link {
+        margin-left: 28px;
+    }
+    
+    .toc-toggle {
+        position: absolute;
+        left: 0;
+        width: 20px;
+    }
+    
+    .current .toc-link {
+        text-decoration: underline;
+    }
 }

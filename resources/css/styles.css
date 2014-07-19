@@ -662,6 +662,7 @@ footer p a:visited {
 }
 .row-offcanvas-left.active .sidebar-offcanvas {
   opacity: 1.0;
+  z-index: 2;
 }
 .sidebar-offcanvas {
   position: absolute;
@@ -787,4 +788,21 @@ mark,
 }
 .work-title {
   font-size: 18px;
+}
+.contents .hide {
+  display: none;
+}
+.contents li {
+  position: relative;
+}
+.contents li > .toc-link {
+  margin-left: 28px;
+}
+.contents .toc-toggle {
+  position: absolute;
+  left: 0;
+  width: 20px;
+}
+.contents .current .toc-link {
+  text-decoration: underline;
 }
