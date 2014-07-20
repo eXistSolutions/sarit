@@ -810,3 +810,12 @@ mark,
 .contents .current .toc-link {
   text-decoration: underline;
 }
+.poweredby {
+  text-align: right;
+  line-height: 93px;
+}
+.poweredby img {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 18px;
+}
