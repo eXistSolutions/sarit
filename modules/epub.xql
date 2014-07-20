@@ -67,7 +67,7 @@ declare function epub:mimetype-entry() {
 };
 
 declare function epub:fonts-entry() {
-    <entry name="OEBPS/siddhanta.otf" type="binary">{util:binary-doc($config:app-root || "/resources/fonts/siddhanta.otf")}</entry>
+    <entry name="OEBPS/Fonts/siddhanta.otf" type="binary">{util:binary-doc($config:app-root || "/resources/fonts/siddhanta.otf")}</entry>
 };
 
 (:~ 
@@ -119,7 +119,7 @@ declare function epub:content-opf-entry($title, $creator, $urn, $text) {
                 return
                     <item id="{$image/@url}" href="images/{$image/@url}.png" media-type="image/png"/>
                 }
-                <item id="epub.embedded.font" href="siddhanta.otf" media-type="font/opentype"/>
+                <item id="siddhanta.otf" href="Fonts/siddhanta.otf" media-type="application/vnd.ms-opentype"/>
             </manifest>
             <spine toc="ncx">
                 <itemref idref="title"/>

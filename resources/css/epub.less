@@ -2,7 +2,7 @@
   font-family: Siddhanta;
   font-style:   normal;
   font-weight:  400;
-  src: url(siddhanta.otf);
+  src: url("Fonts/siddhanta.otf");
 }
 
 @page {
@@ -22,7 +22,8 @@ body, div, span, p, h1, h2, h3, h4, h5, ol, ul, li {
 body {
     text-align: left;
     font-size: 1em;
-    font: serif;
+    line-height: 1.4em;
+    font-family: @serifFont;
     padding-right: 0.5em;
     -epub-hyphens: none;
     -webkit-hyphens: none;
@@ -30,24 +31,26 @@ body {
     hyphens: none;
 }
 
-h1, h2 {
-    font-family: sans-serif;
-    font-size: 1.8em;
+h1, h2, h3, h4, h5, h6 {
+    font-family: @serifFont;
+    color: #777777;
     line-height: 1.5em;
     margin: 2.55em 0 2.55em 0;
 }
 
+h1 {
+    font-size: 1.8em;
+}
+
 h2 {
-    font-size: 1.4em;
+    font-size: 1.5em;
     font-weight: normal;
     margin: 1.8em 0 1.4em;
     text-align: center;
 }
 
-p {
-    line-height: 145%;
-    text-align: left;
-    margin: .85em 0 0;
+h3 {
+    font-size: 1.2em;
 }
 
 ul {
@@ -58,7 +61,7 @@ ul {
 .teiHeader {
 
   li {
-    font-size:20px;
+    font-size: 1.8em;
   }
   
   .extHeader button {
@@ -67,13 +70,13 @@ ul {
 }
 
 tr.note td ul li {
-    font-size:14px;
+    font-size: 0.8em;
 }
     
 .copyright-notice, .revisionDesc, .notesStmt, .sourceDesc, .encodingDesc {
 
   p, li, td, .note, .bibl {
-    font-size:16px;
+    font-size: 0.8em;
     font-family:@serifFont;
   }
 }
@@ -101,8 +104,9 @@ tr.note td ul li {
     ul {
         margin-top:2em;
     }
-    .indent {padding-left:30px;
-            margin-top:10px;
+    .indent {
+        padding-left:30px;
+        margin-top:10px;
     }
 }
 .sourceDesc {
@@ -125,7 +129,7 @@ tr.note td ul li {
 }
  
 .text-front {
-    margin-bottom:1em;
+    margin-bottom: 1em;
 }
 
 .text-back {
@@ -137,5 +141,5 @@ tr.note td ul li {
 }
 
 .work-title {
-    font-size:18px;
+    font-size: 1.8em;
 }
