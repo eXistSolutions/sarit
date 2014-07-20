@@ -10,10 +10,23 @@ import module namespace request="http://exist-db.org/xquery/request";
 import module namespace tei-to-html="http://exist-db.org/xquery/app/tei2html" at "tei2html.xql";
 import module namespace kwic="http://exist-db.org/xquery/kwic" at "resource:org/exist/xquery/lib/kwic.xql";
 
+
+declare namespace expath="http://expath.org/ns/pkg";
 declare namespace tei="http://www.tei-c.org/ns/1.0";
 declare namespace h="http://www.w3.org/1999/xhtml";
 declare namespace functx="http://www.functx.com";
 
+declare variable $app:EXIDE := 
+    let $pkg := collection(repo:get-root())//expath:package[@name = "http://exist-db.org/apps/eXide"]
+    let $appLink :=
+        if ($pkg) then
+            substring-after(util:collection-name($pkg), repo:get-root())
+        else
+            ()
+    let $path := string-join((request:get-context-path(), request:get-attribute("$exist:prefix"), $appLink, "index.html"), "/")
+    return
+        replace($path, "/+", "/");
+    
 (:~
  : Process navbar links to cope with browsing.
  :)
@@ -315,13 +328,16 @@ declare %private function app:work-title($work as element(tei:TEI)?) {
 declare 
     %templates:wrap
 function app:checkbox($node as node(), $model as map(*), $target-texts as xs:string*) {
-    attribute { "value" } {
-        $model("work")/@xml:id/string()
-    },
-    if ($model("work")/@xml:id/string() = $target-texts) then
-        attribute checked { "checked" }
-    else
-        ()
+    let $id := $model("work")/@xml:id/string()
+    return (
+        attribute { "value" } {
+            $id
+        },
+        if ($id = $target-texts) then
+            attribute checked { "checked" }
+        else
+            ()
+    )
 };
 
 declare function app:work-author($node as node(), $model as map(*)) {
@@ -357,8 +373,7 @@ declare function app:pdf-link($node as node(), $model as map(*)) {
 };
 
 declare function app:zip-link($node as node(), $model as map(*)) {
-    let $id := $model("work")/@xml:id
-    let $file := util:document-name($id)
+    let $file := util:document-name($model("work"))
     let $downloadPath := request:get-scheme() ||"://" || request:get-server-name() || ":" || request:get-server-port() || substring-before(request:get-effective-uri(),"/db/apps/sarit/modules/view.xql") || $config:remote-download-root || "/" || substring-before($file,".xml") || ".zip"
     return
         <a xmlns="http://www.w3.org/1999/xhtml" href="{$downloadPath}">{ $node/node() }</a>
@@ -366,12 +381,15 @@ declare function app:zip-link($node as node(), $model as map(*)) {
 
 declare function app:xml-link($node as node(), $model as map(*)) {
     let $doc-path := document-uri(root($model("work")))
-    let $eXide-link := templates:link-to-app("http://exist-db.org/apps/eXide", "index.html?open=" || $doc-path)
+    let $eXide-link := $app:EXIDE || "?open=" || $doc-path
     let $rest-link := '/exist/rest' || $doc-path
     return
         if (xmldb:collection-available('/db/apps/eXide'))
-        then <a xmlns="http://www.w3.org/1999/xhtml" href="{$eXide-link}" target="_blank">{ $node/node() }</a>
-        else <a xmlns="http://www.w3.org/1999/xhtml" href="{$rest-link}" target="_blank">{ $node/node() }</a>
+        then 
+            <a xmlns="http://www.w3.org/1999/xhtml" href="{$eXide-link}" 
+                target="eXide" class="eXide-open" data-exide-open="{$doc-path}">{ $node/node() }</a>
+        else 
+            <a xmlns="http://www.w3.org/1999/xhtml" href="{$rest-link}" target="_blank">{ $node/node() }</a>
 };
 
 declare function app:copy-params($node as node(), $model as map(*)) {

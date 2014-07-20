@@ -12,6 +12,11 @@ if ($exist:path eq "/") then
         <redirect url="index.html"/>
     </dispatch>
     
+else if (contains($exist:path, "/$shared/")) then
+    <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
+        <forward url="/shared-resources/{substring-after($exist:path, '/$shared/')}"/>
+    </dispatch>
+    
 else if (contains($exist:path, "/resources")) then
     <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
         <forward url="{$exist:controller}/resources/{substring-after($exist:path, '/resources/')}"/>
@@ -27,8 +32,8 @@ else if (starts-with($exist:path, "/works/")) then
     let $html :=
         if ($exist:resource = "") then
             "browse.html"
-        else if ($exist:resource = "search.html") then
-            "search.html"
+        else if ($exist:resource = ("search.html", "toc.html")) then
+            $exist:resource
         else if (ends-with($exist:resource, ".html")) then
             "view-play.html"
         else
@@ -59,7 +64,12 @@ else if (starts-with($exist:path, "/works/")) then
                 <forward url="{$exist:controller}/{$html}"></forward>
                 <view>
                     <forward url="{$exist:controller}/modules/view.xql">
-                        <add-parameter name="id" value="{$id}"/>
+                    {
+                        if ($exist:resource != "toc.html") then
+                            <add-parameter name="id" value="{$id}"/>
+                        else
+                            ()
+                    }
                         <set-header name="Cache-Control" value="no-cache"/>
                     </forward>
                 </view>
