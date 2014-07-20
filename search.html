@@ -16,7 +16,14 @@
             <ul class="pagination" data-template="app:paginate" data-template-per-page="20" data-template-max-pages="9" data-template-min-hits="21"/>
         </div>
         <!-- query results -->
-        <table data-template="app:show-hits" data-template-per-page="20" id="results" class="col-md-8 table"/>
+        <table id="results" class="col-md-12 table">
+            <colgroup>
+                <col class="previous"/>
+                <col class="hi"/>
+                <col class="next"/>
+            </colgroup>
+            <tbody data-template="app:show-hits" data-template-per-page="20"/>
+        </table>
         <!-- bottom pagination for small device -->
         <div class="hidden-md hidden-lg hidden-sm">
             <ul class="pagination" data-template="app:paginate" data-template-per-page="20" data-template-max-pages="5" data-template-min-hits="21"/>
