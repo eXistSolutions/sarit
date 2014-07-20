@@ -1,0 +1,141 @@
+@font-face {
+  font-family: Siddhanta;
+  font-style:   normal;
+  font-weight:  400;
+  src: url(siddhanta.otf);
+}
+
+@page {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 1em;
+    margin-right: 0;
+}
+
+@serifFont: Siddhanta, serif;
+
+body, div, span, p, h1, h2, h3, h4, h5, ol, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    text-align: left;
+    font-size: 1em;
+    font: serif;
+    padding-right: 0.5em;
+    -epub-hyphens: none;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    hyphens: none;
+}
+
+h1, h2 {
+    font-family: sans-serif;
+    font-size: 1.8em;
+    line-height: 1.5em;
+    margin: 2.55em 0 2.55em 0;
+}
+
+h2 {
+    font-size: 1.4em;
+    font-weight: normal;
+    margin: 1.8em 0 1.4em;
+    text-align: center;
+}
+
+p {
+    line-height: 145%;
+    text-align: left;
+    margin: .85em 0 0;
+}
+
+ul {
+    list-style: none;
+    text-align: left;
+}
+
+.teiHeader {
+
+  li {
+    font-size:20px;
+  }
+  
+  .extHeader button {
+      margin: 0 0 1em 0;
+  }
+}
+
+tr.note td ul li {
+    font-size:14px;
+}
+    
+.copyright-notice, .revisionDesc, .notesStmt, .sourceDesc, .encodingDesc {
+
+  p, li, td, .note, .bibl {
+    font-size:16px;
+    font-family:@serifFont;
+  }
+}
+
+.sourceDesc {
+    table {
+    font-family:@serifFont;
+    margin-top:10px;
+  td {
+    padding:4px;
+  }
+  
+  }
+}
+
+.notesStmt {
+    font-family:@serifFont;
+}
+
+.fileDesc, .titleStmt {
+    margin-bottom:3em;
+}
+
+.titleStmt {
+    ul {
+        margin-top:2em;
+    }
+    .indent {padding-left:30px;
+            margin-top:10px;
+    }
+}
+.sourceDesc {
+    td {
+        vertical-align:top;
+    }
+}
+
+.p-indent {
+    text-indent:1.7em;
+}
+
+.trailer {
+    font-size:18px;
+    text-align:center;
+}
+
+.title-italic {
+    font-style: italic;
+}
+ 
+.text-front {
+    margin-bottom:1em;
+}
+
+.text-back {
+    margin-top:1em;
+}
+
+.titlePage {
+    margin-bottom:1em;
+}
+
+.work-title {
+    font-size:18px;
+}

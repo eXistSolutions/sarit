@@ -10,7 +10,7 @@
     @see http://code.google.com/p/epubcheck/
 :)  
 
-xquery version "1.0";
+xquery version "3.0";
 
 module namespace epub = "http://exist-db.org/xquery/epub";
 
@@ -47,7 +47,8 @@ declare function epub:generate-epub($title, $creator, $doc, $urn, $db-path-to-re
             epub:table-of-contents-xhtml-entry($title, $doc, false()),
             epub:body-xhtml-entries($doc),
             epub:stylesheet-entry($db-path-to-resources),
-            epub:toc-ncx-entry($urn, $title, $doc)
+            epub:toc-ncx-entry($urn, $title, $doc),
+            epub:fonts-entry()
         )
     return
         $entries
@@ -63,6 +64,10 @@ declare function epub:generate-epub($title, $creator, $doc, $urn, $db-path-to-re
 :)
 declare function epub:mimetype-entry() {
     <entry name="mimetype" type="text" method="store">application/epub+zip</entry>
+};
+
+declare function epub:fonts-entry() {
+    <entry name="OEBPS/siddhanta.otf" type="binary">{util:binary-doc($config:app-root || "/resources/fonts/siddhanta.otf")}</entry>
 };
 
 (:~ 
@@ -96,7 +101,7 @@ declare function epub:content-opf-entry($title, $creator, $urn, $text) {
                 <dc:title>{$title}</dc:title>
                 <dc:creator>{$creator}</dc:creator>
                 <dc:identifier id="bookid">{$urn}</dc:identifier>
-                <dc:language>en-US</dc:language>
+                <dc:language>sa</dc:language>
             </metadata>
             <manifest>
                 <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
@@ -114,6 +119,7 @@ declare function epub:content-opf-entry($title, $creator, $urn, $text) {
                 return
                     <item id="{$image/@url}" href="images/{$image/@url}.png" media-type="image/png"/>
                 }
+                <item id="epub.embedded.font" href="siddhanta.otf" media-type="font/opentype"/>
             </manifest>
             <spine toc="ncx">
                 <itemref idref="title"/>
@@ -301,7 +307,7 @@ declare function epub:table-of-contents-xhtml-entry($title, $doc, $suppress-docu
     @return the serialized XHTML element
 :)
 declare function epub:assemble-xhtml($title, $body) {
-    <html xmlns="http://www.w3.org/1999/xhtml">
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="sa">
         <head>
             <title>{$title}</title>
             <link type="text/css" rel="stylesheet" href="stylesheet.css"/>

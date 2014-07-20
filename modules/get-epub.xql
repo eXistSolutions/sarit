@@ -23,8 +23,7 @@ let $work := collection($config:remote-data-root)//id($id)
 let $entries := local:work2epub($id, $work)
 return
     (
-        response:set-header("Content-Disposition", concat("attachment; filename=", concat($id, '.epub')))
-        ,
+        response:set-header("Content-Disposition", concat("attachment; filename=", concat($id, '.epub'))),
         response:stream-binary(
             compression:zip( $entries, true() ),
             'application/epub+zip',

@@ -5,19 +5,16 @@ module namespace tei-to-html="http://exist-db.org/xquery/app/tei2html";
 declare namespace tei="http://www.tei-c.org/ns/1.0";
 
 (: A helper function in case no options are passed to the function :)
-declare function tei-to-html:render($content as node()*) as element() {
+declare function tei-to-html:render($content as node()*) as element()+ {
     tei-to-html:render($content, <parameters/>)
 };
 
 (: The main function for the tei-to-html module: Takes TEI content, turns it into HTML, and wraps the result in a div element :)
 declare function tei-to-html:render($content as node()*, $options as element(parameters)*) as element()+ {
-    (
-    if ($content/@xml:id) then <a class="anchor" id="{$content/@xml:id}"/> else ()
-    ,
     <div class="document">
+        {if ($content/@xml:id) then <a class="anchor" id="{$content/@xml:id}"/> else ()}
         { tei-to-html:dispatch($content, $options) }
     </div>
-    )
 };
 
 

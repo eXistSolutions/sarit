@@ -9,7 +9,7 @@ declare variable $exist:root external;
 if ($exist:path eq "/") then
     (: forward root path to index.xql :)
     <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
-        <redirect url="browse.html"/>
+        <redirect url="works/"/>
     </dispatch>
     
 else if (contains($exist:path, "/$shared/")) then
