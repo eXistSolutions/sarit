@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <div data-template="templates:surround" data-template-with="template.html" data-template-at="content">
     <form action="search.html" class="form form-horizontal">
         <div class="col-md-3 col-md-push-9">
@@ -19,12 +20,12 @@
                 <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search Using Index">
                     <div class="col-md-12 col-xs-12">
                         <select multiple="multiple" name="index" class="form-control" data-template="templates:form-control">
-                            <option value="narrow" selected="selected">Search Using NGram Index</option>
-                            <option value="broad">Search Using Lucene Full-Text Index</option>
+                            <option value="ngram" selected="selected">Search Using NGram Index</option>
+                            <option value="lucene">Search Using Lucene Full-Text Index</option>
                         </select>
                     </div>
                 </div>
-                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search Mode">
+                <div id="mode-selection" class="form-group" data-toggle="tooltip" data-placement="left" title="Search Mode" style="display: none;">
                     <div class="col-md-12 col-xs-12">
                         <select name="mode" class="form-control" data-template="templates:form-control">
                             <option value="any">Any</option>

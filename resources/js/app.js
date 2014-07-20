@@ -30,4 +30,26 @@ $(document).ready(function() {
         }
         link.parent().toggleClass("open");
     });
+    
+    // search form
+    var select = $("select[name='index']");
+    
+    // hide mode selection unless lucene index is chosen
+    function initIndexSelect() {
+        if (select.length == 0) {
+            return;
+        }
+        var index = select.val();
+        $("#mode-selection").hide();
+        for (var i = 0; i < index.length; i++) {
+            if (index[i] === "lucene") {
+                $("#mode-selection").show();
+            }
+        }
+    }
+    
+    select.change(function(ev) {
+        initIndexSelect();
+    });
+    initIndexSelect();
 });
