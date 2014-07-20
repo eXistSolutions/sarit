@@ -631,6 +631,7 @@ footer p a:visited {
   height: 40px;
   margin: 0 0 0 -50px;
   padding: 4px 8px;
+  z-index: 1;
   -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
   -o-transform: rotate(90deg);
@@ -651,14 +652,14 @@ footer p a:visited {
   left: 0;
 }
 .row-offcanvas-left .sidebar-offcanvas {
-  left: -70%;
+  left: -85%;
   opacity: 0.0;
   -webkit-transition: opacity 0.25s ease-out;
   -o-transition: opacity 0.25s ease-out;
   transition: opacity 0.25s ease-out;
 }
 .row-offcanvas-left.active {
-  left: 70%;
+  left: 85%;
 }
 .row-offcanvas-left.active .sidebar-offcanvas {
   opacity: 1.0;
@@ -667,7 +668,10 @@ footer p a:visited {
 .sidebar-offcanvas {
   position: absolute;
   top: 0;
-  width: 70%;
+  width: 85%;
+}
+.sidebar-offcanvas li a {
+  font-size: 14px;
 }
 /*Jens additions*/
 .teiHeader li {

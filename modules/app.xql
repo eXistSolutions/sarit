@@ -26,27 +26,27 @@ function app:nav-set-active($node as node(), $model as map(*)) {
     let $link := $li/h:a
     let $href := $link/@href
     return
-            element { node-name($li) } {
-                if ($href = $res or ($href = "works/" and starts-with($path, "/works/"))) then
-                    attribute class { "active" }
-                else
-                    (),
-                <h:a>
-                {
-                    $link/@* except $link/@href,
-                    attribute href {
-                        if ($link/@href = "works/" and starts-with($path, "/works/")) then
-                            "."
-                        else if (starts-with($path, "/works/")) then
-                            "../" || $link/@href
-                        else
-                            $link/@href
-                    },
-                    $link/node()
-                }
-                </h:a>
-            },
-            $model
+        element { node-name($li) } {
+            if ($href = $res or ($href = "works/" and starts-with($path, "/works/"))) then
+                attribute class { "active" }
+            else
+                (),
+            <h:a>
+            {
+                $link/@* except $link/@href,
+                attribute href {
+                    if ($link/@href = "works/" and starts-with($path, "/works/")) then
+                        "."
+                    else if (starts-with($path, "/works/")) then
+                        "../" || $link/@href
+                    else
+                        $link/@href
+                },
+                $link/node()
+            }
+            </h:a>,
+            $li/h:ul
+        }
 };
 
 declare function functx:contains-any-of

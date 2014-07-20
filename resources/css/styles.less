@@ -183,6 +183,7 @@ footer{
     height: 40px;
     margin: 0 0 0 -50px;
     padding: 4px 8px;
+    z-index: 1;
     -webkit-transform: rotate(90deg);
     -moz-transform: rotate(90deg);
     -o-transform: rotate(90deg);
@@ -206,7 +207,7 @@ footer{
 }
 
 .row-offcanvas-left .sidebar-offcanvas {
-    left: -70%;
+    left: -85%;
     opacity: 0.0;
     -webkit-transition: opacity .25s ease-out;
     -o-transition: opacity .25s ease-out;
@@ -214,7 +215,7 @@ footer{
 }
 
 .row-offcanvas-left.active {
-    left: 70%;
+    left: 85%;
 }
 
 .row-offcanvas-left.active .sidebar-offcanvas {
@@ -225,7 +226,11 @@ footer{
 .sidebar-offcanvas {
     position: absolute;
     top: 0;
-    width: 70%;
+    width: 85%;
+
+    li a {
+        font-size: 14px;
+    }
 }
 
 /*Jens additions*/
