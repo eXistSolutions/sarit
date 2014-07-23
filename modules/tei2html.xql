@@ -17,7 +17,6 @@ declare function tei-to-html:render($content as node()*, $options as element(par
     </div>
 };
 
-
 (: Typeswitch routine: Takes any node in a TEI content and either dispatches it to a dedicated 
  : function that handles that content (e.g. div), ignores it by passing it to the recurse() function
  : (e.g. text), or handles it directly (none). :)
@@ -338,15 +337,11 @@ declare function tei-to-html:p($node as element(tei:p), $options) as element()+ 
         (
         if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
         ,
-        if ($rend = ('right', 'center') ) 
+        if ($rend = ('right', 'center', 'first', 'indent') ) 
         then
-            <p>{ attribute class {concat('p', '-', data($rend))}, attribute title {"tei:p"}}{ tei-to-html:recurse($node, $options) }</p>
+            <p class="{concat('p', '-', data($rend))}" title="tei:p">{ tei-to-html:recurse($node, $options) }</p>
         else 
-            if ($rend = ('first', 'no-indent') ) 
-            then
-                <p class="p" title="tei:p">{tei-to-html:recurse($node, $options)}</p>
-            else
-                <p class="p-indent" title="tei:p">{tei-to-html:recurse($node, $options)}</p>
+            <p class="p" title="tei:p">{tei-to-html:recurse($node, $options)}</p>
         )
 };
 
@@ -402,6 +397,7 @@ declare function tei-to-html:xmlid($node as element(), $options) as element() {
     <a name="{$node/@xml:id}"/>
 };
 
+(:NB: resolve target!:)
 declare function tei-to-html:ref($node as element(tei:ref), $options) {
     let $target := $node/@target
     return
@@ -710,6 +706,7 @@ declare function tei-to-html:notesStmt($node as element(tei:notesStmt), $options
 };
 
 (:SR:)
+(:use ⓝ to mark:)
 declare function tei-to-html:note($node as element(tei:note), $options) as element()+ {
     if (not($node/@place) and ($node/parent::tei:head or $node/ancestor::tei:bibl or
 		      $node/ancestor::tei:biblFull or $node/ancestor::tei:biblStruct))
