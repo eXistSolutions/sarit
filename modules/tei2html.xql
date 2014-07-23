@@ -1128,7 +1128,8 @@ declare %private function tei-to-html:get-id($node as element()) {
 declare function tei-to-html:resolve-xml-id($node as attribute(), $options) {
     let $absoluteURI := resolve-uri($node, base-uri($node))
     let $node := replace($node, '^#?(.*)$', '$1')
-    return doc($absoluteURI)//*[@xml:id eq $node]/text()
+    return
+        doc($absoluteURI)/id($node)/text()
 };
 
 (:Below are a number of dummy functions, dividing into empty, block-level and inline elements:)
