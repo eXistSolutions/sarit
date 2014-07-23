@@ -83,7 +83,7 @@ declare function fo:titlepage($header as element(tei:teiHeader))   {
             }
             </fo:block>
             <fo:block text-align="center" space-before="2em" space-after="2em">
-            <!--fo:external-graphic content-height="300pt" src="http://data.stonesutras.org:8600/exist/apps/zarit/resources/images/SARIT-french.jpg"/-->    
+            <!--fo:external-graphic content-height="300pt" src="http://data.stonesutras.org:8600/exist/apps/sarit/resources/images/SARIT-french.jpg"/-->    
             </fo:block>
         </fo:flow>                    
     </fo:page-sequence>
