@@ -275,16 +275,19 @@ declare function app:toc-div($div, $long as xs:string?, $current as element()?, 
     return
         if ($list-item eq 'list-item')
         then
-            <li class="{if ($div is $current) then 'current' else 'not-current'}">
-                {
-                    if ($div/tei:div and count($div/ancestor::tei:div) < 2) then
-                        <a href="#" class="toc-toggle"><i class="glyphicon glyphicon-plus"/></a>
-                    else
-                        ()
-                }
-                <a href="{$div-id}.html" class="toc-link">{$title}</a> 
-                {if ($long eq 'yes' and count($div/ancestor::tei:div) < 2) then app:generate-toc-from-divs($div, $current, $long) else ()}
-            </li>
+            if (count($div/ancestor::tei:div) < 2)
+            then
+                <li class="{if ($div is $current) then 'current' else 'not-current'}">
+                    {
+                        if ($div/tei:div and count($div/ancestor::tei:div) < 2) then
+                            <a href="#" class="toc-toggle"><i class="glyphicon glyphicon-plus"/></a>
+                        else
+                            ()
+                    }
+                    <a href="{$div-id}.html" class="toc-link">{$title}</a> 
+                    {if ($long eq 'yes') then app:generate-toc-from-divs($div, $current, $long) else ()}
+                </li>
+            else ()
         else
             <a href="{$div-id}.html">{$title}</a> 
 };
