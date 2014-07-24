@@ -1,5 +1,4 @@
-<div xmlns="http://www.w3.org/1999/xhtml"
-    class="templates:surround?with=templates/page.html&amp;at=main">
+<div class="help" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
     <h1>Search Help</h1>
     <p>In this Shakespeare app, a number of search options are available. Simple searches are
         possible, but it is also possible to perform quite advanced searches. Search is based on the
@@ -170,47 +169,63 @@
             for searching text (and for replacing text, but this is not relevant in a search
             engine). Lucene only supports a smaller range of regex operators, but they should,
             however, be enough for most uses.</p> If you use any of the regex operators (<code>. ? +
-            * | { } [ ] ( ) " \ # @ &amp; &lt; > ~</code>), the search will automatically switch to
+            * | { } [ ] ( ) " \ # @ &amp; &lt; &gt; ~</code>), the search will automatically switch to
         regex mode. Note that some of the operators are the same as those used in standard Lucene
         syntax, but they occur in different positions in relation to the words/character strings
-        they operate on. <section><h4>Match any character</h4>
+        they operate on. <section>
+            <h4>Match any character</h4>
             <p>The period <code>"."</code> can be used to represent any character.</p>
             <p> In order to retrieve the string <code>"snake"</code>, the following expressions can
                 be used:</p>
             <ul>
-                <li><code>s.ake</code></li>
-                <li><code>.nak.</code></li>
+                <li>
+                    <code>s.ake</code>
+                </li>
+                <li>
+                    <code>.nak.</code>
+                </li>
             </ul>
         </section>
-        <section><h4>One-or-more</h4>
+        <section>
+            <h4>One-or-more</h4>
             <p>The plus sign <code>"+"</code> can be used to repeat the preceding shortest pattern
                 once or more times. </p>
             <p>In order to retrieve the string <code>"deer"</code>, the following expression can be
                 used:</p>
             <ul>
-                <li><code>de+r</code></li>
+                <li>
+                    <code>de+r</code>
+                </li>
             </ul>
-            <section><h4>Zero-or-more</h4>
+            <section>
+                <h4>Zero-or-more</h4>
                 <p>The asterisk <code>"*"</code> can be used to match the preceding shortest pattern
                     zero-or-more times.</p>
                 <p>In order to retrieve the strings <code>"weed"</code> and <code>"wed"</code>, the
                     following expression can be used:</p>
                 <ul>
-                    <li><code>we*d</code></li>
+                    <li>
+                        <code>we*d</code>
+                    </li>
                 </ul>
                 <p>Note that in Lucene standard syntax, <code>"+"</code> and <code>"*"</code> serve
                     as wildcards, standing in for characters; here they quantify the immediately
                     preceding character (or pattern). </p>
             </section>
-            <section><h4>Zero-or-one</h4>
+            <section>
+                <h4>Zero-or-one</h4>
                 <p>The question mark <code>"?"</code> makes the preceding shortest pattern optional.
                     It matches zero or one times. </p>
                 <p>In order to retrieve the strings <code>"weed"</code> and <code>"wed"</code>, the
                     following expression can be used:</p>
                 <ul>
-                    <li><code>wee?d</code></li>
-                </ul></section>
-            <section><h4>Min-to-max</h4>
+                    <li>
+                        <code>wee?d</code>
+                    </li>
+                </ul>
+            </section>
+            <section>
+                <h4>Min-to-max</h4>
                 <p>Curly brackets <code>"{}"</code> can be used to specify a minimum and
                     (optionally) a maximum number of times the preceding shortest pattern can
                     repeat. The allowed forms are:</p>
@@ -231,9 +246,15 @@
                 <p>In order to retrieve the string <code>"weed"</code>, the following expression can
                     be used:</p>
                 <ul>
-                    <li><code>we{2}d</code></li>
-                    <li><code>we{2,}d</code></li>
-                    <li><code>we{2,5}d</code></li>
+                    <li>
+                        <code>we{2}d</code>
+                    </li>
+                    <li>
+                        <code>we{2,}d</code>
+                    </li>
+                    <li>
+                        <code>we{2,5}d</code>
+                    </li>
                 </ul>
             </section>
             <section>
@@ -244,21 +265,31 @@
                 <p>In order to retrieve the string <code>"weed"</code>, the following expression can
                     be used:</p>
                 <ul>
-                    <li><code>w(..)+d</code></li>
-                    <li><code>w(ee)*d</code></li>
-                    <li><code>w(ee)?d</code></li>
+                    <li>
+                        <code>w(..)+d</code>
+                    </li>
+                    <li>
+                        <code>w(ee)*d</code>
+                    </li>
+                    <li>
+                        <code>w(ee)?d</code>
+                    </li>
                 </ul>
             </section>
             <section>
                 <h4> Alternation </h4>
                 <p>The pipe symbol <code>"|"</code> acts as an OR operator. The match will succeed
                     if the pattern on either the left-hand side OR the right-hand side matches. The
-                    alternation applies to the <span class="emphasis"><em>longest
-                        pattern</em></span>, not the shortest <!--explain!-->.</p>
+                    alternation applies to the <span class="emphasis">
+                        <em>longest
+                        pattern</em>
+                    </span>, not the shortest <!--explain!-->.</p>
                 <p>In order to retrieve the strings <code>"proportions"</code> and
                         <code>"preparations"</code>, the following expression can be used:</p>
                 <ul>
-                    <li><code>(prepara|propor)tions</code></li>
+                    <li>
+                        <code>(prepara|propor)tions</code>
+                    </li>
 
                 </ul>
             </section>
@@ -274,28 +305,60 @@
                     following are signified.</p>
                 <p> The allowed forms are:</p>
                 <table>
-                    <tr><td>[abc]</td><td>'a' or 'b' or 'c'</td></tr>
-                    <tr><td>[a-c]</td><td>'a' or 'b' or 'c' </td></tr>
-                    <tr><td>[-abc]</td><td>'-' or 'a' or 'b' or 'c' </td></tr>
-                    <tr><td>[abc\-]</td><td>'-' or 'a' or 'b' or 'c'</td> </tr>
-                    <tr><td>[^abc]</td><td>any character except 'a' or 'b' or 'c'</td> </tr>
-                    <tr><td>[^a-c]</td><td>any character except 'a' or 'b' or 'c'</td> </tr>
-                    <tr><td>[^-abc]</td><td>any character except '-' or 'a' or 'b' or 'c' </td></tr>
-                    <tr><td>[^abc\-]</td><td>any character except '-' or 'a' or 'b' or 'c'</td></tr>
+                    <tr>
+                        <td>[abc]</td>
+                        <td>'a' or 'b' or 'c'</td>
+                    </tr>
+                    <tr>
+                        <td>[a-c]</td>
+                        <td>'a' or 'b' or 'c' </td>
+                    </tr>
+                    <tr>
+                        <td>[-abc]</td>
+                        <td>'-' or 'a' or 'b' or 'c' </td>
+                    </tr>
+                    <tr>
+                        <td>[abc\-]</td>
+                        <td>'-' or 'a' or 'b' or 'c'</td> </tr>
+                    <tr>
+                        <td>[^abc]</td>
+                        <td>any character except 'a' or 'b' or 'c'</td> </tr>
+                    <tr>
+                        <td>[^a-c]</td>
+                        <td>any character except 'a' or 'b' or 'c'</td> </tr>
+                    <tr>
+                        <td>[^-abc]</td>
+                        <td>any character except '-' or 'a' or 'b' or 'c' </td>
+                    </tr>
+                    <tr>
+                        <td>[^abc\-]</td>
+                        <td>any character except '-' or 'a' or 'b' or 'c'</td>
+                    </tr>
                 </table>
                 <p>Note that the dash <code>"-"</code> indicates a range of characters, unless it
                     is the first character or if it is escaped with a backslash.</p>
                 <p>In order to retrieve the string <code>"weed"</code>, the following expression can
                     be used:</p>
                 <ul>
-                    <li><code>w[uiaeo]+d</code></li>
-                    <li><code>w[uiaeo]*d</code></li>
-                    <li><code>we[uiaeo]?d</code></li>
-                    <li><code>w[a-u]*ed</code></li>
-                    <li><code>we[^o]d</code></li>
+                    <li>
+                        <code>w[uiaeo]+d</code>
+                    </li>
+                    <li>
+                        <code>w[uiaeo]*d</code>
+                    </li>
+                    <li>
+                        <code>we[uiaeo]?d</code>
+                    </li>
+                    <li>
+                        <code>w[a-u]*ed</code>
+                    </li>
+                    <li>
+                        <code>we[^o]d</code>
+                    </li>
                 </ul>
                 <p>The possibilities here are enormous.</p>
                 <p>To be continued ….</p>
-            </section></section>
+            </section>
+        </section>
     </section>
 </div>
