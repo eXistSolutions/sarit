@@ -645,9 +645,9 @@ footer p a:visited {
   top: 50%;
   bottom: 50%;
   height: 40px;
-  margin: 0 0 0 -50px;
+  margin: 0 0 0 -55px;
   padding: 4px 8px;
-  z-index: 1;
+  z-index: 3;
   -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
   -o-transform: rotate(90deg);
