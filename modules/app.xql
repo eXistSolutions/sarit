@@ -252,14 +252,14 @@ declare function app:derive-title($div) {
                     , ' ')
                 )
             else
-                (:as the last resort, take part of the text itself:)
+                (:otherwise, take part of the text itself:)
                 if (string-length(data($div)) gt 0) 
                 then 
                     concat(
                         if ($div/@type) 
                         then concat('[', $div/@type/string(), '] ') 
                         else ''
-                    , substring(data($div), 1, 100), '...') 
+                    , substring(data($div), 1, 25), '…') 
                 else concat('[', $div/@type/string(), ']')
         return $title
     else
@@ -277,13 +277,13 @@ declare function app:toc-div($div, $long as xs:string?, $current as element()?, 
         then
             <li class="{if ($div is $current) then 'current' else 'not-current'}">
                 {
-                    if ($div/tei:div) then
+                    if ($div/tei:div and count($div/ancestor::tei:div) < 2) then
                         <a href="#" class="toc-toggle"><i class="glyphicon glyphicon-plus"/></a>
                     else
                         ()
                 }
                 <a href="{$div-id}.html" class="toc-link">{$title}</a> 
-                {if ($long eq 'yes') then app:generate-toc-from-divs($div, $current, $long) else ()}
+                {if ($long eq 'yes' and count($div/ancestor::tei:div) < 2) then app:generate-toc-from-divs($div, $current, $long) else ()}
             </li>
         else
             <a href="{$div-id}.html">{$title}</a> 
@@ -551,12 +551,12 @@ declare
     %templates:default("target-texts", "all")
 function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $mode as xs:string, $tei-target as xs:string+, $scope as xs:string, 
     $work-authors as xs:string+, $scripts as xs:string+, $target-texts as xs:string+) {
-    let $log := console:log("Preparing query...")
+    (:let $log := console:log("Preparing query..."):)
     let $queryExpr := 
         if ($index eq 'ngram')
         then $query
         else app:create-query($query, $mode)
-    let $log := console:log($query)
+    (:let $log := console:log($query):)
     return
         if (empty($queryExpr) or $queryExpr = "") then
             let $cached := session:get-attribute("apps.sarit")
