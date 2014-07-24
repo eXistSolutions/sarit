@@ -252,40 +252,17 @@ declare function app:derive-title($div) {
                     , ' ')
                 )
             else
-                (:if there is a header somewhere further down in the div:)
-                if ($div//tei:head) 
-                then 
-                    concat(
-                        if ($n) then concat($n, ': ') else ''
-                        ,
-                        string-join(
-                            for $node in $div//tei:head/node() 
-                            return data($node)
-                        , ' ')
-                    )
-                else
-                    if ($div//tei:head) 
+                (:as the last resort, take part of the text itself:)
+                let $data := data($div)
+                return
+                    if (string-length($data) gt 0) 
                     then 
                         concat(
-                            if ($n) then concat($n, ': ') else ''
-                            ,
-                            string-join(
-                                for $node in $div//tei:head/node() 
-                                return data($node)
-                            , ' ')
-                        )
-                    else
-                        let $data := data($div)
-                        return
-                            if (string-length($data) gt 0) 
-                            then 
-                                concat(
-                                    if ($div/@type) 
-                                    then concat('[', $div/@type/string(), '] ') 
-                                    else ''
-                                , substring($data, 1, 100), '...') 
-                            else concat('[', $div/@type/string(), ']')
-            return $title
+                            if ($div/@type) 
+                            then concat('[', $div/@type/string(), '] ') 
+                            else ''
+                            , substring($data, 1, 100), '...') 
+                    else concat('[', $div/@type/string(), ']')
     else
         if (local-name($div) eq 'titlePage')
         then tei-to-html:titlePage($div, <options/>)
