@@ -253,16 +253,15 @@ declare function app:derive-title($div) {
                 )
             else
                 (:as the last resort, take part of the text itself:)
-                let $data := data($div)
-                return
-                    if (string-length($data) gt 0) 
-                    then 
-                        concat(
-                            if ($div/@type) 
-                            then concat('[', $div/@type/string(), '] ') 
-                            else ''
-                            , substring($data, 1, 100), '...') 
-                    else concat('[', $div/@type/string(), ']')
+                if (string-length(data($div)) gt 0) 
+                then 
+                    concat(
+                        if ($div/@type) 
+                        then concat('[', $div/@type/string(), '] ') 
+                        else ''
+                    , substring(data($div), 1, 100), '...') 
+                else concat('[', $div/@type/string(), ']')
+        return $title
     else
         if (local-name($div) eq 'titlePage')
         then tei-to-html:titlePage($div, <options/>)
