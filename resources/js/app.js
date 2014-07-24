@@ -41,10 +41,8 @@ $(document).ready(function() {
         }
         var index = select.val();
         $("#mode-selection").hide();
-        for (var i = 0; i < index.length; i++) {
-            if (index[i] === "lucene") {
-                $("#mode-selection").show();
-            }
+        if (index === "lucene") {
+            $("#mode-selection").show();
         }
     }
     
