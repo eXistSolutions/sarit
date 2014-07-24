@@ -1,8 +1,109 @@
-<div class="help" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
-    <h1>Search Help Brief</h1>
-    <p>…</p>
-    <section>
-        <h3>…</h3>
-        <p>…</p>
-    </section>
+<div class="help" data-template="templates:surround" data-template-with="template.html"
+    data-template-at="content">
+    <div class="container content">
+        <h2>Brief Search Help</h2>
+        <section>
+            <h4>Search 101</h4>
+            <p>Some brief hints are given here - for fuller explanations, please consult the other
+                search instructions.</p>
+            <ul>
+                <li>Are you searching for all occurrences of a certain string? <ul>
+                        <li>Use NGram search.</li>
+                    </ul>
+                </li>
+                <li>Do you want to use Regular Expressions? <ul>
+                        <li>Use standard regex syntax for ".", "?", "+" , "*", "[]" and "{}". </li>
+                    </ul>
+                </li>
+                <li>Do you want to search for the co-occurrence of a number of words. <ul>
+                        <li>Check whether the texts are divided into words, and if they are, select
+                            Use Lucene Full-Text Index and select All Search Terms Together. </li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h4>What Does It Mean?</h4>
+            <p>If you hover over the dropdowns in the Search panel, you will see the titles of the
+                dropdowns.</p>
+            <ul>
+                <li>Search For What? <ul>
+                        <li>You can either enter the precise term to search for or use Regular
+                            Expressions</li>
+                    </ul>
+                </li>
+                <li>Use Which Index? <ul>
+                        <li>Select Use NGram Index if the texts you are searching are not segmented
+                            into words or if you want to be sure that you find each and every
+                            occurence of a string.</li>
+                        <li>Select Use Lucene Full-Text Index only if the texts you are searching
+                            are segmented into words.</li>
+                        <li>Selecting Use Lucene Full-Text Index gives you extra options, show in
+                            the dropdown menu Use Which Search Mode? </li>
+                    </ul>
+                </li>
+                <li>Use Which Search Mode? <ul>
+                        <li>Only visible if you have selected Use Lucene Full-Text Index. </li>
+                        <li>Any Search Term <ul>
+                                <li>If you have entered several words to search, hits will also be
+                                    retrieved where only one of the terms appear, but the hits with
+                                    occurrences of many search terms will be displayed at the top. </li>
+                                <li>This is the default mode, so use it also if you are only
+                                    searching for one word. </li>
+                            </ul></li>
+                        <li>All Search Terms Together <ul>
+                                <li>If you have entered several words to search, hits will only be
+                                    retrieved where all of the terms appear. </li>
+                            </ul></li>
+                        <li>Phrase Search <ul>
+                                <li>Searches for words in immediate sequence </li>
+                            </ul></li>
+                        <li>Proximity Search (Ordered) <ul>
+                                <li>This only has meaning if there is more than one search term. </li>
+                                <li>Searches for words in sequence, with a maximum number of words
+                                    in between your search terms. The maximum number of words
+                                    allowed you enter as a digit after the search terms. </li>
+                            </ul></li>
+                        <li>Proximity Search (Unordered) <ul>
+                                <li>This only has meaning if there is more than one search term. </li>
+                                <li>Searches for words in near each other, regardless of order, with
+                                    a maximum number of words in between your search terms. The
+                                    maximum number of words allowed you enter as a digit after the
+                                    search terms. </li>
+                            </ul></li>
+                        <li>Fuzzy Search <ul>
+                                <li>This can only be used if there is just one search term. </li>
+                                <li>Enter the number 1 or 2 after the word to get fuzzier and
+                                    fuzzier results. See explanation in Lucene Search Help.</li>
+                            </ul></li>
+                        <li>Regex Search <ul>
+                                <li>For starters, use standard regex syntax for ".", "?", "+" , "*",
+                                    "[]" and "{}". Read about more options in Lucene Search Help.
+                                </li>
+                            </ul></li>
+                    </ul></li>
+                <li>Search Which Document Part? <ul>
+                        <li>You can choose to search the TEI Header or the TEI Text or both.</li>
+                    </ul></li>
+                <li>Search Narrowly Or Broadly? <ul>
+                        <li>A narrow search searches for hits in TEI elements below div elements. A
+                            broad search searches for hits in the lowest div elements.</li>
+                        <li>Useful mainly if you are interested in locating cooccurrence of more
+                            than one search term.</li>
+                    </ul></li>
+                <li>Search In Texts By Which Authors? <ul>
+                        <li>You can choose Search In Texts By Any Author to search throughout the
+                            corpus or you can select one or more authors to search in the texts
+                            attributed to them.</li>
+                        <li>Note that you can also select individual texts to search by clicking on
+                            the check-boxes to the left of the titles.</li>
+                    </ul></li>
+                <li>Search In Texts In Which Script? <ul>
+                        <li>You get the point ….</li>
+                        <li>Note that you can also select individual texts to search by clicking on
+                            the check-boxes to the left of the titles.</li>
+                    </ul></li>
+            </ul>
+        </section>
+    </div>
 </div>
