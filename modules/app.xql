@@ -279,7 +279,7 @@ declare function app:toc-div($div, $long as xs:string?, $current as element()?, 
             then
                 <li class="{if ($div is $current) then 'current' else 'not-current'}">
                     {
-                        if ($div/tei:div and count($div/ancestor::tei:div) < 2) then
+                        if ($div/tei:div and count($div/ancestor::tei:div) < 1) then
                             <a href="#" class="toc-toggle"><i class="glyphicon glyphicon-plus"/></a>
                         else
                             ()
