@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <meta xmlns="http://exist-db.org/xquery/repo">
-    <description>SARIT provides electronic editions of Sanskrit and other Indian-language texts.</description>
+    <description>SARIT: Search and Retrieval of Indic Texts</description>
     <author>Joern Turner</author>
     <author>Wolfgang Meier</author>
     <author>Lars Windauer</author>
