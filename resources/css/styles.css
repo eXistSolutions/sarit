@@ -513,6 +513,7 @@ li,
 a {
   font-family: Siddhanta, serif;
   font-size: 16px;
+  letter-spacing: normal;
 }
 dt {
   font-size: 1.4em;
