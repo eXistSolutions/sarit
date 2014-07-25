@@ -1,0 +1,76 @@
+<div class="help" data-template="templates:surround" data-template-with="template.html"
+    data-template-at="content">
+    <div class="container">
+        <div class="row help">
+            <div class="col-md-12">
+                <h3>Indexes and Searching</h3>
+                <section>
+                    <div><!--<h4>Indexes</h4>--><p>In contrast to search in a word processing
+                            document, search in a database goes through an index. Just as in the
+                            index to a book, terms are extracted from the text and arranged in a
+                            list where each item is keyed to certain positions in the text. When
+                            searching a database, the search terms are matched against the index and
+                            the parts of the text that contain the terms are then displayed.</p>
+                        <p>Sanskrit can be written in various acripts; in SARIT, Devanagari script
+                            and IAST romanisation are used. To the database, the fact that different
+                            scripts are used does not matter - they are treated in the same way, as
+                            Unicode characters. However, no matter whether Devanagari or
+                            romanisation is used, there are differences in the way texts
+                            aresegmented, that is, how texts are divided by the use of spaces (and
+                            other characters) into words. This is of great importance when searching
+                            SARIT texts, for one kind of indexes suit texts that are divided (more
+                            or less) into words and another kind suits texts that (more or less) are
+                            written as one long string of characters. The first of these, the word
+                            index, is Lucene Full-Text index, and the second, the string index, is
+                            the Ngram index.</p>
+                        <p>Different kinds of indexes means different search options. With a word
+                            index, you can, e.g., search for contexts in which a number of words are
+                            close to each other, regardless of their order, but with a string index,
+                            this is not easily possible. With a string index, you can use wildcards,
+                            but you basically search for what is there, that is, what you input as
+                            your search term is what you will retrieve. The important thing here is
+                            that if you use the string index, you will retrieve instances in which
+                            your search string occurs inside a longer string in the text, whereas if
+                            you use the word index (and do not use wildcards), you will find only
+                            instances in the text that are identical to your search string.</p>
+                        <p>All texts are indexed in both ways and you choose which index to use.
+                            Since not all texts divide strings into words, you should choose the
+                            index that is most suited for your text. This is not done
+                            automatically.</p>
+                        <p>All the texts are marked up according to the TEI Guidelines. A text
+                            marked up in this way basically divides into a header describing the
+                            text edition and the edition/text proper. The header, being written
+                            mostly in English, will have standard word divisions, so here the word
+                            index and its associated search options will be profitable to use, but
+                            the way word division is implemented in the text proper differs from
+                            text to text.</p>
+                        <p>However, though there are these differences, if you are looking simply
+                            for a string match of a single search term, use the defaults and search
+                            using the string index, optionally with the regex methods described in
+                                <a href="search-help-ngram">NGram Search</a>. This is easiest and
+                            very fast. If the text is suited for this being divided into words, use
+                            the word index and its many options. Now, to complicate matters, the
+                            Lucene Full-Text Index has quite advanced regex options, described in <a
+                                href="search-help-lucene-regex">Lucene Regex Search</a>, and one
+                            could, if one wishesd so, use these instead of the NGram Index, but the
+                            drawback here is that this would make searches quite slow and
+                            resource-demanding. Choose your index wisely.</p>
+                        <p>(With the string index, you can search for two strings within a certain
+                            range of characters, say 10-50, which can be useful, but generally
+                            speaking, the word index is much more powerful, though precisely this,
+                            it cannot do.)</p>
+                        <p>The texts Aṣṭāṅgahṛdayasaṃhitā (and its commentaries), Aṣṭāvakragītā,
+                            Brahmapurāṇa, Carakasaṃhitā, Nyāyabhāṣya, Padārthadharmasaṅgraha,
+                            Pātañjalayogaśāstra, Rājamārtaṇḍa or Bhojavṛtti, Rasaratnasamuccaya,
+                            Suśrutasaṃhitā, Tattvavaiśāradī, and Vākyapadīya all basically divide
+                            strings into what can be called words (though with different rules for
+                            dealing with sandhi phenomena), so here the word index will be of
+                            greatest use. For the rest of the texts, words will be run together, so
+                            here you will have to use the string index, unless you are sure that you
+                            know the complete string you are searching for.</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
