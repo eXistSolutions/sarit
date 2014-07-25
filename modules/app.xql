@@ -573,42 +573,42 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
             let $target-texts := 
                 (:("target-texts", "all")("work-authors", "all")("scripts", "all"):)
                 (:If no texts have been selected and no authors have been selected and no scripts have been selected, search in all texts:)
-                if ($target-texts eq 'all' and $work-authors eq 'all' and $scripts eq 'all')
+                if ($target-texts = 'all' and $work-authors = 'all' and $scripts = 'all')
                 then 'all' 
                 else 
                     (:("target-texts", "not-all")("work-authors", "all")("scripts", "all"):)
                     (:If one or more texts have been selected, but no authors and no scripts have been selected, search in selected texts:)
-                    if ($target-texts ne 'all' and $work-authors eq 'all' and $scripts eq 'all')
+                    if ($target-texts != 'all' and $work-authors = 'all' and $scripts = 'all')
                     then $target-texts
                     else 
                         (:("target-texts", "all")("work-authors", "not-all")("scripts", "all"):)
                         (:If no texts and no scripts have been selected, but one or more authors have been selected, search in texts selected by author:)
-                        if ($target-texts eq 'all' and $work-authors ne 'all' and $scripts eq 'all')
+                        if ($target-texts = 'all' and $work-authors != 'all' and $scripts = 'all')
                         then distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id)
                         else
                             (:("target-texts", "all")("work-authors", "all")("scripts", "not-all"):)
                             (:If no texts and no authors have been selected, but one or more scripts have been selected, search in texts selected by script:)
-                            if ($target-texts eq 'all' and $work-authors eq 'all' and $scripts ne 'all')
+                            if ($target-texts = 'all' and $work-authors = 'all' and $scripts != 'all')
                             then distinct-values(collection($config:remote-data-root)//tei:TEI[tei:text/@xml:lang = $scripts]/@xml:id)
                             else
                                 (:("target-texts", "not-all")("work-authors", "not-all")("scripts", "not-all"):)
                                 (:If one or more texts and one or more scripts and one or more authors have been selected, search in the union of the three:)
-                                if ($target-texts ne 'all' and $work-authors ne 'all' and $scripts ne 'all')
+                                if ($target-texts != 'all' and $work-authors != 'all' and $scripts != 'all')
                                 then ($target-texts, distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id), distinct-values(collection($config:remote-data-root)//tei:TEI[tei:text/@xml:lang = $scripts]/@xml:id))
                                 else
                                     (:("target-texts", "not-all")("work-authors", "not-all")("scripts", "all"):)
                                     (:If one or more texts and more authors have been selected, but no scripts have been selected, search in the union of selected texts and texts selected by authors:)
-                                    if ($target-texts ne 'all' and $work-authors ne 'all' and $scripts eq 'all')
+                                    if ($target-texts != 'all' and $work-authors != 'all' and $scripts = 'all')
                                     then ($target-texts, distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id))
                                     else    
                                         (:("target-texts", "not-all")("work-authors", "all")("scripts", "not-all"):)
                                         (:If one or more texts have been selected and one or more scripts have been selected, but no authors have been selected, search in union of selected texts and texts selected by script:)
-                                        if ($work-authors ne 'all' and $target-texts eq 'all' and $scripts ne 'all') 
+                                        if ($work-authors != 'all' and $target-texts = 'all' and $scripts != 'all') 
                                         then ($target-texts, distinct-values(collection($config:remote-data-root)//tei:TEI[tei:text/@xml:lang = $scripts]/@xml:id)) 
                                         else
                                             (:("target-texts", "all")("work-authors", "not-all")("scripts", "not-all"):)
                                             (:If no texts have been selected, but one or more scripts and one or more authors have been selected, search in union of texts selected by author and texts selected by script:)
-                                            if ($work-authors ne 'all' and $target-texts eq 'all' and $scripts ne 'all') 
+                                            if ($work-authors != 'all' and $target-texts = 'all' and $scripts != 'all') 
                                             then (distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id), distinct-values(collection($config:remote-data-root)//tei:TEI[./@xml:lang = $scripts]/@xml:id)) 
                                             else ()
             let $context := 
