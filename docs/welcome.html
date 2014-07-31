@@ -1,152 +1,138 @@
 <div class="help" data-template="templates:surround" data-template-with="template.html"
     data-template-at="content">
-    <div class="container content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="page-header">
-                    <h1>Welcome</h1>
-                    <small><!-- hhmts start -->Last modified: Tue Nov 9 00:38:24 CET 2010
-                        <!-- hhmts end --></small>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h2>SARIT: Search and Retrieval of Indic Texts</h2>
-                <!--<h3>Overview</h3>-->
-                <p>Welcome to the SARIT website. Here you will find electronic editions of Sanskrit
-                    and other Indian-language texts. These are documented, dated and have embedded
-                    notes about their change history, so that they can be publicly cited and used
-                    with confidence as scholarly sources. The editions in the SARIT library
-                    currently include <a href="./..">these works</a>.</p>
-                <p>This website also currently offers tools for text search, retrieval and analysis
-                    of the works in the SARIT library. You can search for words and phrases, and
-                    have your search results displayed as keywords-in-context. </p>
-                <p>All the texts at SARIT are licensed under a Creative Commons license. You can
-                    download all the texts in the following formats: XML, EPUB and PDF; and you can
-                    also open the XML-file online.</p>
-                <section>
-                    <h3>History</h3>
-                    <p>The <a href="http://www.tlg.uci.edu/">Thesaurus Linguae Graecae</a> was
-                        founded in 1972. Its subsequent growth as a sophisticated research tool, and
-                        the projects derived from it, such as <a
-                            href="http://www.perseus.tufts.edu/hopper/">PERSEUS</a>, demonstrated
-                        compellingly that a corpus of classical texts in machine-readable format
-                        could be vitally important for the study of language, art, history and
-                        culture. The history of SARIT looks back to a meeting convened by Prof.
-                        Richard Lariviere at the University of Texas in 1988 that brought together
-                        many specialists interested in creating a "TLG for Indic," i.e., a corpus of
-                        machine-readable texts in Indian languages. The <a
-                            href="http://www.academia.edu/360194/Report_on_the_Sanskrit_Text_Archive_Conference_Austin_Texas_October_28-29_1988"
-                            >minutes</a> of that meeting still make interesting reading today, and
-                        lay out some of the rationales underlying the present project. After the
-                        Texas meeting, the <a href="http://indology.info/">INDOLOGY website</a>
-                        began to make electronic texts of Sanskrit works available in an ad-hoc
-                        manner. This effort was highly successful, but there remained problems of
-                        format normalization, non-standard fonts and character encodings. Many of
-                        these problems were insoluble at the time. Things have moved forward since
-                        1988, especially in corpus linguistics, computer networking, and encoding
-                        standards. SARIT takes advantage of all these new developments, especially
-                            <a href="http://www.unicode.org/">Unicode</a>, <a
-                            href="http://www.w3.org/XML/">XML</a> and the <a
-                            href="http://www.tei-c.org/">Text Encoding Initiative (TEI)</a>.</p>
-                </section>
-                <section>
-                    <h3>What makes SARIT different?</h3>
-                    <p>The main difference between this collection of Sanskrit and other
-                        Indic-language texts is that these texts are marked up ("tagged") using the
-                        rich <a href="http://www.tei-c.org/">Text Encoding Initiative (TEI)</a>
-                        system. TEI is a way of tagging files that was designed by humanities
-                        scholars for humanities scholars. It is capable of building a great deal of
-                        intelligence into the file itself, so that a TEI-file can later serve many
-                        purposes and remains flexible and useful in the long term. TEI files contain
-                        their own history, so you can always find out where the file came from, how
-                        and when it has been updated, and how it relates to printed editions,
-                        manuscripts or other sources. For a gentle introduction to the TEI, see the
-                        excellent <a href="http://www.teibyexample.org/">TEI by Example website</a>.
-                        The files in this language corpus can be considered as electronic editions,
-                        and can be cited as such in scholarly research publications. SARIT texts
-                        respect copyright and are licensed appropriately to allow free academic use.
-                        Furthermore, SARIT makes its TEI editions of Indian texts freely available
-                        to all.</p>
-                    <p>Electronic texts are not static: we edit them, improve them, alter them, and
-                        – crucially – correct errors in them. SARIT solves the problem of how to
-                        manage the natural evolution of electronic texts, documenting changes and
-                        allowing for the divergence and comparison of versions, merging of versions
-                        and rolling-back to previous versions. SARIT achieves this through the use
-                        of sophisticated version-control software (see the technical section below). </p>
-                    <!--NB! Works with "." Does not work with "?+*|{}[]()\" Single |()[] are removed from search term.-->
-                    <!--<p>Additionally, any characters (except double quotes) are interpreted literally when surrounded by double quotes:</p> <pre class="literallayout">"john.smith.com"</pre>. NB: only works if shifting to phrase search. Partial phrase searches (john"@smith.com") are not possible-->
-                </section>
-                <section>
-                    <h3>Technical description</h3>
-                    <p>SARIT displays Indological texts marked up according to the <a
-                            href="http://www.tei-c.org/">Text Encoding Initiative (TEI)</a>
-                        guidelines. The standardized TEI format used for encoding the files in the
-                        SARIT library means that other interfaces and toolsets are possible and may
-                        be implemented in future.</p>
-                    <p>SARIT uses eXist-db for search and display. The SARIT application has been
-                        developed by the <a
-                            href="http://www.asia-europe.uni-heidelberg.de/en/hra-portal.html"
-                            >HRA</a> at the <a href="http://www.asia-europe.uni-heidelberg.de/"
-                            >Cluster of Excellence "Asia and Europe in a Global Context"</a> in
-                        collaboration with <a href="http://existsolutions.com/">eXist Solutions
-                            GmbH</a>.</p>
-                </section>
-                <section>
-                    <h3>Get involved!</h3>
-                    <p>The master copies of the SARIT e-texts are maintained at <a
-                            href="https://github.com/paddymcall/SARIT/">GitHub</a>, where a complete
-                        history of all edits to the files is tracked. If you wish to report errors
-                        or suggestions about the content of the SARIT text editions, for example
-                        errors in transcription or encoding, please go to the <a
-                            href="https://github.com/paddymcall/SARIT/issues">Issues</a> page and
-                        report in as much detail as you can. Experienced Git users are encouraged to
-                        participate in maintaining the files themselves through the Github
-                        system.</p>
-                </section>
-                <section>
-                    <h3>Acknowledgements</h3>
-                    <p>SARIT was initially developed through individual unpaid effort by Dominik
-                        Wujastyk, Patrick Mc Allister and several colleagues, who produced and
-                        maintained the SARIT web platform (<a href="http://sarit.indology.info/"
-                            >http://sarit.indology.info</a>) until July 2014. It also received
-                        important financial support from <a href="http://www.basas.org.uk/">The
-                            British Association for South Asian Studies</a> (that enabled Richard
-                        Mahoney to develop the site and add texts).</p>
-                    <p>Since 2013, SARIT is a project of the <a
-                            href="http://gepris.dfg.de/gepris/projekt/236347141">NEH/DFG Bilateral
-                            Digital Humanities Program</a>.</p>
-                </section>
-                <section>
-                    <h3>Project personnel</h3>
-                    <ul>
-                        <li> Directors: Prof. <a
-                                href="http://www.columbia.edu/cu/mesaas/faculty/directory/pollock.html"
-                                >Sheldon Pollock</a> (Columbia University) and Prof. <a
-                                href="http://www.asia-europe.uni-heidelberg.de/en/people/academic-staff/details/persdetail/kellner.html"
-                                >Birgit Kellner</a> (University of Heidelberg). </li>
-                        <li>Project consultants: <a
-                                href="http://univie.academia.edu/DominikWujastyk">Dominik
-                                Wujastyk</a> (University of Vienna), Prof. <a
-                                href="http://sanskrit.uohyd.ernet.in/">Amba Kulkarni</a> (University
-                            of Hyderabad), <a
-                                href="http://www.sai.uni-heidelberg.de/abt/IND/mitarbeiter/hellwig/hellwig.php"
-                                >Oliver Hellwig</a> (<a href="http://www.indsenz.com/int/"
-                                >INDSENZ</a>).</li>
-                        <li>Project coordinators: <a
-                                href="http://www.asia-europe.uni-heidelberg.de/en/people/associate-members/associate-members-person-details/persdetail/olalde-rico.html"
-                                >Liudmila Olalde</a> (University of Heidelberg), <a
-                                href="http://columbia.academia.edu/AndrewOllett">Andrew Ollett</a>
-                            (Columbia University).</li>
-                        <li>Additional project members: <a
-                                href="http://www.asia-europe.uni-heidelberg.de/en/people/alumni/details/persdetail/mcallister.html"
-                                >Patrick McAllister</a> (University of Heidelberg), <a
-                                href="http://www.asia-europe.uni-heidelberg.de/en/people/associate-members/associate-members-person-details/persdetail/oestergaard-petersen.html"
-                                >Jens Østergaard Petersen</a> (University of Heidelberg/HRA).</li>
-                    </ul>
-                </section>
-            </div>
+    <h2>Welcome</h2>
+    <div class="row help">
+        <div class="col-md-12">
+            <h3>SARIT: Search and Retrieval of Indic Texts</h3>
+            <!--<h3>Overview</h3>-->
+            <p>Welcome to the SARIT website. Here you will find electronic editions of Sanskrit and
+                other Indian-language texts. These are documented, dated and have embedded notes
+                about their change history, so that they can be publicly cited and used with
+                confidence as scholarly sources. The editions in the SARIT library currently include
+                    <a href="./..">these works</a>.</p>
+            <p>This website also currently offers tools for text search, retrieval and analysis of
+                the works in the SARIT library. You can search for words and phrases, and have your
+                search results displayed as keywords-in-context. </p>
+            <p>All the texts at SARIT are licensed under a&#160;Creative Commons license.&#160;You
+                can download all the texts&#160;in the following formats: XML, EPUB and PDF; and you
+                can also open the XML-file online.</p>
+            <section>
+                <h4>History</h4>
+                <p>The <a href="http://www.tlg.uci.edu/">Thesaurus Linguae Graecae</a> was founded
+                    in 1972. Its subsequent growth as a sophisticated research tool, and the
+                    projects derived from it, such as <a href="http://www.perseus.tufts.edu/hopper/"
+                        >PERSEUS</a>, demonstrated compellingly that a corpus of classical texts in
+                    machine-readable format could be vitally important for the study of language,
+                    art, history and culture. The history of SARIT looks back to a meeting convened
+                    by Prof. Richard Lariviere at the University of Texas in 1988 that brought
+                    together many specialists interested in creating a "TLG for Indic," i.e., a
+                    corpus of machine-readable texts in Indian languages. The <a
+                        href="http://www.academia.edu/360194/Report_on_the_Sanskrit_Text_Archive_Conference_Austin_Texas_October_28-29_1988"
+                        >minutes</a> of that meeting still make interesting reading today, and lay
+                    out some of the rationales underlying the present project. After the Texas
+                    meeting, the <a href="http://indology.info/">INDOLOGY website</a> began to make
+                    electronic texts of Sanskrit works available in an ad-hoc manner. This effort
+                    was highly successful, but there remained problems of format normalization,
+                    non-standard fonts and character encodings. Many of these problems were
+                    insoluble at the time. Things have moved forward since 1988, especially in
+                    corpus linguistics, computer networking, and encoding standards. SARIT takes
+                    advantage of all these new developments, especially <a
+                        href="http://www.unicode.org/">Unicode</a>, <a href="http://www.w3.org/XML/"
+                        >XML</a> and the <a href="http://www.tei-c.org/">Text Encoding Initiative
+                        (TEI)</a>.</p>
+            </section>
+            <section>
+                <h4>What makes SARIT different?</h4>
+                <p>The main difference between this collection of Sanskrit and other Indic-language
+                    texts is that these texts are marked up ("tagged") using the rich <a
+                        href="http://www.tei-c.org/">Text Encoding Initiative (TEI)</a> system. TEI
+                    is a way of tagging files that was designed by humanities scholars for
+                    humanities scholars. It is capable of building a great deal of intelligence into
+                    the file itself, so that a TEI-file can later serve many purposes and remains
+                    flexible and useful in the long term. TEI files contain their own history, so
+                    you can always find out where the file came from, how and when it has been
+                    updated, and how it relates to printed editions, manuscripts or other sources.
+                    For a gentle introduction to the TEI, see the excellent <a
+                        href="http://www.teibyexample.org/">TEI by Example website</a>. The files in
+                    this language corpus can be considered as electronic editions, and can be cited
+                    as such in scholarly research publications. SARIT texts respect copyright and
+                    are licensed appropriately to allow free academic use. Furthermore, SARIT makes
+                    its TEI editions of Indian texts freely available to all.</p>
+                <p>Electronic texts are not static: we edit them, improve them, alter them, and –
+                    crucially – correct errors in them. SARIT solves the problem of how to manage
+                    the natural evolution of electronic texts, documenting changes and allowing for
+                    the divergence and comparison of versions, merging of versions and rolling-back
+                    to previous versions. SARIT achieves this through the use of sophisticated
+                    version-control software (see the technical section below). </p>
+                <!--NB! Works with "." Does not work with "?+*|{}[]()\" Single |()[] are removed from search term.-->
+                <!--<p>Additionally, any characters (except double quotes) are interpreted literally when surrounded by double quotes:</p> <pre class="literallayout">"john.smith.com"</pre>. NB: only works if shifting to phrase search. Partial phrase searches (john"@smith.com") are not possible-->
+            </section>
+            <section>
+                <h4>Technical description</h4>
+                <p>SARIT displays Indological texts marked up according to the <a
+                        href="http://www.tei-c.org/">Text Encoding Initiative (TEI)</a> guidelines.
+                    The standardized TEI format used for encoding the files in the SARIT library
+                    means that other interfaces and toolsets are possible and may be implemented in
+                    future.</p>
+                <p>SARIT uses eXist-db for search and display. The SARIT application has been
+                    developed by the <a
+                        href="http://www.asia-europe.uni-heidelberg.de/en/hra-portal.html">HRA</a>
+                    at the <a href="http://www.asia-europe.uni-heidelberg.de/">Cluster of Excellence
+                        "Asia and Europe in a Global Context"</a> in collaboration with <a
+                        href="http://existsolutions.com/">eXist Solutions GmbH</a>.</p>
+            </section>
+            <section>
+                <h4>Get involved!</h4>
+                <p>The master copies of the SARIT e-texts are maintained at <a
+                        href="https://github.com/paddymcall/SARIT/">GitHub</a>, where a complete
+                    history of all edits to the files is tracked. If you wish to report errors or
+                    suggestions about the content of the SARIT text editions, for example errors in
+                    transcription or encoding, please go to the <a
+                        href="https://github.com/paddymcall/SARIT/issues">Issues</a> page and report
+                    in as much detail as you can. Experienced Git users are encouraged to
+                    participate in maintaining the files themselves through the Github system.</p>
+            </section>
+            <section>
+                <h4>Acknowledgements</h4>
+                <p>SARIT was initially developed through individual unpaid effort by Dominik
+                    Wujastyk, Patrick Mc Allister and several colleagues, who produced and
+                    maintained the SARIT web platform (<a href="http://sarit.indology.info/"
+                        >http://sarit.indology.info</a>) until July 2014. It also received important
+                    financial support from <a href="http://www.basas.org.uk/">The British
+                        Association for South Asian Studies</a> (that enabled Richard Mahoney to
+                    develop the site and add texts).</p>
+                <p>Since 2013, SARIT is a project of the <a
+                        href="http://gepris.dfg.de/gepris/projekt/236347141">NEH/DFG Bilateral
+                        Digital Humanities Program</a>.</p>
+            </section>
+            <section>
+                <h4>Project personnel</h4>
+                <ul>
+                    <li> Directors: Prof. <a
+                            href="http://www.columbia.edu/cu/mesaas/faculty/directory/pollock.html"
+                            >Sheldon Pollock</a> (Columbia University) and Prof. <a
+                            href="http://www.asia-europe.uni-heidelberg.de/en/people/academic-staff/details/persdetail/kellner.html"
+                            >Birgit Kellner</a> (University of Heidelberg). </li>
+                    <li>Project consultants: <a href="http://univie.academia.edu/DominikWujastyk"
+                            >Dominik Wujastyk</a> (University of Vienna), Prof. <a
+                            href="http://sanskrit.uohyd.ernet.in/">Amba Kulkarni</a> (University of
+                        Hyderabad), <a
+                            href="http://www.sai.uni-heidelberg.de/abt/IND/mitarbeiter/hellwig/hellwig.php"
+                            >Oliver Hellwig</a> (<a href="http://www.indsenz.com/int/"
+                        >INDSENZ</a>).</li>
+                    <li>Project coordinators: <a
+                            href="http://www.asia-europe.uni-heidelberg.de/en/people/associate-members/associate-members-person-details/persdetail/olalde-rico.html"
+                            >Liudmila Olalde</a> (University of Heidelberg), <a
+                            href="http://columbia.academia.edu/AndrewOllett">Andrew Ollett</a>
+                        (Columbia University).</li>
+                    <li>Additional project members: <a
+                            href="http://www.asia-europe.uni-heidelberg.de/en/people/alumni/details/persdetail/mcallister.html"
+                            >Patrick McAllister</a> (University of Heidelberg), <a
+                            href="http://www.asia-europe.uni-heidelberg.de/en/people/associate-members/associate-members-person-details/persdetail/oestergaard-petersen.html"
+                            >Jens Østergaard Petersen</a> (University of Heidelberg/HRA).</li>
+                </ul>
+            </section>
         </div>
     </div>
+
 </div>

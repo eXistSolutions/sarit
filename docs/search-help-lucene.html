@@ -1,364 +1,404 @@
-<div class="help" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
-    <h1>Search Help</h1>
-    <p>In this Shakespeare app, a number of search options are available. Simple searches are
-        possible, but it is also possible to perform quite advanced searches. Search is based on the
-        open source search engine <a href="http://lucene.apache.org" target="_blank">Apache
-            Lucene</a> and tries to bring into play all the options that Lucene provides. </p>
-    <section>
-        <h3>Search Options</h3>
-        <p>The search interface offers a number of choices.</p>
-        <p>You can choose <em>which texts</em> (plays, poems/poem collection) to search in. Note
-            that if you do not make any choice, you will search in all available texts – there is no
-            need to click all check boxes in order to perform a general search.</p>
-        <p>You have a choice among <em>search modes</em>. These will be explained in more detail
-            below, but the most common ones are "Any Search Term" and "All Search Terms". The first
-            option is default, so if you do not make any choice, you will automatically search for
-            any search term. What this means is that you want a hit no matter if one or the other of
-            the words you input as search terms is present, or if both are, whereas if you search
-            for all search terms, you only want hit if all of the words you input are present.</p>
-        <p>Search is performed in a number of <em>fields</em> - to be more exact, in indexes based
-            on certain fields. This contrasts with searches in a word processing document which are
-            made in a document as a whole, as one long string of characters.</p>
-        <p>Shakespeare's works consist of plays and poems. Plays are made up of speeches which then
-            usually consist of lines (and notices about who the speaker is), and here each speech is
-            indexed as a whole. This means that of you search for the co-occurrence of two words, say
-            "snake" or "fillet", you do not search in the play as a whole, but you get a hit only if
-            the two words occur in the same speech. Poems are made of stanzas which also consist of
-            lines, and if you search for the occurrence of "bounty" and "boundless" near each other,
-            you search inside a certain stanza, not inside a poem or the Sonnets as a whole.</p>
-        <p>The <em>search scope</em> here described is the default "narrow" search scope. If you
-            choose, you can search more broadly, in the divisions which the speeches or stanzas are
-            part of. This means, in the case of plays, that you search within acts, and in the case
-            of poems, that you search within poems as a whole. If you do so, the co-occurrence of
-            two words can span several speeches and you may search for words which are within, say,
-            10 words of each other, though they belong to different stanzas. Both kind of search
-            scopes are useful for certain tasks.</p>
-        <p>You have the option to perform your search in different <em>works types</em> – instead of
-            selecting works individually, you can select groups such as tragedies or poems. Here you
-            can choose several different options.</p>
-        <p>This may seem obvious, but you search for <em>words</em> - spaces and punctuation and so
-            on cannot be searched for, but only the words themselves. Also, the words are all
-            lower-cased, so while this means that there is no way to differentiate between "Hamlet"
-            (the proper name) and "hamlet" (a village), you also do not have to remember that
-            "fillet" occurs first in a sentence in the second witch's speech and therefore is in
-            upper-case. All your input is stripped of punctuation and lower-cased, so you can just
-            as well spare yourself the effort to input them – whether you search for "To be, or not
-            to be" or "to be or not to be" is all the same. Often words like "to be or not to be"
-            are removed from indexes, but not in the Shakespeare app.</p>
-        <p>One may ask: if spaces cannot be searched for, what are phrase searches? Don't phrases
-            consist of words with spaces and punctuation in between? Yes, but when you search for a
-            phrase, this is not the same as when you search for a phrase in a word processing
-            document – with Lucene, you actually search for a sequence of words which have no words
-            in between them, so everything is about words after all (and a phrase search is actually
-            a proximity search – more about that later).</p>
-    </section>
-    <section>
-        <h3>Search Strategies</h3>
-        <p>There are searches – and searches. This app perhaps gives too many search options ….</p>
-        <ul>
-            <li>One can search by simply filling in words in the query field, choose one of the
-                search mode options ("Any Search Term" …) and press return (or click the magnifying
-                glass). </li>
-            <li>One can use the "standard" Lucene search options. These consists of marking which
-                words you would like to occur in the hit-list and which word must (or must not)
-                occur, of stringing together words with AND, OR and NOT, grouping words with
-                parentheses, and so on. Quite complicated searches can be made with these
-                options.</li>
-            <li>One can use regular expressions. These offer options for wildcarding characters and
-                so on. Regular expression searches can be used on top of Lucene searches.</li>
-        </ul>
-        <p>These three different search strategies will be presented below, after a brief mention
-            about the way hits are displayed.</p>
-    </section>
-    <section>
-        <h3>Hitlist and Search Relevance</h3>
-        <p>When searching for books in a library catalogue, one can usually choose to have the hits
-            displayed according to relevance or according to author, title or suchlike. In the
-            Shakespeare app, hits are only displayed according to relevance, according to a "score"
-            computed for each search. This is quite a complicated thing in itself, but basically,
-            the more times your search terms occur in your search scope and the less common they are
-            in the index (that is, in Shakespeare's works) the higher the score they will get and
-            the more prominent they will be. </p>
-    </section>
-    <section>
-        <h3>Simple Search</h3>
-        <p>If you select "Any Search Term" and fill in some words in the query field, you are saying
-            that you would like to see as many of the words in the search scope, but if there is
-            only one of them present, you also want to have it displayed as a hit.</p>
-        <p>If you select "All Search Terms" and fill in some words in the query field, you are
-            saying that you want to see all of the words in the hits within the search scope – if
-            just one of the words is missing, you do not want to have it displayed as a hit.</p>
-        <p>If you select "Phrase Search" and fill in some words in the query field, you are saying
-            that you want to see all of the words in the hits within the search scope, but only if
-            they occur in the same sequence. This is the way searches are performed in word
-            processing documents, except that here punctuation is disregarded.</p>
-        <p>If you select one of the two "Proximity Search" option and fill in some words in the
-            query field, you are saying that you want to see all of the words in the hits within the
-            search scope, in the order specified or not, and within a certain proximity. The
-            proximity is stated in terms of maximum number of words <!-- plus one?!? -->allowed in
-            between the words your enter in your query. You can thus retrieve "I pray thee, stay
-            with us: go not to Wittenberg" with "pray stay Wittenberg 6". If you do not enter any
-            digit, 5 will be assumed.</p>
-        <p>"Fuzzy Search" needs a little explanation. If you take a word, like "snake", you can make
-            changes and additions to it. One change would thus give you "spake", "slave", "snare"
-            and "snakes". If you make one more change based on this, you can easily see that a lot
-            of words can be generated. Since this search is very time-consuming, the maximum number
-            of "edits" you can make is 2. If you do not enter any digit, 2 is also assumed. Fuzzy
-            search demands so many resources that only one term can be searched at a time<!-- ? -->,
-            so all words after the first will be removed from your query.</p>
-        <p>"Wildcard Search" offers the possibility to search using ? for a single character and *
-            for zero, one or more characters. You would retrieve hits with "shake", "spake", "stake"
-            and so on with "s?ake", and "snake" and "snakes" with "snake*". "*ling" will give you
-            "telling", "trembling", "brawling" and so on, "te??ing" will give you "telling",
-            "teeming", "tending" and so on. This offers some of the functionality of a regular
-            expression search, but be aware that the symbols ? and * have different meanings in
-            wildcard and regex search.</p>
-    </section>
-    <section>
-        <h3>Standard Lucene Syntax</h3>
-        <p>With Lucene standard syntax, there are two ways you can go: you can either prefix words
-            with + and - or use boolean logic with AND, OR and NOT (written in upper-case). In both
-            cases, you can additionally group your search expressions using parentheses. In case you
-            use any of these operators (or any operators used in regex searches), the search mode
-            will automatically be set to Any Search Term (or to Regex Search if this applies), so
-            choosing any of the other options has no effect.</p>
-        <p>The first option (using + and -) is better suited to a search which orders hits according
-            to score. Here you let words stand as they are (without + or -) if you would like them
-            to occur in hits, but you prefix them with + if they must occur in a hit and - if they
-            must not occur as a hit. If you search for "snake killed" you get a lot of hits with
-            either "snake" or "killed" and some with both. If you search for "snake +killed", all
-            your hits will contain "killed", but they may or may not contain "snake". If you search
-            for "snake -killed", you would like to see hits with "snake", but only if they do not
-            contain "killed".</p>
-        <p>If you use AND, OR and NOT, the logic is rather different. If you search for "snake AND
-            killed" you get hits with both "snake" and "killed" and none with only one of them. This
-            corresponds to "+snake +killed". If you search for "snake OR killed", this is the same as
-            simply searching for "snake killed". If you search for "snake NOT killed", this equals
-            searching for "snake -killed".</p>
-        <p>If you use AND, OR and NOT, the logic is rather different. If you search for "snake AND
-            killed" you get hits with both "snake" and "killed" and none with only one of them. This
-            corresponds to "+snake +killed". If you search for "snake OR killed", this is the same as
-            simply searching for "snake killed". If you search for "snake NOT killed", this equals
-            searching for "snake -killed".</p>
-        <p>Searches can acquire higher complexity use of parentheses. Here the use of AND, OR and
-            NOT may come more naturally. Say you want to find passages where the word killed occurs
-            but where also at least one of the words "snake", "deer", "fly", "cat" or "bird" occurs.
-            You can express this by "(snake OR deer OR fly OR cat OR bird) AND killed". An AND
-            enforces "must occur" on both sides, so both one of the animals and the word "killed"
-            have to occur in the hits. Say (for some reason) you do not wish the words "pricket" and
-            "mouse" to occur in your hits – you then embroider your search expression with "NOT
-            (pricket OR mouse)" as "(snake OR deer OR fly OR cat OR bird) AND killed NOT (pricket OR
-            mouse)"</p>
-        <p>If you simply search for "pricket OR deer AND killed", you will (because the AND rubs off
-            to the left), search for passages where "deer" and "killed" must occur, but you would
-            also like "pricket" to be marked as a hit. You can enforce a certain logic on your query
-            by grouping with parentheses.</p>
-        <p>If you search for "(snake OR deer) AND killed" you are saying that one or both of "snake"
-            and "deer" must occur, as must "killed".</p>
-        <p>If you search for "snake OR (deer AND killed)", you would like to retrieve hits where
-            "snake" occurs and you would like to retrieve hits where "deer" and "killed" go
-            together. In practice this means that you will get a lot of "snake"-only hits.</p>
-        <p>You can also nest parentheses, e.g. "(snake OR (deer AND killed)) NOT pricket" will
-            remove the hits with "pricket" from "snake OR (deer AND killed". </p>
-        <p>As you can see, the options are many …. And as if this was not enough, there is also
-            regex – and regex syntax combined with standard syntax!</p>
-    </section>
-    <section>
-        <h3>Regular Expressions</h3>
-        <p>Regular Expressions are also known as "regex" or "regexp". They are a very powerful tool
-            for searching text (and for replacing text, but this is not relevant in a search
-            engine). Lucene only supports a smaller range of regex operators, but they should,
-            however, be enough for most uses.</p> If you use any of the regex operators (<code>. ? +
-            * | { } [ ] ( ) " \ # @ &amp; &lt; &gt; ~</code>), the search will automatically switch to
-        regex mode. Note that some of the operators are the same as those used in standard Lucene
-        syntax, but they occur in different positions in relation to the words/character strings
-        they operate on. <section>
-            <h4>Match any character</h4>
-            <p>The period <code>"."</code> can be used to represent any character.</p>
-            <p> In order to retrieve the string <code>"snake"</code>, the following expressions can
-                be used:</p>
-            <ul>
-                <li>
-                    <code>s.ake</code>
-                </li>
-                <li>
-                    <code>.nak.</code>
-                </li>
-            </ul>
-        </section>
-        <section>
-            <h4>One-or-more</h4>
-            <p>The plus sign <code>"+"</code> can be used to repeat the preceding shortest pattern
-                once or more times. </p>
-            <p>In order to retrieve the string <code>"deer"</code>, the following expression can be
-                used:</p>
-            <ul>
-                <li>
-                    <code>de+r</code>
-                </li>
-            </ul>
-            <section>
-                <h4>Zero-or-more</h4>
-                <p>The asterisk <code>"*"</code> can be used to match the preceding shortest pattern
-                    zero-or-more times.</p>
-                <p>In order to retrieve the strings <code>"weed"</code> and <code>"wed"</code>, the
-                    following expression can be used:</p>
-                <ul>
-                    <li>
-                        <code>we*d</code>
-                    </li>
-                </ul>
-                <p>Note that in Lucene standard syntax, <code>"+"</code> and <code>"*"</code> serve
-                    as wildcards, standing in for characters; here they quantify the immediately
-                    preceding character (or pattern). </p>
-            </section>
-            <section>
-                <h4>Zero-or-one</h4>
-                <p>The question mark <code>"?"</code> makes the preceding shortest pattern optional.
-                    It matches zero or one times. </p>
-                <p>In order to retrieve the strings <code>"weed"</code> and <code>"wed"</code>, the
-                    following expression can be used:</p>
-                <ul>
-                    <li>
-                        <code>wee?d</code>
-                    </li>
-                </ul>
-            </section>
-            <section>
-                <h4>Min-to-max</h4>
-                <p>Curly brackets <code>"{}"</code> can be used to specify a minimum and
-                    (optionally) a maximum number of times the preceding shortest pattern can
-                    repeat. The allowed forms are:</p>
-                <table>
-                    <tr>
-                        <td>{5}</td>
-                        <td>repeat exactly 5 times</td>
-                    </tr>
-                    <tr>
-                        <td>{2,5}</td>
-                        <td>repeat at least twice and at most 5 times</td>
-                    </tr>
-                    <tr>
-                        <td>{2,}</td>
-                        <td>repeat at least twice</td>
-                    </tr>
-                </table>
-                <p>In order to retrieve the string <code>"weed"</code>, the following expression can
-                    be used:</p>
-                <ul>
-                    <li>
-                        <code>we{2}d</code>
-                    </li>
-                    <li>
-                        <code>we{2,}d</code>
-                    </li>
-                    <li>
-                        <code>we{2,5}d</code>
-                    </li>
-                </ul>
-            </section>
-            <section>
-                <h4>Grouping</h4>
-                <p>Parentheses <code>"()"</code> can be used to form sub-patterns. The quantity
-                    operators listed above operate on the shortest previous pattern, which can be a
-                    group.</p>
-                <p>In order to retrieve the string <code>"weed"</code>, the following expression can
-                    be used:</p>
-                <ul>
-                    <li>
-                        <code>w(..)+d</code>
-                    </li>
-                    <li>
-                        <code>w(ee)*d</code>
-                    </li>
-                    <li>
-                        <code>w(ee)?d</code>
-                    </li>
-                </ul>
-            </section>
-            <section>
-                <h4> Alternation </h4>
-                <p>The pipe symbol <code>"|"</code> acts as an OR operator. The match will succeed
-                    if the pattern on either the left-hand side OR the right-hand side matches. The
-                    alternation applies to the <span class="emphasis">
-                        <em>longest
-                        pattern</em>
-                    </span>, not the shortest <!--explain!-->.</p>
-                <p>In order to retrieve the strings <code>"proportions"</code> and
-                        <code>"preparations"</code>, the following expression can be used:</p>
-                <ul>
-                    <li>
-                        <code>(prepara|propor)tions</code>
-                    </li>
-
-                </ul>
-            </section>
-            <section>
-                <h4> Character classes </h4>
-                <p>Character classes are very important, since they allow you to mask variation with
-                    more control than that offered by wildcards. You can thus use them to find words
-                    even though they are written differently, e.g. have either "e" or "o" in a
-                    certain position or have "a" and "e" in a certain position </p>
-                <p>Ranges of potential characters may be represented as character classes by
-                    enclosing them in square brackets <code>"[]"</code>. A leading <code>^</code>
-                    negates the character class, that is, all characters other than the ones
-                    following are signified.</p>
-                <p> The allowed forms are:</p>
-                <table>
-                    <tr>
-                        <td>[abc]</td>
-                        <td>'a' or 'b' or 'c'</td>
-                    </tr>
-                    <tr>
-                        <td>[a-c]</td>
-                        <td>'a' or 'b' or 'c' </td>
-                    </tr>
-                    <tr>
-                        <td>[-abc]</td>
-                        <td>'-' or 'a' or 'b' or 'c' </td>
-                    </tr>
-                    <tr>
-                        <td>[abc\-]</td>
-                        <td>'-' or 'a' or 'b' or 'c'</td> </tr>
-                    <tr>
-                        <td>[^abc]</td>
-                        <td>any character except 'a' or 'b' or 'c'</td> </tr>
-                    <tr>
-                        <td>[^a-c]</td>
-                        <td>any character except 'a' or 'b' or 'c'</td> </tr>
-                    <tr>
-                        <td>[^-abc]</td>
-                        <td>any character except '-' or 'a' or 'b' or 'c' </td>
-                    </tr>
-                    <tr>
-                        <td>[^abc\-]</td>
-                        <td>any character except '-' or 'a' or 'b' or 'c'</td>
-                    </tr>
-                </table>
-                <p>Note that the dash <code>"-"</code> indicates a range of characters, unless it
-                    is the first character or if it is escaped with a backslash.</p>
-                <p>In order to retrieve the string <code>"weed"</code>, the following expression can
-                    be used:</p>
-                <ul>
-                    <li>
-                        <code>w[uiaeo]+d</code>
-                    </li>
-                    <li>
-                        <code>w[uiaeo]*d</code>
-                    </li>
-                    <li>
-                        <code>we[uiaeo]?d</code>
-                    </li>
-                    <li>
-                        <code>w[a-u]*ed</code>
-                    </li>
-                    <li>
-                        <code>we[^o]d</code>
-                    </li>
-                </ul>
-                <p>The possibilities here are enormous.</p>
-                <p>To be continued ….</p>
-            </section>
-        </section>
-    </section>
+<div class="help" data-template="templates:surround" data-template-with="template.html"
+    data-template-at="content">
+    <div class="container">
+        <div class="row help">
+            <div class="col-md-12">
+                <h2>Search Help</h2>
+                <p>In this Shakespeare app, a number of search options are available. Simple
+                    searches are possible, but it is also possible to perform quite advanced
+                    searches. Search is based on the open source search engine <a
+                        href="http://lucene.apache.org" target="_blank">Apache Lucene</a> and tries
+                    to bring into play all the options that Lucene provides. </p>
+                <section>
+                    <h4>Search Options</h4>
+                    <p>The search interface offers a number of choices.</p>
+                    <p>You can choose <em>which texts</em> (plays, poems/poem collection) to search
+                        in. Note that if you do not make any choice, you will search in all
+                        available texts – there is no need to click all check boxes in order to
+                        perform a general search.</p>
+                    <p>You have a choice among <em>search modes</em>. These will be explained in
+                        more detail below, but the most common ones are "Any Search Term" and "All
+                        Search Terms". The first option is default, so if you do not make any
+                        choice, you will automatically search for any search term. What this means
+                        is that you want a hit no matter if one or the other of the words you input
+                        as search terms is present, or if both are, whereas if you search for all
+                        search terms, you only want hit if all of the words you input are
+                        present.</p>
+                    <p>Search is performed in a number of <em>fields</em> - to be more exact, in
+                        indexes based on certain fields. This contrasts with searches in a word
+                        processing document which are made in a document as a whole, as one long
+                        string of characters.</p>
+                    <p>Shakespeare's works consist of plays and poems. Plays are made up of speeches
+                        which then usually consist of lines (and notices about who the speaker is),
+                        and here each speech is indexed as a whole. This means that of you search
+                        for the co-occurrence of two words, say "snake" or "fillet", you do not
+                        search in the play as a whole, but you get a hit only if the two words occur
+                        in the same speech. Poems are made of stanzas which also consist of lines,
+                        and if you search for the occurrence of "bounty" and "boundless" near each
+                        other, you search inside a certain stanza, not inside a poem or the Sonnets
+                        as a whole.</p>
+                    <p>The <em>search scope</em> here described is the default "narrow" search
+                        scope. If you choose, you can search more broadly, in the divisions which
+                        the speeches or stanzas are part of. This means, in the case of plays, that
+                        you search within acts, and in the case of poems, that you search within
+                        poems as a whole. If you do so, the co-occurrence of two words can span
+                        several speeches and you may search for words which are within, say, 10
+                        words of each other, though they belong to different stanzas. Both kind of
+                        search scopes are useful for certain tasks.</p>
+                    <p>You have the option to perform your search in different <em>works types</em>
+                        – instead of selecting works individually, you can select groups such as
+                        tragedies or poems. Here you can choose several different options.</p>
+                    <p>This may seem obvious, but you search for <em>words</em> - spaces and
+                        punctuation and so on cannot be searched for, but only the words themselves.
+                        Also, the words are all lower-cased, so while this means that there is no
+                        way to differentiate between "Hamlet" (the proper name) and "hamlet" (a
+                        village), you also do not have to remember that "fillet" occurs first in a
+                        sentence in the second witch's speech and therefore is in upper-case. All
+                        your input is stripped of punctuation and lower-cased, so you can just as
+                        well spare yourself the effort to input them – whether you search for "To
+                        be, or not to be" or "to be or not to be" is all the same. Often words like
+                        "to be or not to be" are removed from indexes, but not in the Shakespeare
+                        app.</p>
+                    <p>One may ask: if spaces cannot be searched for, what are phrase searches?
+                        Don't phrases consist of words with spaces and punctuation in between? Yes,
+                        but when you search for a phrase, this is not the same as when you search
+                        for a phrase in a word processing document – with Lucene, you actually
+                        search for a sequence of words which have no words in between them, so
+                        everything is about words after all (and a phrase search is actually a
+                        proximity search – more about that later).</p>
+                </section>
+                <section>
+                    <h4>Search Strategies</h4>
+                    <p>There are searches – and searches. This app perhaps gives too many search
+                        options ….</p>
+                    <ul>
+                        <li>One can search by simply filling in words in the query field, choose one
+                            of the search mode options ("Any Search Term" …) and press return (or
+                            click the magnifying glass). </li>
+                        <li>One can use the "standard" Lucene search options. These consists of
+                            marking which words you would like to occur in the hit-list and which
+                            word must (or must not) occur, of stringing together words with AND, OR
+                            and NOT, grouping words with parentheses, and so on. Quite complicated
+                            searches can be made with these options.</li>
+                        <li>One can use regular expressions. These offer options for wildcarding
+                            characters and so on. Regular expression searches can be used on top of
+                            Lucene searches.</li>
+                    </ul>
+                    <p>These three different search strategies will be presented below, after a
+                        brief mention about the way hits are displayed.</p>
+                </section>
+                <section>
+                    <h4>Hitlist and Search Relevance</h4>
+                    <p>When searching for books in a library catalogue, one can usually choose to
+                        have the hits displayed according to relevance or according to author, title
+                        or suchlike. In the Shakespeare app, hits are only displayed according to
+                        relevance, according to a "score" computed for each search. This is quite a
+                        complicated thing in itself, but basically, the more times your search terms
+                        occur in your search scope and the less common they are in the index (that
+                        is, in Shakespeare's works) the higher the score they will get and the more
+                        prominent they will be. </p>
+                </section>
+                <section>
+                    <h4>Simple Search</h4>
+                    <p>If you select "Any Search Term" and fill in some words in the query field,
+                        you are saying that you would like to see as many of the words in the search
+                        scope, but if there is only one of them present, you also want to have it
+                        displayed as a hit.</p>
+                    <p>If you select "All Search Terms" and fill in some words in the query field,
+                        you are saying that you want to see all of the words in the hits within the
+                        search scope – if just one of the words is missing, you do not want to have
+                        it displayed as a hit.</p>
+                    <p>If you select "Phrase Search" and fill in some words in the query field, you
+                        are saying that you want to see all of the words in the hits within the
+                        search scope, but only if they occur in the same sequence. This is the way
+                        searches are performed in word processing documents, except that here
+                        punctuation is disregarded.</p>
+                    <p>If you select one of the two "Proximity Search" option and fill in some words
+                        in the query field, you are saying that you want to see all of the words in
+                        the hits within the search scope, in the order specified or not, and within
+                        a certain proximity. The proximity is stated in terms of maximum number of
+                        words <!-- plus one?!? -->allowed in between the words your enter in your
+                        query. You can thus retrieve "I pray thee, stay with us: go not to
+                        Wittenberg" with "pray stay Wittenberg 6". If you do not enter any digit, 5
+                        will be assumed.</p>
+                    <p>"Fuzzy Search" needs a little explanation. If you take a word, like "snake",
+                        you can make changes and additions to it. One change would thus give you
+                        "spake", "slave", "snare" and "snakes". If you make one more change based on
+                        this, you can easily see that a lot of words can be generated. Since this
+                        search is very time-consuming, the maximum number of "edits" you can make is
+                        2. If you do not enter any digit, 2 is also assumed. Fuzzy search demands so
+                        many resources that only one term can be searched at a time<!-- ? -->, so
+                        all words after the first will be removed from your query.</p>
+                    <p>"Wildcard Search" offers the possibility to search using ? for a single
+                        character and * for zero, one or more characters. You would retrieve hits
+                        with "shake", "spake", "stake" and so on with "s?ake", and "snake" and
+                        "snakes" with "snake*". "*ling" will give you "telling", "trembling",
+                        "brawling" and so on, "te??ing" will give you "telling", "teeming",
+                        "tending" and so on. This offers some of the functionality of a regular
+                        expression search, but be aware that the symbols ? and * have different
+                        meanings in wildcard and regex search.</p>
+                </section>
+                <section>
+                    <h4>Standard Lucene Syntax</h4>
+                    <p>With Lucene standard syntax, there are two ways you can go: you can either
+                        prefix words with + and - or use boolean logic with AND, OR and NOT (written
+                        in upper-case). In both cases, you can additionally group your search
+                        expressions using parentheses. In case you use any of these operators (or
+                        any operators used in regex searches), the search mode will automatically be
+                        set to Any Search Term (or to Regex Search if this applies), so choosing any
+                        of the other options has no effect.</p>
+                    <p>The first option (using + and -) is better suited to a search which orders
+                        hits according to score. Here you let words stand as they are (without + or
+                        -) if you would like them to occur in hits, but you prefix them with + if
+                        they must occur in a hit and - if they must not occur as a hit. If you
+                        search for "snake killed" you get a lot of hits with either "snake" or
+                        "killed" and some with both. If you search for "snake +killed", all your
+                        hits will contain "killed", but they may or may not contain "snake". If you
+                        search for "snake -killed", you would like to see hits with "snake", but
+                        only if they do not contain "killed".</p>
+                    <p>If you use AND, OR and NOT, the logic is rather different. If you search for
+                        "snake AND killed" you get hits with both "snake" and "killed" and none with
+                        only one of them. This corresponds to "+snake +killed". If you search for
+                        "snake OR killed", this is the same as simply searching for "snake killed".
+                        If you search for "snake NOT killed", this equals searching for "snake
+                        -killed".</p>
+                    <p>If you use AND, OR and NOT, the logic is rather different. If you search for
+                        "snake AND killed" you get hits with both "snake" and "killed" and none with
+                        only one of them. This corresponds to "+snake +killed". If you search for
+                        "snake OR killed", this is the same as simply searching for "snake killed".
+                        If you search for "snake NOT killed", this equals searching for "snake
+                        -killed".</p>
+                    <p>Searches can acquire higher complexity use of parentheses. Here the use of
+                        AND, OR and NOT may come more naturally. Say you want to find passages where
+                        the word killed occurs but where also at least one of the words "snake",
+                        "deer", "fly", "cat" or "bird" occurs. You can express this by "(snake OR
+                        deer OR fly OR cat OR bird) AND killed". An AND enforces "must occur" on
+                        both sides, so both one of the animals and the word "killed" have to occur
+                        in the hits. Say (for some reason) you do not wish the words "pricket" and
+                        "mouse" to occur in your hits – you then embroider your search expression
+                        with "NOT (pricket OR mouse)" as "(snake OR deer OR fly OR cat OR bird) AND
+                        killed NOT (pricket OR mouse)"</p>
+                    <p>If you simply search for "pricket OR deer AND killed", you will (because the
+                        AND rubs off to the left), search for passages where "deer" and "killed"
+                        must occur, but you would also like "pricket" to be marked as a hit. You can
+                        enforce a certain logic on your query by grouping with parentheses.</p>
+                    <p>If you search for "(snake OR deer) AND killed" you are saying that one or
+                        both of "snake" and "deer" must occur, as must "killed".</p>
+                    <p>If you search for "snake OR (deer AND killed)", you would like to retrieve
+                        hits where "snake" occurs and you would like to retrieve hits where "deer"
+                        and "killed" go together. In practice this means that you will get a lot of
+                        "snake"-only hits.</p>
+                    <p>You can also nest parentheses, e.g. "(snake OR (deer AND killed)) NOT
+                        pricket" will remove the hits with "pricket" from "snake OR (deer AND
+                        killed". </p>
+                    <p>As you can see, the options are many …. And as if this was not enough, there
+                        is also regex – and regex syntax combined with standard syntax!</p>
+                </section>
+                <section>
+                    <h4>Regular Expressions</h4>
+                    <p>Regular Expressions are also known as "regex" or "regexp". They are a very
+                        powerful tool for searching text (and for replacing text, but this is not
+                        relevant in a search engine). Lucene only supports a smaller range of regex
+                        operators, but they should, however, be enough for most uses.</p> If you use
+                    any of the regex operators (<code>. ? + * | { } [ ] ( ) " \ # @ &amp; &lt; &gt;
+                        ~</code>), the search will automatically switch to regex mode. Note that
+                    some of the operators are the same as those used in standard Lucene syntax, but
+                    they occur in different positions in relation to the words/character strings
+                    they operate on. <section>
+                        <h5>Match any character</h5>
+                        <p>The period <code>"."</code> can be used to represent any character.</p>
+                        <p> In order to retrieve the string <code>"snake"</code>, the following
+                            expressions can be used:</p>
+                        <ul>
+                            <li>
+                                <code>s.ake</code>
+                            </li>
+                            <li>
+                                <code>.nak.</code>
+                            </li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h5>One-or-more</h5>
+                        <p>The plus sign <code>"+"</code> can be used to repeat the preceding
+                            shortest pattern once or more times. </p>
+                        <p>In order to retrieve the string <code>"deer"</code>, the following
+                            expression can be used:</p>
+                        <ul>
+                            <li>
+                                <code>de+r</code>
+                            </li>
+                        </ul>
+                        <section>
+                            <h5>Zero-or-more</h5>
+                            <p>The asterisk <code>"*"</code> can be used to match the preceding
+                                shortest pattern zero-or-more times.</p>
+                            <p>In order to retrieve the strings <code>"weed"</code> and
+                                    <code>"wed"</code>, the following expression can be used:</p>
+                            <ul>
+                                <li>
+                                    <code>we*d</code>
+                                </li>
+                            </ul>
+                            <p>Note that in Lucene standard syntax, <code>"+"</code> and
+                                    <code>"*"</code> serve as wildcards, standing in for characters;
+                                here they quantify the immediately preceding character (or pattern).
+                            </p>
+                        </section>
+                        <section>
+                            <h5>Zero-or-one</h5>
+                            <p>The question mark <code>"?"</code> makes the preceding shortest
+                                pattern optional. It matches zero or one times. </p>
+                            <p>In order to retrieve the strings <code>"weed"</code> and
+                                    <code>"wed"</code>, the following expression can be used:</p>
+                            <ul>
+                                <li>
+                                    <code>wee?d</code>
+                                </li>
+                            </ul>
+                        </section>
+                        <section>
+                            <h5>Min-to-max</h5>
+                            <p>Curly brackets <code>"{}"</code> can be used to specify a minimum and
+                                (optionally) a maximum number of times the preceding shortest
+                                pattern can repeat. The allowed forms are:</p>
+                            <table>
+                                <tr>
+                                    <td>{5}</td>
+                                    <td>repeat exactly 5 times</td>
+                                </tr>
+                                <tr>
+                                    <td>{2,5}</td>
+                                    <td>repeat at least twice and at most 5 times</td>
+                                </tr>
+                                <tr>
+                                    <td>{2,}</td>
+                                    <td>repeat at least twice</td>
+                                </tr>
+                            </table>
+                            <p>In order to retrieve the string <code>"weed"</code>, the following
+                                expression can be used:</p>
+                            <ul>
+                                <li>
+                                    <code>we{2}d</code>
+                                </li>
+                                <li>
+                                    <code>we{2,}d</code>
+                                </li>
+                                <li>
+                                    <code>we{2,5}d</code>
+                                </li>
+                            </ul>
+                        </section>
+                        <section>
+                            <h5>Grouping</h5>
+                            <p>Parentheses <code>"()"</code> can be used to form sub-patterns. The
+                                quantity operators listed above operate on the shortest previous
+                                pattern, which can be a group.</p>
+                            <p>In order to retrieve the string <code>"weed"</code>, the following
+                                expression can be used:</p>
+                            <ul>
+                                <li>
+                                    <code>w(..)+d</code>
+                                </li>
+                                <li>
+                                    <code>w(ee)*d</code>
+                                </li>
+                                <li>
+                                    <code>w(ee)?d</code>
+                                </li>
+                            </ul>
+                        </section>
+                        <section>
+                            <h5> Alternation </h5>
+                            <p>The pipe symbol <code>"|"</code> acts as an OR operator. The match
+                                will succeed if the pattern on either the left-hand side OR the
+                                right-hand side matches. The alternation applies to the <span
+                                    class="emphasis">
+                                    <em>longest pattern</em>
+                                </span>, not the shortest <!--explain!-->.</p>
+                            <p>In order to retrieve the strings <code>"proportions"</code> and
+                                    <code>"preparations"</code>, the following expression can be
+                                used:</p>
+                            <ul>
+                                <li>
+                                    <code>(prepara|propor)tions</code>
+                                </li> </ul>
+                        </section>
+                        <section>
+                            <h5> Character classes </h5>
+                            <p>Character classes are very important, since they allow you to mask
+                                variation with more control than that offered by wildcards. You can
+                                thus use them to find words even though they are written
+                                differently, e.g. have either "e" or "o" in a certain position or
+                                have "a" and "e" in a certain position </p>
+                            <p>Ranges of potential characters may be represented as character
+                                classes by enclosing them in square brackets <code>"[]"</code>. A
+                                leading <code>^</code> negates the character class, that is, all
+                                characters other than the ones following are signified.</p>
+                            <p> The allowed forms are:</p>
+                            <table>
+                                <tr>
+                                    <td>[abc]</td>
+                                    <td>'a' or 'b' or 'c'</td>
+                                </tr>
+                                <tr>
+                                    <td>[a-c]</td>
+                                    <td>'a' or 'b' or 'c' </td>
+                                </tr>
+                                <tr>
+                                    <td>[-abc]</td>
+                                    <td>'-' or 'a' or 'b' or 'c' </td>
+                                </tr>
+                                <tr>
+                                    <td>[abc\-]</td>
+                                    <td>'-' or 'a' or 'b' or 'c'</td>
+                                </tr>
+                                <tr>
+                                    <td>[^abc]</td>
+                                    <td>any character except 'a' or 'b' or 'c'</td>
+                                </tr>
+                                <tr>
+                                    <td>[^a-c]</td>
+                                    <td>any character except 'a' or 'b' or 'c'</td>
+                                </tr>
+                                <tr>
+                                    <td>[^-abc]</td>
+                                    <td>any character except '-' or 'a' or 'b' or 'c' </td>
+                                </tr>
+                                <tr>
+                                    <td>[^abc\-]</td>
+                                    <td>any character except '-' or 'a' or 'b' or 'c'</td>
+                                </tr>
+                            </table>
+                            <p>Note that the dash <code>"-"</code> indicates a range of characters,
+                                unless it is the first character or if it is escaped with a
+                                backslash.</p>
+                            <p>In order to retrieve the string <code>"weed"</code>, the following
+                                expression can be used:</p>
+                            <ul>
+                                <li>
+                                    <code>w[uiaeo]+d</code>
+                                </li>
+                                <li>
+                                    <code>w[uiaeo]*d</code>
+                                </li>
+                                <li>
+                                    <code>we[uiaeo]?d</code>
+                                </li>
+                                <li>
+                                    <code>w[a-u]*ed</code>
+                                </li>
+                                <li>
+                                    <code>we[^o]d</code>
+                                </li>
+                            </ul>
+                            <p>The possibilities here are enormous.</p>
+                            <p>To be continued ….</p>
+                        </section>
+                    </section>
+                </section>
+            </div>
+        </div>
+    </div>
 </div>
