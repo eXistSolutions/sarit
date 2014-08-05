@@ -471,6 +471,11 @@ body a {
   color: #428BCA;
   text-decoration: none;
 }
+body .play {
+  font-family: Siddhanta, serif;
+  font-size: 12px;
+  line-height: 16px;
+}
 header,
 .navbar,
 footer {
@@ -619,13 +624,13 @@ footer p a:visited {
 #results .following,
 #results .previous,
 #results .hi {
-  white-space: pre-wrap;
+  /*white-space: pre-wrap;*/
   /* css-3 */
-  white-space: -moz-pre-wrap;
+  /*white-space: -moz-pre-wrap;*/
   /* Mozilla, since 1999 */
-  white-space: -pre-wrap;
+  /*white-space: -pre-wrap;*/
   /* Opera 4-6 */
-  white-space: -o-pre-wrap;
+  /*white-space: -o-pre-wrap;*/
   /* Opera 7 */
   word-wrap: break-word;
 }
@@ -845,4 +850,14 @@ section {
 }
 .help img {
   margin-bottom: 30px;
+}
+table > tbody > tr > td.hi {
+  vertical-align: middle;
+}
+table > tbody > tr > td.previous,
+table > tbody > tr > td.following {
+  vertical-align: middle;
+}
+.navigation-top a {
+  font-size: 100%;
 }
