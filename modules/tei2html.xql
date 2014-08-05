@@ -304,7 +304,7 @@ declare function tei-to-html:div($node as element(tei:div), $options) as element
                 )
             else ()
     else        
-        tei-to-html:recurse($node, $options)
+        <div>{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:head($node as element(tei:head), $options) as element() {
@@ -513,7 +513,7 @@ declare function tei-to-html:cell($node as element(tei:cell), $options) as eleme
 declare function tei-to-html:pb($node as element(tei:pb), $options) {
     <span class="pb" title="tei:pb">
         <a id="pg{$node/@n/string()}"/>
-        {concat('Page ', $node/@n/string())}
+        {$node/@n/string()}
     </span>
 };
 
@@ -716,7 +716,7 @@ declare function tei-to-html:note($node as element(tei:note), $options) as eleme
         if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
         ,
         <div class="note" title="tei:note">
-            <h4>{tei-to-html:recurse($node, $options)}</h4>
+            <span class="note" title="tei:note">{tei-to-html:recurse($node, $options)}</span>
         </div>
         )
 };
