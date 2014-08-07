@@ -1,11 +1,11 @@
-<div class="help" data-template="templates:surround" data-template-with="template.html"
-    data-template-at="content">
+<div class="help" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
     <div class="container">
         <div class="row help">
             <div class="col-md-12">
                 <h3>Indexes and Searching</h3>
                 <section>
-                    <div><!--<h4>Indexes</h4>--><p>In contrast to search in a word processing
+                    <div><!--<h4>Indexes</h4>-->
+                        <p>In contrast to search in a word processing
                             document, search in a database goes through an index. Just as in the
                             index to a book, terms are extracted from the text and arranged in a
                             list where each item is keyed to certain positions in the text. When
@@ -50,8 +50,7 @@
                                 <a href="search-help-ngram">NGram Search</a>. This is easiest and
                             very fast. If the text is suited for this being divided into words, use
                             the word index and its many options. Now, to complicate matters, the
-                            Lucene Full-Text Index has quite advanced regex options, described in <a
-                                href="search-help-lucene-regex">Lucene Regex Search</a>, and one
+                            Lucene Full-Text Index has quite advanced regex options, described in <a href="search-help-lucene-regex">Lucene Regex Search</a>, and one
                             could, if one wishesd so, use these instead of the NGram Index, but the
                             drawback here is that this would make searches quite slow and
                             resource-demanding. Choose your index wisely.</p>
@@ -69,6 +68,74 @@
                             here you will have to use the string index, unless you are sure that you
                             know the complete string you are searching for.</p>
                     </div>
+                    
+                    <div>
+                        <h5>Search Target</h5>
+                        <p>A search is performed in a number of fields – to be more exact, in
+                            indexes based on certain fields. This contrasts with searches in a word
+                            processing document which are made in a document as a whole, as one long
+                            string of characters or words.</p>
+                        <p>However, the word "fields" is not good. If you search in a bibliography,
+                            e.g., you might search for a term inside the title field or for a
+                            specific author, but with texts it is different. Here you might have a
+                            name occurring in the middle of a sentence, and this name is wrapped up
+                            a name tag, like this &lt;name&gt;Kamalaśīla&lt;/name&gt;, so here the
+                            name "field" occurs in the middle of some pure text. The correct word to
+                            use for this is "element" – text is contained in elements, just as the
+                            text string "Kamalaśīla" is enclosed in the "name" element.</p>
+                        <p> Elements come in different kinds: one kind is used to represent the
+                            major structural divisions of the text and another is used to wrap
+                            around e.g. names inside text in the manner just described. The
+                            structural divisions of a text forms a hierarchy, just as a book
+                            contains a number of chapters, which contain a number of sections, which
+                            contain a number of paragraphs – which then contain the actual text.</p>
+                        <p>SARIT texts are of different types, so the structural elements they use
+                            are not completely the same. However, all texts divide into a number of
+                            divisions, called "div"s. In the table of contents, the top three divs
+                            of each text are displayed. Some texts have that number of structural
+                            levels, some less and some more. Only three levels are displayed in
+                            order to speed up display in the case of texts with very fine-grained
+                            structure. </p>
+                        <p>This database theory is relevant to understanding what goes on when one
+                            searches.</p>
+                        <p> When you search for the co-occurrence of two words, say "svabhāva" and
+                            "lakṣaṇa", you do not search in the text as a whole, but you get a hit
+                            only if the two words occur in the same text-containing element, such as
+                            a paragraph or a line group. The number of hits you get is not the
+                            number of times the search term(s) occur in a text, but the number of
+                            search targets that contain the search term(s) – it may well be that the
+                            same paragraph contains several instances of "lakṣaṇa", but you only
+                            find the paragraph once.</p>
+                    </div>
+                    <p>The <em>search scope</em> here described is the default "narrow" search
+                        scope. If you choose, you can search more broadly, in the divisions which
+                        the speeches or stanzas are part of. This means, in the case of plays, that
+                        you search within acts, and in the case of poems, that you search within
+                        poems as a whole. If you do so, the co-occurrence of two words can span
+                        several speeches and you may search for words which are within, say, 10
+                        words of each other, though they belong to different stanzas. Both kind of
+                        search scopes are useful for certain tasks.</p>
+                    
+                    <p>This may seem obvious, but you search for <em>words</em> - spaces and
+                        punctuation and so on cannot be searched for, but only the words themselves.
+                        Also, the words are all lower-cased, so while this means that there is no
+                        way to differentiate between "Hamlet" (the proper name) and "hamlet" (a
+                        village), you also do not have to remember that "fillet" occurs first in a
+                        sentence in the second witch's speech and therefore is in upper-case. All
+                        your input is stripped of punctuation and lower-cased, so you can just as
+                        well spare yourself the effort to input them – whether you search for "To
+                        be, or not to be" or "to be or not to be" is all the same. Often words like
+                        "to be or not to be" are removed from indexes, but not in the Shakespeare
+                        app.</p>
+                    <p>One may ask: if spaces cannot be searched for, what are phrase searches?
+                        Don't phrases consist of words with spaces and punctuation in between? Yes,
+                        but when you search for a phrase, this is not the same as when you search
+                        for a phrase in a word processing document – with Lucene, you actually
+                        search for a sequence of words which have no words in between them, so
+                        everything is about words after all (and a phrase search is actually a
+                        proximity search – more about that later).</p>
+                    
+                    
                 </section>
             </div>
         </div>

@@ -50,4 +50,13 @@ $(document).ready(function() {
         initIndexSelect();
     });
     initIndexSelect();
+    
+    $('.popover-dismiss').popover({
+        html:true,
+        placement:"auto top",
+        content:function(note)
+        {
+            $(note).next(".note-contents").html()
+        }
+});
 });
