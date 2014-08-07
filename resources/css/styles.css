@@ -471,6 +471,11 @@ body a {
   color: #428BCA;
   text-decoration: none;
 }
+body .play {
+  font-family: Siddhanta, serif;
+  font-size: 16px;
+  line-height: 24px;
+}
 header,
 .navbar,
 footer {
@@ -619,13 +624,13 @@ footer p a:visited {
 #results .following,
 #results .previous,
 #results .hi {
-  white-space: pre-wrap;
+  /*white-space: pre-wrap;*/
   /* css-3 */
-  white-space: -moz-pre-wrap;
+  /*white-space: -moz-pre-wrap;*/
   /* Mozilla, since 1999 */
-  white-space: -pre-wrap;
+  /*white-space: -pre-wrap;*/
   /* Opera 4-6 */
-  white-space: -o-pre-wrap;
+  /*white-space: -o-pre-wrap;*/
   /* Opera 7 */
   word-wrap: break-word;
 }
@@ -789,7 +794,7 @@ li.current {
 }
 mark,
 .mark {
-  background-color: #D0DDE8;
+  background-color: #d0dde8;
   padding-bottom: 0.1em;
   padding-left: 0;
   padding-right: 0;
@@ -845,4 +850,34 @@ section {
 }
 .help img {
   margin-bottom: 30px;
+}
+table > tbody > tr > td.hi {
+  vertical-align: middle;
+}
+table > tbody > tr > td.previous,
+table > tbody > tr > td.following {
+  vertical-align: middle;
+}
+.mula {
+  border-style: solid;
+  border-color: #D0DDE8;
+  border-width: 3px;
+}
+.navigation-top a,
+.navigation-bottom a {
+  font-size: 100%;
+}
+body .play button {
+  padding-bottom: 1px;
+  padding-top: 1px;
+  padding-left: 3px;
+  padding-right: 3px;
+  vertical-align: super;
+  font-size: 12px;
+  background-color: #92BCE0;
+  border-color: #92BCE0;
+}
+.lg {
+  margin-left: 24px;
+  font-size: 125%;
 }
