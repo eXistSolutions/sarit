@@ -304,14 +304,14 @@ declare function tei-to-html:div($node as element(tei:div), $options) as element
                 )
             else ()
     else        
-        tei-to-html:recurse($node, $options)
+        <div>{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:head($node as element(tei:head), $options) as element() {
     (: div heads :)
     if ($node/parent::tei:div) then
         let $type := $node/parent::tei:div/@type
-        let $div-level := count($node/ancestor::div)
+        let $div-level := count($node/ancestor::tei:div)
         return
             element {concat('h', $div-level + 2)} {tei-to-html:recurse($node, $options)}
     (: figure heads :)

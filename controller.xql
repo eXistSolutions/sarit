@@ -6,16 +6,10 @@ declare variable $exist:controller external;
 declare variable $exist:prefix external;
 declare variable $exist:root external;
 
-if ($exist:path = "/") then
+if ($exist:path eq "/") then
     (: forward root path to index.xql :)
     <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
         <redirect url="works/"/>
-    </dispatch>
-
-else if (ends-with($exist:path, "/docs/")) then
-    (: forward root path to index.xql :)
-    <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
-        <redirect url="../works/"/>
     </dispatch>
     
 else if (contains($exist:path, "/$shared/")) then
@@ -57,7 +51,7 @@ else if (starts-with($exist:path, "/works/")) then
             </dispatch>
         else if (ends-with($exist:resource, ".pdf")) then
             <dispatch xmlns="http://exist.sourceforge.net/NS/exist">
-                <forward url="{$exist:controller}/modules/tei2fo.xql">
+                <forward url="{$exist:controller}/modules/pdf.xql">
                     <add-parameter name="id" value="{$id}"/>
                 </forward>
                 <error-handler>
