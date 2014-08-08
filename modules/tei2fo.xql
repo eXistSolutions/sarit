@@ -10,9 +10,17 @@ declare namespace tei="http://www.tei-c.org/ns/1.0";
 
 (:  Sample doc: Pramāṇavārttika :)
 
-declare variable $tei2fo:fontSerif := "Siddhanta, serif";
+declare variable $tei2fo:font := "Siddhanta, serif";
 declare variable $tei2fo:fontSize := 12;
 declare variable $tei2fo:lineHeight := "18pt";
+
+declare variable $tei2fo:subTitleHeader := map {
+    "font-size" := "14pt",
+    "line-height" := "21pt",
+    "space-before" := "14pt",
+    "space-after" := "7pt",
+    "keep-with-next.within-page" := "always"
+};
 
 (: A helper function in case no options are passed to the function :)
 declare function tei2fo:render($content as node()*) as element()+ {
@@ -259,21 +267,21 @@ declare function tei2fo:head($node as element(tei:head), $options) as element() 
             switch ($div-level)
                 case 0 case 1 return
                     <fo:block font-size="36pt" font-weight="normal" space-after="{if ($last) then 36 else 0}pt"
-                        space-before="{if ($first) then 36 else 0}"
+                        space-before="{if ($first) then 36 else 0}pt"
                         keep-with-next.within-page="always" line-height="36pt"
                         page-break-before="{if ($node/preceding-sibling::tei:head) then '' else 'always'}">
                         {tei2fo:recurse($node, $options)}
                     </fo:block>
                 case 2 return
                     <fo:block font-size="24pt" font-weight="normal" space-after="{if ($last) then 24 else 0}pt"
-                        space-before="{if ($first) then 24 else 0}"
+                        space-before="{if ($first) then 24 else 0}pt"
                         keep-with-next.within-page="always" line-height="24pt">
                         {tei2fo:recurse($node, $options)}
                     </fo:block>
                 case 3 return
                     <fo:block font-size="18pt" font-weight="normal" space-after="{if ($last) then 18 else 0}pt"
                         keep-with-next.within-page="always" line-height="18pt"
-                        space-before="{if ($first) then 18 else 0}">
+                        space-before="{if ($first) then 18 else 0}pt">
                         {tei2fo:recurse($node, $options)}
                     </fo:block>
                 default return
@@ -301,13 +309,11 @@ declare function tei2fo:head($node as element(tei:head), $options) as element() 
 declare function tei2fo:p($node as element(tei:p), $options) as element()+ {
     let $rend := $node/@rend
     return 
-        (
-        if ($rend = ('right', 'center', 'first', 'indent') )
-        then
+        if ($rend = ('right', 'center', 'first', 'indent') ) then
             <fo:block text-align="{$rend}">{ tei2fo:recurse($node, $options) }</fo:block>
-        else 
-            <fo:block text-align="justify" text-indent="{if ($node/ancestor::tei:note) then 0 else 2}em">{tei2fo:recurse($node, $options)}</fo:block>
-        )
+        else
+            <fo:block text-align="left" text-indent="{if ($node/ancestor::tei:note|$node/ancestor::tei:teiHeader) then 0 else 2}em"
+                hyphenate="true">{tei2fo:recurse($node, $options)}</fo:block>
 };
 
 declare function tei2fo:hi($node as element(tei:hi), $options) as element()* {
@@ -327,29 +333,40 @@ declare function tei2fo:hi($node as element(tei:hi), $options) as element()* {
 };
 
 declare function tei2fo:list($node as element(tei:list), $options) as element()+ {
-        (
-        if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-        ,
-        if ($options/*:param[@name='ordered']/@value eq 'true')
-        then 
-            <ol title="tei:list">{tei2fo:recurse($node, $options)}</ol>
+    let $label-length :=
+        if ($node/tei:label) then
+            max($node/tei:label ! string-length(.))
         else
-            <ul title="tei:list">{tei2fo:recurse($node, $options)}</ul>
-        )
+            1
+    return
+        <fo:list-block provisional-distance-between-starts="{$label-length}em">
+        {tei2fo:recurse($node, $options)}
+        </fo:list-block>
 };
 
-declare function tei2fo:item($node as element(tei:item), $options) as element()+ {
-    if ($node/@xml:id) then tei2fo:xmlid($node, $options) else (),
-    <li class="item" title="tei:item">{tei2fo:recurse($node, $options)}</li>
+declare function tei2fo:item($node as element(tei:item), $options) as element()? {
+    if ($node/preceding-sibling::tei:label) then
+        ()
+    else
+        <fo:list-item>
+            <fo:list-item-label><fo:block/></fo:list-item-label>
+            <fo:list-item-body start-indent="body-start()">
+                <fo:block>{tei2fo:recurse($node, $options)}</fo:block>
+            </fo:list-item-body>
+        </fo:list-item>
 };
 
 declare function tei2fo:label($node as element(tei:label), $options) as element()* {
     if ($node/parent::tei:list) 
-    then 
-        (
-        <dt title="label">{$node/text()}</dt>,
-        <dd title="label">{$node/following-sibling::tei:item[1]}</dd>
-        )
+    then
+        <fo:list-item>
+            <fo:list-item-label end-indent="label-end()">
+                <fo:block>{tei2fo:recurse($node, $options)}</fo:block>
+            </fo:list-item-label>
+            <fo:list-item-body start-indent="body-start()">
+                <fo:block>{tei2fo:recurse($node/following-sibling::tei:item[1], $options)}</fo:block>
+            </fo:list-item-body>
+        </fo:list-item>
     else 
         <fo:inline>{tei2fo:recurse($node, $options)}</fo:inline>
 };
@@ -532,11 +549,11 @@ declare function tei2fo:said($node as element(tei:said), $options) {
 declare function tei2fo:teiHeader($node as element(tei:teiHeader), $options) as element()+ {
     <fo:block page-break-after="always">
         {tei2fo:dispatch($node/tei:fileDesc/tei:titleStmt, $options)}
+    </fo:block>,
+    <fo:block page-break-after="always">
+        { tei2fo:dispatch($node/tei:fileDesc/*[not(self::tei:titleStmt)], $options) }
+        { tei2fo:dispatch($node/*[not(self::tei:fileDesc)], $options) }
     </fo:block>
-(:    <fo:block page-break-before="always">:)
-(:        { tei2fo:dispatch($node/tei:fileDesc/*[not(self::tei:titleStmt)], $options) }:)
-(:        { tei2fo:dispatch($node/*[not(self::tei:fileDesc)], $options) }:)
-(:    </fo:block>:)
 };
 
 declare function tei2fo:encodingDesc($node as element(tei:encodingDesc), $options) as element()+ {
@@ -550,13 +567,9 @@ declare function tei2fo:encodingDesc($node as element(tei:encodingDesc), $option
 };
 
 declare function tei2fo:fileDesc($node as element(tei:fileDesc), $options) as element()+ {
-    (
-    if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-    ,
-    <div class="fileDesc">
+    <fo:block>
         {tei2fo:recurse($node, $options)}
-    </div>
-    )
+    </fo:block>
 };
 
 declare function tei2fo:profileDesc($node as element(tei:profileDesc), $options) as element()+ {
@@ -564,59 +577,50 @@ declare function tei2fo:profileDesc($node as element(tei:profileDesc), $options)
     let $textClass := $node/tei:textClass
     let $langUsage := $node/tei:langUsage
     return
-        (
-        if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-        ,
-        <div>
-            {if ($textClass)
-            then
-                <div class="textClass">
-                    <h4>Text Classification</h4>
-                    {tei2fo:recurse($node, $options)}</div>
-            else ()}
+        <fo:block>
+            {
+                if ($textClass) then
+                    <fo:block>
+                        <fo:block>{tei2fo:attributes($tei2fo:subTitleHeader)}Text Classification</fo:block>
+                        {tei2fo:recurse($node, $options)}
+                    </fo:block>
+                else ()
+            }
             
-            {if ($langUsage)
-            then
-                <div class="langUsage">
-                    <h4>Language Usage</h4>
-                    {
-                    for $language in $langUsage/tei:language
-                    return
-                        <div>
-                            {$language}{' '}{if ($language/@ident) then $language/@ident/string() else ''}{' '}{if ($language/@usage) then ($language/@usage/string() || '%') else ''}
-                        </div>
-                    }</div>
-            else ()}
-        </div>
-        )
+            {
+                if ($langUsage) then
+                    <fo:block>
+                        <fo:block>{tei2fo:attributes($tei2fo:subTitleHeader)}Language Usage</fo:block>
+                        {
+                        for $language in $langUsage/tei:language
+                        return
+                            <fo:block>
+                                {$language}{' '}{if ($language/@ident) then $language/@ident/string() else ''}{' '}{if ($language/@usage) then ($language/@usage/string() || '%') else ''}
+                            </fo:block>
+                        }</fo:block>
+                else ()
+            }
+        </fo:block>
 };
 
 declare function tei2fo:revisionDesc($node as element(tei:revisionDesc), $options) as element()+ {
-    (:listChange:)
-    (
-    if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-    ,
-    <div class="revisionDesc">
-    <h3>Revision Description</h3>
-        <ul>
+    <fo:block>
+        <fo:block>{tei2fo:attributes($tei2fo:subTitleHeader)}Revision Description</fo:block>
+        <fo:list-block provisional-distance-between-starts="8em">
             {tei2fo:recurse($node, $options)}
-        </ul>
-    </div>
-    )
+        </fo:list-block>
+    </fo:block>
 };
 
 declare function tei2fo:notesStmt($node as element(tei:notesStmt), $options) as element()+ {
-    (
-    if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-    ,
-    <div class="notesStmt">
-    <h4>Notes Statement</h4>
-        {for $note in $node/tei:note
-        return
-            tei2fo:note($note, $options)
+    <fo:block>
+        <fo:block>{tei2fo:attributes($tei2fo:subTitleHeader)}Notes Statement</fo:block>
+        {
+            for $note in $node/tei:note
+            return
+                tei2fo:recurse($note, $options)
         }
-    </div>
-    )
+    </fo:block>
 };
 
 (:SR:)
@@ -631,7 +635,7 @@ declare function tei2fo:note($node as element(tei:note), $options) as element()+
                 <fo:inline baseline-shift="super" font-size="8pt" padding-left="0.25em" padding-right="0.5em">{$number}</fo:inline>
                 <fo:footnote-body start-indent="0mm" end-indent="0mm" text-indent="0mm" white-space-treatment="preserve">
                     <fo:list-block provisional-label-separation="2mm" provisional-distance-between-starts="4em" 
-                        font-size="9pt">
+                        font-size="9pt" line-height="11pt">
                         <fo:list-item>
                             <fo:list-item-label end-indent="label-end()">
                                 <fo:block>{ $number }</fo:block>
@@ -674,8 +678,20 @@ declare function tei2fo:change($node as element(tei:change), $options) {
             else ''
     return 
         if (contains($node, ':') and $node/*) (:taken as indicator that the text has been marked fully up:)
-        then <li class="change">{if ($when) then $when else ()} {tei2fo:recurse($node, $options)}</li>
-        else <li class="change">{concat($when, if (contains($node, ':')) then '' else if ($when) then ': ' else '', $node/string(), if ($who) then ' By ' else '', $who)}</li>
+        then 
+            <fo:list-item>
+                <fo:list-item-label end-indent="label-end()"><fo:block>{if ($when) then $when else ()}</fo:block></fo:list-item-label>
+                <fo:list-item-body start-indent="body-start()">
+                    <fo:block>{tei2fo:recurse($node, $options)}</fo:block>
+                </fo:list-item-body>
+            </fo:list-item>
+        else 
+            <fo:list-item>
+                <fo:list-item-label end-indent="label-end()"><fo:block>{concat($when, if (contains($node, ':')) then '' else if ($when) then ': ' else '')}</fo:block></fo:list-item-label>
+                <fo:list-item-body start-indent="body-start()">
+                    <fo:block>{$node/string()}{if ($who) then ' By ' else ''}{$who}</fo:block>
+                </fo:list-item-body>
+            </fo:list-item>
 };
 
 declare function tei2fo:listChange($node as element(tei:listChange), $options) {
@@ -707,110 +723,100 @@ declare function tei2fo:bibl-element-only($node as element(tei:bibl), $options) 
     let $result :=
     
         (
-        <table title="tei:bibl">
-        {
-            for $title in $titles
-            return 
-                <tr class="title" title="tei:title"><td>Title:</td><td>{tei2fo:recurse($title, $options)}</td></tr>
-            ,
-            for $author in $authors
-            return 
-                <tr class="author" title="tei:author"><td>Author:</td><td>{tei2fo:recurse($author, $options)}</td></tr>
-            ,
-            for $editor in $editors
-            return 
-                <tr class="editor" title="tei:editor"><td>Editor:</td><td>{tei2fo:recurse($editor, $options)}</td></tr>
-            ,
-            for $publisher in $publishers
-            return 
-                <tr class="publisher" title="tei:publisher"><td>Publisher:</td><td>{tei2fo:recurse($publisher, $options)}</td></tr>
-            ,
-            for $pubPlace in $pubPlaces
-            return 
-                <tr class="pubPlace" title="tei:pubPlace"><td>Place of Publication:</td><td>{tei2fo:recurse($pubPlace, $options)}</td></tr>
-            ,
-            for $extent in $extents
-            return 
-                <tr class="extent" title="tei:extent"><td>Extent:</td><td>{tei2fo:recurse($extent, $options)}</td></tr>
-            ,
-            for $date in $dates
-            return 
-                <tr class="date" title="tei:date"><td>Date:</td><td>{tei2fo:recurse($date, $options)}</td></tr>
-            ,
-            for $series in $seriess
-            return 
-                <tr class="series" title="tei:series"><td>Series:</td><td>{tei2fo:recurse($series, $options)}</td></tr>
-            ,
-            for $note in $notes
-            return 
-                <tr class="note" title="tei:note"><td>Note:</td><td>{tei2fo:recurse($note, $options)}</td></tr>
-        }
-        </table>
+        <fo:table>
+            <fo:table-column column-number="1" column-width="30%"/>
+            <fo:table-column column-number="2" column-width="70%"/>
+            <fo:table-body>
+            {
+                for $title in $titles
+                return 
+                    <fo:table-row>
+                        <fo:table-cell><fo:block>Title:</fo:block></fo:table-cell>
+                        <fo:table-cell>
+                        <fo:block>
+                        {
+                            tei2fo:recurse($title, $options)
+                        }
+                        </fo:block>
+                        </fo:table-cell>
+                    </fo:table-row>
+                ,
+                for $author in $authors
+                return 
+                    <fo:table-row><fo:table-cell><fo:block>Author:</fo:block></fo:table-cell><fo:table-cell><fo:block>{tei2fo:recurse($author, $options)}</fo:block></fo:table-cell></fo:table-row>
+                ,
+                for $editor in $editors
+                return 
+                    <fo:table-row><fo:table-cell><fo:block>Editor:</fo:block></fo:table-cell><fo:table-cell><fo:block>{tei2fo:recurse($editor, $options)}</fo:block></fo:table-cell></fo:table-row>
+                ,
+                for $publisher in $publishers
+                return 
+                    <fo:table-row><fo:table-cell><fo:block>Publisher:</fo:block></fo:table-cell><fo:table-cell><fo:block>{tei2fo:recurse($publisher, $options)}</fo:block></fo:table-cell></fo:table-row>
+                ,
+                for $pubPlace in $pubPlaces
+                return 
+                    <fo:table-row><fo:table-cell><fo:block>Place of Publication:</fo:block></fo:table-cell><fo:table-cell><fo:block>{tei2fo:recurse($pubPlace, $options)}</fo:block></fo:table-cell></fo:table-row>
+                ,
+                for $extent in $extents
+                return 
+                    <fo:table-row><fo:table-cell><fo:block>Extent:</fo:block></fo:table-cell><fo:table-cell><fo:block>{tei2fo:recurse($extent, $options)}</fo:block></fo:table-cell></fo:table-row>
+                ,
+                for $date in $dates
+                return 
+                    <fo:table-row><fo:table-cell><fo:block>Date:</fo:block></fo:table-cell><fo:table-cell><fo:block>{tei2fo:recurse($date, $options)}</fo:block></fo:table-cell></fo:table-row>
+                ,
+                for $series in $seriess
+                return 
+                    <fo:table-row><fo:table-cell><fo:block>Series:</fo:block></fo:table-cell><fo:table-cell><fo:block>{tei2fo:recurse($series, $options)}</fo:block></fo:table-cell></fo:table-row>
+                ,
+                for $note in $notes
+                return 
+                    <fo:table-row><fo:table-cell><fo:block>Note:</fo:block></fo:table-cell><fo:table-cell><fo:block>{tei2fo:recurse($note, $options)}</fo:block></fo:table-cell></fo:table-row>
+            }
+            </fo:table-body>
+        </fo:table>
         )
     return
         if ($node/../local-name() eq 'note')
         then
-            (
-            if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-            ,
-            <div class="hanging-indent">{$result}</div>
-            )
+            <fo:block>{$result}</fo:block>
         else $result
 };
 
 declare function tei2fo:bibl-loose($node as element(tei:bibl), $options) as element()+ {
-    (
-    if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-    ,
-    <div class="bibl" title="bibl">{tei2fo:recurse($node, $options)}</div>
-    )
+    <fo:block>{tei2fo:recurse($node, $options)}</fo:block>
 };
 
 declare function tei2fo:sourceDesc($node as element(tei:sourceDesc), $options) as element()+ {
-    (
-    if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-    ,
-    <div class="sourceDesc">
-        <h4>Source Description</h4>
+    <fo:block>
+        <fo:block>{tei2fo:attributes($tei2fo:subTitleHeader)}Source Description</fo:block>
         {tei2fo:recurse($node, $options)}
-    </div>
-    )
+    </fo:block>
 };
 
 declare function tei2fo:editorialDecl($node as element(tei:editorialDecl), $options) as element()+ {
-    (
-    if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-    ,
-    <div class="editorialDesc">
-        <h4>Editorial Description</h4>
+    <fo:block>
+        <fo:block>{tei2fo:attributes($tei2fo:subTitleHeader)}Editorial Description</fo:block>
         {tei2fo:recurse($node, $options)}
-    </div>
-    )
+    </fo:block>
 };
 
 declare function tei2fo:classDecl($node as element(tei:classDecl), $options) as element()+ {
         let $taxonomy := $node/tei:taxonomy/@xml:id/string() (:a little strange that this attribute should be used here:)
         return
-            (
-            if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-            ,
-            <div class="classDecl">
-                <h4>Classification Declarations (Taxonomy: {$taxonomy})</h4>
-                <div class="classification">{$node//tei:bibl/text()}</div>
-            </div>
-            )
+            <fo:block>
+                <fo:block>{tei2fo:attributes($tei2fo:subTitleHeader)}Classification Declarations (Taxonomy: {$taxonomy})</fo:block>
+                <fo:block>{$node//tei:bibl/text()}</fo:block>
+            </fo:block>
 };
 
 declare function tei2fo:refsDecl($node as element(tei:refsDecl), $options) as element()+ {
-        (
-        if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-        ,
-        <div class="refsDecl">
-            <h4>References Declarations</h4>
-            <div class="classification">{tei2fo:recurse($node, $options)}</div>
-        </div>
-        )
+        <fo:block>
+            <fo:block>{tei2fo:attributes($tei2fo:subTitleHeader)}References Declarations</fo:block>
+            <fo:block>{tei2fo:recurse($node, $options)}</fo:block>
+        </fo:block>
 };
+
 declare function tei2fo:publicationStmt($node as element(tei:publicationStmt), $options) as element()+ {
         (:distributor:)
         let $authority := $node/tei:authority
@@ -818,7 +824,7 @@ declare function tei2fo:publicationStmt($node as element(tei:publicationStmt), $
         let $authority := 
             if ($authority) 
             then 
-                <h5>Published by {tei2fo:serialize-list($authority)}{if ($date) then concat(', ', $date) else ''}.</h5>
+                <fo:block>Published by {tei2fo:serialize-list($authority)}{if ($date) then concat(', ', $date) else ''}.</fo:block>
             else ()
         
         let $availability := $node/tei:availability
@@ -827,41 +833,29 @@ declare function tei2fo:publicationStmt($node as element(tei:publicationStmt), $
             if ($availability-status) 
             then 
                 (
-                <h5>Availability: {$availability-status}</h5>
+                <fo:block>Availability: {$availability-status}</fo:block>
                 , 
-                (
-                if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-                ,
-                <div class="copyright-notice">
+                <fo:block>
                 {for $p at $i in $availability/tei:p
                 return
                     tei2fo:p($p, $options)}
-                </div>
-                )
+                </fo:block>
                 )
             else ()
         
         let $idno := 
             if ($node/tei:idno) 
             then 
-                (
-                if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-                ,
-                <div class="idno" title="tei:idno"><h5>Identifier</h5>{$node/tei:idno}</div>
-                )
+                <fo:block><fo:block>Identifier</fo:block>{$node/tei:idno/text()}</fo:block>
             else ()
         
         return
-            (
-            if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-            ,
-            <div class="publicationStmt">
-            <h4>Publication Statement</h4>
+            <fo:block>
+                <fo:block>{tei2fo:attributes($tei2fo:subTitleHeader)}Publication Statement</fo:block>
                 {$authority}
                 {$availability}
                 {$idno}
-            </div>
-            )
+            </fo:block>
 };
 
 declare function tei2fo:respStmt($node as element(tei:respStmt)*, $options) {
@@ -990,9 +984,6 @@ declare function tei2fo:titleStmt($node as element(tei:titleStmt), $options) as 
         let $respStmt := tei2fo:respStmt($node/tei:respStmt, $options)
         
         return
-            (
-            if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-            ,
             <fo:block>
                 <fo:block font-size="38pt" line-height="1.2em" space-after="40pt" text-align="center">
                 {$main-title}
@@ -1011,18 +1002,13 @@ declare function tei2fo:titleStmt($node as element(tei:titleStmt), $options) as 
                 {$respStmt}
                 </fo:block>
             </fo:block>
-            )
 };
 
 declare function tei2fo:editionStmt($node as element(tei:editionStmt), $options) as element()+ {
-            (
-            if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-            ,
-            <div class="editionStmt">
-                <h4>Edition Statement</h4>
-                {tei2fo:recurse($node, $options)}                
-            </div>
-            )
+    <fo:block>
+        <fo:block>{tei2fo:attributes($tei2fo:subTitleHeader)}Edition Statement</fo:block>
+        {tei2fo:recurse($node, $options)}                
+    </fo:block>
 };
 
 declare function tei2fo:serialize-list($sequence as item()+) as xs:string {       
@@ -1392,16 +1378,16 @@ declare function tei2fo:add($node as element(tei:add), $options) as element() {
 
 declare function tei2fo:titlepage($header as element(tei:teiHeader))   {
     <fo:page-sequence master-reference="SARIT-Content">
-        <fo:flow flow-name="xsl-region-body" font-family="{$tei2fo:fontSerif}"
+        <fo:flow flow-name="xsl-region-body" font-family="{$tei2fo:font}"
             font-size="{$tei2fo:fontSize}pt" line-height="1.2em">
         { tei2fo:render($header) }
-        </fo:flow>                    
+        </fo:flow>
     </fo:page-sequence>
 };
 
 declare function tei2fo:table-of-contents($work as element(tei:TEI)) {
     <fo:page-sequence master-reference="SARIT-Content">
-        <fo:flow flow-name="xsl-region-body" font-family="{$tei2fo:fontSerif}">
+        <fo:flow flow-name="xsl-region-body" font-family="{$tei2fo:font}">
         <fo:block font-size="30pt" space-after="1em" font-family="Arial, Helvetica, sans-serif">Table of Contents</fo:block>
         {
             for $act at $act-count in $work/tei:text/tei:body/tei:div
@@ -1457,14 +1443,14 @@ declare function tei2fo:main($id as xs:string) {
             <fo:page-sequence master-reference="SARIT-Content">
                 
                 <fo:static-content flow-name="head-left">
-                    <fo:block margin-bottom="0.7mm" text-align-last="justify" font-family="{$tei2fo:fontSerif}">
+                    <fo:block margin-bottom="0.7mm" text-align-last="justify" font-family="{$tei2fo:font}">
                         <fo:page-number/>
                         <fo:leader/>
                         <fo:retrieve-marker retrieve-class-name="title"/>
                     </fo:block>
                 </fo:static-content>
                 <fo:static-content flow-name="head-right">
-                    <fo:block margin-bottom="0.7mm" text-align-last="justify" font-family="{$tei2fo:fontSerif}">
+                    <fo:block margin-bottom="0.7mm" text-align-last="justify" font-family="{$tei2fo:font}">
                         <fo:retrieve-marker retrieve-class-name="title"/>
                         <fo:leader/>
                         <fo:page-number/>
@@ -1475,10 +1461,17 @@ declare function tei2fo:main($id as xs:string) {
                         <fo:leader leader-length="40%" rule-thickness="2pt" leader-pattern="rule" color="grey"/>
                     </fo:block>
                 </fo:static-content>
-                <fo:flow flow-name="xsl-region-body" font-family="{$tei2fo:fontSerif}"
-                    font-size="{$tei2fo:fontSize}pt" line-height="{$tei2fo:lineHeight}">
+                <fo:flow flow-name="xsl-region-body" font-family="{$tei2fo:font}"
+                    font-size="{$tei2fo:fontSize}pt" line-height="{$tei2fo:lineHeight}"
+                    xml:lang="sa" language="sa" hyphenate="true">
                     { tei2fo:render($play/tei:text/tei:body/tei:div) }
                 </fo:flow>                         
             </fo:page-sequence>
         </fo:root>
+};
+
+declare function tei2fo:attributes($attrs as map(*)) {
+    for $key in map:keys($attrs)
+    return
+        attribute { $key } { $attrs($key) }
 };
