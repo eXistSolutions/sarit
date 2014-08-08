@@ -12,6 +12,7 @@ declare namespace tei="http://www.tei-c.org/ns/1.0";
 
 declare variable $tei2fo:fontSerif := "Siddhanta, serif";
 declare variable $tei2fo:fontSize := 12;
+declare variable $tei2fo:lineHeight := "18pt";
 
 (: A helper function in case no options are passed to the function :)
 declare function tei2fo:render($content as node()*) as element()+ {
@@ -237,9 +238,14 @@ declare function tei2fo:recurse($node as node(), $options) as item()* {
 };
 
 declare function tei2fo:div($node as element(tei:div), $options) as node()+ {
-    <fo:block intrusion-displace="block">
-    {tei2fo:recurse($node, $options)}
-    </fo:block>
+    if ($node/tei:head) then
+        <fo:block>
+        {tei2fo:recurse($node, $options)}
+        </fo:block>
+    else
+        <fo:block space-before="1em" space-after="1em">
+        {tei2fo:recurse($node, $options)}
+        </fo:block>
 };
 
 declare function tei2fo:head($node as element(tei:head), $options) as element() {
@@ -247,27 +253,31 @@ declare function tei2fo:head($node as element(tei:head), $options) as element() 
     if ($node/parent::tei:div) then
         let $type := $node/parent::tei:div/@type
         let $div-level := count($node/ancestor::tei:div)
-        let $last := $node/following-sibling::tei:head
+        let $last := empty($node/following-sibling::*[1][self::tei:head])
+        let $first := empty($node/preceding-sibling::*[1][self::tei:head])
         return
             switch ($div-level)
-                case 0 return
+                case 0 case 1 return
                     <fo:block font-size="36pt" font-weight="normal" space-after="{if ($last) then 36 else 0}pt"
-                        keep-with-next.within-page="always" 
+                        space-before="{if ($first) then 36 else 0}"
+                        keep-with-next.within-page="always" line-height="36pt"
                         page-break-before="{if ($node/preceding-sibling::tei:head) then '' else 'always'}">
                         {tei2fo:recurse($node, $options)}
                     </fo:block>
-                case 1 return
+                case 2 return
                     <fo:block font-size="24pt" font-weight="normal" space-after="{if ($last) then 24 else 0}pt"
-                        keep-with-next.within-page="always">
+                        space-before="{if ($first) then 24 else 0}"
+                        keep-with-next.within-page="always" line-height="24pt">
                         {tei2fo:recurse($node, $options)}
                     </fo:block>
-                case 2 return
+                case 3 return
                     <fo:block font-size="18pt" font-weight="normal" space-after="{if ($last) then 18 else 0}pt"
-                        keep-with-next.within-page="always">
+                        keep-with-next.within-page="always" line-height="18pt"
+                        space-before="{if ($first) then 18 else 0}">
                         {tei2fo:recurse($node, $options)}
                     </fo:block>
                 default return
-                    <fo:block font-size="12pt" font-weight="bold" space-after="{if ($last) then 12 else 0}pt"
+                    <fo:block font-weight="bold" space-after="{if ($last) then 12 else 0}pt"
                         keep-with-next.within-page="always">
                         {$div-level}: {tei2fo:recurse($node, $options)}
                     </fo:block>
@@ -435,14 +445,14 @@ declare function tei2fo:cell($node as element(tei:cell), $options) as element() 
 };
 
 declare function tei2fo:pb($node as element(tei:pb), $options) {
-    <fo:inline font-size=".75em">/p. {$node/@n/string()}/</fo:inline>
+    <fo:inline font-size=".75em" padding-left=".5em" padding-right=".5em">/p. {$node/@n/string()}/</fo:inline>
 (:    <fo:float float="right">:)
 (:        <fo:block margin-left="3mm">P. {$node/@n/string()}</fo:block>:)
 (:    </fo:float>:)
 };
 
 declare function tei2fo:lg($node as element(tei:lg), $options) as element()+ {
-    <fo:block space-before="18pt" space-after="18pt">
+    <fo:block space-before="1em" space-after="1em">
         {tei2fo:recurse($node, $options)}
     </fo:block>
 };
@@ -520,25 +530,13 @@ declare function tei2fo:said($node as element(tei:said), $options) {
 };
 
 declare function tei2fo:teiHeader($node as element(tei:teiHeader), $options) as element()+ {
-    (
-        if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
-        ,
-        <div class="teiHeader">
-            {tei2fo:dispatch($node/tei:fileDesc/tei:titleStmt, $options)}
-            
-            <div class="extHeader">
-                <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#extHeader">
-                    <span class="glyphicon glyphicon-th-list"/> Toggle Full Header
-                </button>
-                <div id="extHeader" class="collapse">
-                    <div class="fileDesc">
-                    { tei2fo:dispatch($node/tei:fileDesc/*[not(self::tei:titleStmt)], $options) }
-                    </div>
-                    { tei2fo:dispatch($node/*[not(self::tei:fileDesc)], $options) }
-                </div>
-            </div>
-        </div>
-    )
+    <fo:block page-break-after="always">
+        {tei2fo:dispatch($node/tei:fileDesc/tei:titleStmt, $options)}
+    </fo:block>
+(:    <fo:block page-break-before="always">:)
+(:        { tei2fo:dispatch($node/tei:fileDesc/*[not(self::tei:titleStmt)], $options) }:)
+(:        { tei2fo:dispatch($node/*[not(self::tei:fileDesc)], $options) }:)
+(:    </fo:block>:)
 };
 
 declare function tei2fo:encodingDesc($node as element(tei:encodingDesc), $options) as element()+ {
@@ -630,9 +628,10 @@ declare function tei2fo:note($node as element(tei:note), $options) as element()+
         let $number := counter:next-value("footnotes")
         return
             <fo:footnote>
-                <fo:inline baseline-shift="super" font-size=".60em">{$number}</fo:inline>
+                <fo:inline baseline-shift="super" font-size="8pt" padding-left="0.25em" padding-right="0.5em">{$number}</fo:inline>
                 <fo:footnote-body start-indent="0mm" end-indent="0mm" text-indent="0mm" white-space-treatment="preserve">
-                    <fo:list-block provisional-label-separation="4mm" font-size=".75em">
+                    <fo:list-block provisional-label-separation="2mm" provisional-distance-between-starts="4em" 
+                        font-size="9pt">
                         <fo:list-item>
                             <fo:list-item-label end-indent="label-end()">
                                 <fo:block>{ $number }</fo:block>
@@ -870,7 +869,7 @@ declare function tei2fo:respStmt($node as element(tei:respStmt)*, $options) {
     return
     for $responsibilty in $responsibilties
         return
-            <li>{replace(normalize-space($responsibilty),'\.+$','')}: 
+            <fo:block>{replace(normalize-space($responsibilty),'\.+$','')}: 
                 {tei2fo:serialize-list(
                     (
                     $node[tei:resp = $responsibilty]/tei:persName
@@ -879,111 +878,113 @@ declare function tei2fo:respStmt($node as element(tei:respStmt)*, $options) {
                     ,
                     $node[tei:resp = $responsibilty]/tei:name
                     ))}
-            </li>
+            </fo:block>
 };
 
 declare function tei2fo:titleStmt($node as element(tei:titleStmt), $options) as element() {
         let $main-title := 
             if ($node/*:title[@type eq 'main']) 
-            then <span title="tei:title">{$node/*:title[@type eq 'main']/text()}</span> 
-            else <span title="tei:title">{$node/*:title[not(@type)][1]/text()}</span>
+            then $node/*:title[@type eq 'main']/text()
+            else $node/*:title[not(@type)][1]/text()
         
         let $commentary-subtitles := $node/*:title[@type eq 'sub'][@subtype eq 'commentary']/text()
         let $commentary-subtitles := 
-            if ($commentary-subtitles) 
-            then <h4 title="tei:title">With the {if (count($commentary-subtitles) eq 1) then 'Commentary' else 'Commentaries'}{' '}{string-join($commentary-subtitles, ', ')}</h4> 
+            if ($commentary-subtitles) then 
+                <fo:block font-size="24pt" text-align="center" line-height="36pt">
+                    With the {if (count($commentary-subtitles) eq 1) then 'Commentary' else 'Commentaries'}{' '}{string-join($commentary-subtitles, ', ')}
+                </fo:block>
             else ()
         
         let $edition-subtitles := $node/*:title[@type eq 'sub'][@subtype eq 'edition-type' or not(@subtype)]/text()
         let $edition-subtitles := 
             if ($edition-subtitles) 
-            then <h5 title="tei:title">{string-join($edition-subtitles, ', ')}</h5> 
+            then <fo:block>{string-join($edition-subtitles, ', ')}</fo:block> 
             else ()
         
         let $authors := $node/tei:author[not(@role)]
         let $authors := 
             if ($authors) 
             then 
-                <h3 class="indent" title="tei:author">
+                <fo:block font-size="20pt" space-before="20pt" line-height="30pt">
                     {'By '}
                     {tei2fo:serialize-list(
                         for $author in $authors return tei2fo:recurse($author, $options))}
-                </h3> else ()
+                </fo:block> else ()
         
         let $commentators := $node/tei:author[@role eq 'commentator']
         let $commentators := 
             if ($commentators) 
             then
-                <h4 class="indent" title="tei:author">
+                <fo:block font-size="20pt" space-before="20pt" line-height="30pt">
                     {'By '}
                     {tei2fo:serialize-list(
                         for $commentator in $commentators return tei2fo:recurse($commentator, $options))}
-                    </h4>
+                    </fo:block>
             else ()
         
         let $editors := $node/tei:editor
         let $editors := 
             if ($editors) 
             then 
-                <li title="tei:editor">
+                <fo:block>
                     {'Editor'}
                     {if (count($editors) gt 1) then 's' else ''}
                     {': '}
                     {tei2fo:serialize-list(
                         for $editor in $editors return tei2fo:recurse($editor, $options))}
-                </li> 
+                </fo:block> 
             else ()
         
         let $funders := $node/tei:funder
         let $funders := 
             if ($funders) 
             then
-                <li title="tei:funder">
+                <fo:block>
                     {'Funder'}
                     {if (count($funders) gt 1) then 's' else ''}
                     {': '}
                     {tei2fo:serialize-list(
                         for $funder in $funders return tei2fo:recurse($funder, $options))}
-                </li> 
+                </fo:block> 
             else ()
         
         let $principals := $node/tei:principal
         let $principals := 
             if ($principals) 
             then
-                <li title="tei:principal">
+                <fo:block>
                     {'Principal'}
                     {if (count($principals) gt 1) then 's' else ''}
                     {': '}
                     {tei2fo:serialize-list(
                         for $principal in $principals return tei2fo:recurse($principal, $options))}
-                </li>
+                </fo:block>
             else ()
         
         let $sponsors := $node/tei:sponsor
         let $sponsors := 
             if ($sponsors) 
             then 
-                <li title="tei:sponsor">
+                <fo:block>
                     {'Sponsor'}
                     {if (count($sponsors) gt 1) then 's' else ''}
                     {': '}
                     {tei2fo:serialize-list(
                         for $sponsor in $sponsors return tei2fo:recurse($sponsor, $options))}
-                </li>
+                </fo:block>
             else ()
         
         let $meetings := $node/tei:meeting
         let $meetings := 
             if ($meetings) 
             then 
-                <li title="tei:meeting">
+                <fo:block>
                     {'Meeting'}
                     {if (count($meetings) gt 1) then 's' else ''}
                     {': '}
                     {tei2fo:serialize-list(
                         for $meeting in $meetings return tei2fo:recurse($meeting, $options))}
-                </li>
+                </fo:block>
             else ()
         
         let $respStmt := tei2fo:respStmt($node/tei:respStmt, $options)
@@ -992,22 +993,24 @@ declare function tei2fo:titleStmt($node as element(tei:titleStmt), $options) as 
             (
             if ($node/@xml:id) then <a class="anchor" id="{$node/@xml:id}"/> else ()
             ,
-            <div class="titleStmt" title="tei:titleStmt">
-                <h2>{$main-title}</h2>
+            <fo:block>
+                <fo:block font-size="38pt" line-height="1.2em" space-after="40pt" text-align="center">
+                {$main-title}
+                </fo:block>
                 {$authors}
                 {$commentary-subtitles}
                 {$commentators}
                 {$edition-subtitles}
                 
-                <ul>
+                <fo:block space-before="60pt">
                 {$editors}
                 {$funders}
                 {$principals}
                 {$sponsors}
                 {$meetings}
                 {$respStmt}
-                </ul>
-            </div>
+                </fo:block>
+            </fo:block>
             )
 };
 
@@ -1389,24 +1392,9 @@ declare function tei2fo:add($node as element(tei:add), $options) as element() {
 
 declare function tei2fo:titlepage($header as element(tei:teiHeader))   {
     <fo:page-sequence master-reference="SARIT-Content">
-        <fo:flow flow-name="xsl-region-body" font-family="{$tei2fo:fontSerif}">
-            <fo:block font-size="44pt" text-align="center">
-            {                     
-                $header/tei:fileDesc/tei:titleStmt/tei:title[@type = "main"]/text() 
-            }
-            </fo:block> 
-            <fo:block text-align="center" font-size="20pt" font-style="italic" space-before="2em" space-after="2em">
-            by
-            </fo:block>
-            <fo:block text-align="center" font-size="30pt" font-style="italic" space-before="2em" space-after="2em">
-            {                  
-                $header/tei:fileDesc/tei:titleStmt/tei:author !
-                    <fo:block>{./text()}</fo:block>
-            }
-            </fo:block>
-            <fo:block text-align="center" space-before="2em" space-after="2em">
-            <!--fo:external-graphic content-height="300pt" src="http://data.stonesutras.org:8600/exist/apps/sarit/resources/images/SARIT-french.jpg"/-->    
-            </fo:block>
+        <fo:flow flow-name="xsl-region-body" font-family="{$tei2fo:fontSerif}"
+            font-size="{$tei2fo:fontSize}pt" line-height="1.2em">
+        { tei2fo:render($header) }
         </fo:flow>                    
     </fo:page-sequence>
 };
@@ -1446,17 +1434,15 @@ declare function tei2fo:main($id as xs:string) {
             <fo:layout-master-set>
                 <fo:simple-page-master master-name="SARIT-left" margin-top="10mm"
                         margin-bottom="10mm" margin-left="24mm"
-                        margin-right="12mm">
-                    <fo:region-body margin-bottom="10mm" margin-top="10mm"/>
-                    <fo:region-before region-name="kopf" extent="10mm"/>
-                    <fo:region-after region-name="footnotes-left" extent="10mm"/>
+                        margin-right="12mm" page-height="297mm" page-width="210mm">
+                    <fo:region-body margin-bottom="10mm" margin-top="16mm"/>
+                    <fo:region-before region-name="head-left" extent="10mm"/>
                 </fo:simple-page-master>
                 <fo:simple-page-master master-name="SARIT-right" margin-top="10mm"
                         margin-bottom="10mm" margin-left="12mm"
-                        margin-right="24mm">
-                    <fo:region-body margin-bottom="10mm" margin-top="10mm"/>
-                    <fo:region-before region-name="kopf" extent="10mm"/>
-                    <fo:region-after region-name="footnotes-right" extent="10mm"/>
+                        margin-right="24mm" page-height="297mm" page-width="210mm">
+                    <fo:region-body margin-bottom="10mm" margin-top="16mm"/>
+                    <fo:region-before region-name="head-right" extent="10mm"/>
                 </fo:simple-page-master>
                 <fo:page-sequence-master master-name="SARIT-Content">
                     <fo:repeatable-page-master-alternatives>
@@ -1470,18 +1456,17 @@ declare function tei2fo:main($id as xs:string) {
             { tei2fo:titlepage($play/tei:teiHeader) }
             <fo:page-sequence master-reference="SARIT-Content">
                 
-                <fo:static-content flow-name="kopf">
-                    <fo:block margin-bottom="0.7mm" text-align="left">
-                        <fo:retrieve-marker retrieve-class-name="titel"/>
-                    </fo:block>
-                </fo:static-content>
-                <fo:static-content flow-name="footnotes-left">
-                    <fo:block margin-top="0.7mm" text-align="left">                         
+                <fo:static-content flow-name="head-left">
+                    <fo:block margin-bottom="0.7mm" text-align-last="justify" font-family="{$tei2fo:fontSerif}">
                         <fo:page-number/>
+                        <fo:leader/>
+                        <fo:retrieve-marker retrieve-class-name="title"/>
                     </fo:block>
                 </fo:static-content>
-                <fo:static-content flow-name="footnotes-right">
-                    <fo:block margin-top="0.7mm" text-align="right">                         
+                <fo:static-content flow-name="head-right">
+                    <fo:block margin-bottom="0.7mm" text-align-last="justify" font-family="{$tei2fo:fontSerif}">
+                        <fo:retrieve-marker retrieve-class-name="title"/>
+                        <fo:leader/>
                         <fo:page-number/>
                     </fo:block>
                 </fo:static-content>
@@ -1490,7 +1475,8 @@ declare function tei2fo:main($id as xs:string) {
                         <fo:leader leader-length="40%" rule-thickness="2pt" leader-pattern="rule" color="grey"/>
                     </fo:block>
                 </fo:static-content>
-                <fo:flow flow-name="xsl-region-body" font-family="{$tei2fo:fontSerif}">
+                <fo:flow flow-name="xsl-region-body" font-family="{$tei2fo:fontSerif}"
+                    font-size="{$tei2fo:fontSize}pt" line-height="{$tei2fo:lineHeight}">
                     { tei2fo:render($play/tei:text/tei:body/tei:div) }
                 </fo:flow>                         
             </fo:page-sequence>
