@@ -1,7 +1,13 @@
 xquery version "3.0";
 
+
+declare namespace output="http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace fo="http://www.w3.org/1999/XSL/Format";
 
+declare option output:method "xml";
+declare option output:media-type "application/xml";
+
+import module namespace console="http://exist-db.org/xquery/console" at "java:org.exist.console.xquery.ConsoleModule";
 import module namespace process="http://exist-db.org/xquery/process" at "java:org.exist.xquery.modules.process.ProcessModule";
 import module namespace tei2fo="http://exist-db.org/xquery/app/sarit/tei2fo" at "tei2fo.xql";
 
@@ -31,6 +37,7 @@ declare function local:fop($id as xs:string, $fo as element()) {
             </renderer>
         </renderers>
     </fop>
+let $log := console:log("sarit", "Calling fop ...")
 let $pdf := xslfo:render($fo, "application/pdf", (), $config)
 return
     response:stream-binary($pdf, "media-type=application/pdf", $id || ".pdf")
@@ -45,7 +52,8 @@ declare function local:antenna-house($id as xs:string, $fo as element()) {
         <option>
             <workingDir>{system:get-exist-home()}</workingDir>
         </option>
-    let $result :=
+    let $result := (
+        console:log("sarit", "Calling AntennaHouse ..."),
         process:execute(
             (
                 "AHFCmd", "-d", $file || ".fo", "-o", $file || ".pdf", "-x", "2",
@@ -54,19 +62,24 @@ declare function local:antenna-house($id as xs:string, $fo as element()) {
                 "-tpdf"
             ), $options
         )
-    return
+    )
+    return (
+        console:log("sarit", $result),
         if ($result/@exitCode = 0) then
             let $pdf := file:read-binary($file || ".pdf")
             return
                 response:stream-binary($pdf, "media-type=application/pdf", $id || ".pdf")
         else
             $result
+    )
 };
 
 let $id := request:get-parameter("id", ())
 let $source := request:get-parameter("source", ())
+let $start := util:system-time()
 let $fo := tei2fo:main($id)
-return
+return (
+    console:log("sarit", "Generated fo for " || $id || " in " || util:system-time() - $start),
     if ($source) then
         $fo
     else
@@ -75,3 +88,4 @@ return
                 local:antenna-house($id, $fo)
             default return
                 local:fop($id, $fo)
+)
