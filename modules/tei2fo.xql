@@ -634,20 +634,20 @@ declare function tei2fo:notesStmt($node as element(tei:notesStmt), $options) as 
 (:use ⓝ to mark:)
 declare function tei2fo:note($node as element(tei:note), $options) as element()* {
     if ($node/ancestor::tei:note) then
-        ()
+        <fo:inline-container>{tei2fo:recurse($node, $options)}</fo:inline-container>
     else
         let $number := counter:next-value("footnotes")
         return
             <fo:footnote>
                 <fo:inline baseline-shift="super" font-size="8pt" padding-left="0.25em" padding-right="0.5em">{$number}</fo:inline>
-                <fo:footnote-body font-size="9pt" line-height="11pt" start-indent="0mm" end-indent="0mm" text-indent="0mm">
-                    <fo:list-block provisional-label-separation="2mm" provisional-distance-between-starts="4em">
+                <fo:footnote-body start-indent="0mm" end-indent="0mm" text-indent="0mm">
+                    <fo:list-block provisional-label-separation="2mm" provisional-distance-between-starts="3em">
                         <fo:list-item>
                             <fo:list-item-label end-indent="label-end()">
-                                <fo:block>{ $number }</fo:block>
+                                <fo:block font-size="9pt" line-height="11pt">{ $number }</fo:block>
                             </fo:list-item-label>
                             <fo:list-item-body start-indent="body-start()">
-                                <fo:block>{tei2fo:recurse($node, $options)}</fo:block>
+                                <fo:block font-size="9pt" line-height="11pt">{tei2fo:recurse($node, $options)}</fo:block>
                             </fo:list-item-body>
                         </fo:list-item>
                     </fo:list-block>
