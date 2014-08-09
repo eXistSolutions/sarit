@@ -449,9 +449,12 @@ declare function tei2fo:graphic($node as element(tei:graphic), $options) {
 };
 
 declare function tei2fo:table($node as element(tei:table), $options) as element()+ {
-    <fo:table>
-        <fo:table-body>{tei2fo:recurse($node, $options)}</fo:table-body>
-    </fo:table>
+    if ($node/tei:row) then
+        <fo:table>
+            <fo:table-body>{tei2fo:recurse($node, $options)}</fo:table-body>
+        </fo:table>
+    else
+        ()
 };
 
 declare function tei2fo:row($node as element(tei:row), $options) as element() {
@@ -712,7 +715,7 @@ declare function tei2fo:bibl($node as element(tei:bibl), $options) {
     else tei2fo:bibl-element-only($node, $options)
 };
 
-declare function tei2fo:bibl-element-only($node as element(tei:bibl), $options) as element()+ {
+declare function tei2fo:bibl-element-only($node as element(tei:bibl), $options) as element()* {
     let $authors := $node/tei:author
     let $titles := $node/tei:title
     let $editors := $node/tei:editor
@@ -786,7 +789,10 @@ declare function tei2fo:bibl-element-only($node as element(tei:bibl), $options) 
         if ($node/../local-name() eq 'note')
         then
             <fo:block>{$result}</fo:block>
-        else $result
+        else if ($result//fo:table-row) then
+            $result
+        else
+            ()
 };
 
 declare function tei2fo:bibl-loose($node as element(tei:bibl), $options) as element()+ {
