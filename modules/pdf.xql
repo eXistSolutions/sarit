@@ -28,11 +28,16 @@ declare function local:fop($id as xs:string, $fo as element()) {
       <base>./</base>
     
       <!-- Font Base URL for resolving relative font URLs -->
-      <font-base>./</font-base>
+      <font-base>file:///d:/Servers/sarit/fonts</font-base>
       <renderers>
           <renderer mime="application/pdf">
             <fonts>
-              <auto-detect/>
+                <!-- register a particular font -->
+                <font kerning="yes"
+                    metrics-url="siddhanta.xml"
+                    embed-url="siddhanta.ttf">
+                    <font-triplet name="Siddhanta" style="normal" weight="normal"/>
+                </font>
             </fonts>
             </renderer>
         </renderers>
