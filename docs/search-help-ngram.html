@@ -1,8 +1,70 @@
-<div class="help" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
+<div class="help" data-template="templates:surround" data-template-with="template.html"
+    data-template-at="content">
     <h1>Search Help NGram</h1>
-    <p>…</p>
-    <section>
-        <h3>…</h3>
-        <p>…</p>
-    </section>
+    <p>The NGram Index used in SARIT was made to solve a number of specific problems in a database
+        with Chinese text and was not designed to support a full-fledged search system. It is
+        however well suited for searching in Sanskrit text.</p>
+    <p>Basically, using the NGram Index is simple, since the string that comprises your search term
+        is found throughout the database when searching. There are, a number of possibilities to use
+        Regular Expression syntax, though the NGram Index does not contain a full implementation of
+        Regular Expression syntax.</p>
+    <p>Search with the NGram Index will be further developed to allow e.g. the concurrent search for
+        several search expressions, i.e. boolean logic.</p>
+    <p>In the following, quotation marks are used to point to characters only and should not be
+        input in the search expression.</p>
+    <p>When a character is referred to, note that any combining mark which follows a base character,
+        is a character unto itself, making what presents itself as one graph two (possibly more)
+        "characters".</p>
+    <div>
+        <h3>Quantifiers</h3>
+
+
+        <p>A full stop, ".", without any qualifiers, matches a single arbitrary character, including
+            a space.</p>
+
+        <p>A full stop, ".", immediately followed by a single question mark, "?", matches either no
+            characters or one character.</p>
+
+        <p>A full stop, ".", immediately followed by a single asterisk, "*", matches zero or more
+            characters.</p>
+
+        <p>A full stop, ".", immediately followed by a single plus sign, "+", matches one or more
+            characters.</p>
+
+        <p>These quantifiers only work with "." and cannot follow other characters. They cannot be
+            combined to make "non-greedy" quantifiers, a concept which does not apply to searches in
+            a database.</p>
+
+        <p>A full stop, ".", immediately followed by a sequence of characters that matches the
+            regular expression {[0-9]+,[0-9]+}, i.e. matches a number of characters, where the
+            number is no less than the number represented by the series of digits before the comma,
+            and no greater than the number represented by the series of digits following the comma.
+            The last number cannot be left empty.</p>
+    </div>
+    <div>
+        <h3>Characters Sets</h3>
+        <p>An expression "[…]" matches a single character, namely any of the characters enclosed by
+            the brackets. </p>
+        <p>The string enclosed by the brackets cannot be empty; therefore "]" can be allowed between
+            the brackets, provided that it is the first character. Thus, "[][?]" matches the three
+            characters "[", "]" and "?".</p>
+        <p>This can be used for searching for variant renderings of a word, e.g. with or without an
+            accent.</p>
+    </div>
+    <div>
+        <h3>Anchoring</h3>
+        <p>A circumflex accent, "^", at the start of the search string matches the start of the
+            element content. A dollar sign, "$", at the end of the search string matches the end of
+            the element content.</p>
+    </div>
+    <div>
+        <h3>Escaping</h3>
+        <p>One can remove the special meaning of any character mentioned above by preceding them by
+            a backslash. Between brackets these characters stand for themselves. Thus, "[[?*\]"
+            matches the four characters "[", "?", "*" and "\".</p>
+        <p>"?", "*", "+" and character sequences matching the regular expression {[0-9]+,[0-9]+} not
+            immediately preceded by an unescaped period, ".", stand for themselves. "^" and "$" not
+            at the very beginning or end of the search string, respectively, stand for
+            themselves.</p>
+    </div>
 </div>
