@@ -963,7 +963,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
-    let $config := <config width="120" table="yes" link="{$id}.html?query={$model('query')}#{$matchId}"/>
+    let $config := <config width="60" table="yes" link="{$id}.html?query={$model('query')}#{$matchId}"/>
     let $kwic := kwic:summarize($hitExpanded, $config, app:filter#2)
     return
         ($loc, $kwic)        
