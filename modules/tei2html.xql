@@ -644,7 +644,9 @@ declare function tei-to-html:notesStmt($node as element(tei:notesStmt), $options
     <h4>Notes Statement</h4>
         {for $note in $node/tei:note
         return
-            tei-to-html:note($note, $options)
+            <div class="note" title="tei:note" id="{tei-to-html:get-id($node)}">
+                <span class="note" title="tei:note">{tei-to-html:recurse($node/*, $options)}</span>
+            </div>
         }
     </div>
 };
@@ -659,8 +661,12 @@ declare function tei-to-html:note($node as element()+, $options) as element()+ {
         if ($resp and $place) then '; ' else '', 
         if ($place) then concat('place: ', $place) else '')
     return
-    if ($node/parent::tei:head or $node/ancestor::tei:bibl or
-		      $node/ancestor::tei:biblFull or $node/ancestor::tei:biblStruct or $node/ancestor::tei:teiHeader)
+    if (
+        $node/parent::tei:head or 
+        $node/ancestor::tei:bibl or 
+        $node/ancestor::tei:biblFull or 
+        $node/ancestor::tei:biblStruct or 
+        $node/ancestor::tei:teiHeader)
     then 
         <div class="note" title="tei:note" id="{tei-to-html:get-id($node)}">
             <span class="note" title="tei:note">{tei-to-html:recurse($node, $options)}</span>
