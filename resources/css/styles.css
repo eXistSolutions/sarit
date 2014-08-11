@@ -472,7 +472,8 @@ body a {
   text-decoration: none;
 }
 body .play,
-.sidebar-offcanvas {
+.sidebar-offcanvas,
+.popover-content {
   font-family: Siddhanta, serif;
   font-size: 16px;
   line-height: 24px;
@@ -729,17 +730,12 @@ tr.note td ul li {
 .sourceDesc .bibl,
 .encodingDesc .bibl {
   font-size: 16px;
-  font-family: Siddhanta, serif;
 }
 .sourceDesc table {
-  font-family: Siddhanta, serif;
   margin-top: 10px;
 }
 .sourceDesc table td {
   padding: 4px;
-}
-.notesStmt {
-  font-family: Siddhanta, serif;
 }
 .fileDesc,
 .titleStmt {
