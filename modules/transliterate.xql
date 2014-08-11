@@ -45,4 +45,9 @@ declare function local:transform($nodes as node()*, $mode as xs:string?) {
 
 
 local:init(),
-local:transform(doc($config:remote-data-root || "/brahmapurana.xml")/*, ())
+let $doc := request:get-parameter("doc", ())
+return
+    if ($doc) then
+        local:transform(doc($config:remote-data-root || "/" || $doc)/*, ())
+    else
+        ()
