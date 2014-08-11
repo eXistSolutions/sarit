@@ -303,9 +303,9 @@ declare function app:work-title($node as node(), $model as map(*), $type as xs:s
 };
 
 declare %private function app:work-title($work as element(tei:TEI)?) {
-    let $main-title := $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[@type eq 'main']/text()
+    let $main-title := $work/*:teiHeader/*:fileDesc/*:titleStmt/*:title[@type eq 'main']/text()
     let $main-title := if ($main-title) then $main-title else $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1]/text()
-    let $commentary-titles := $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[@type eq 'sub'][@subtype eq 'commentary']/text()
+    let $commentary-titles := $work/*:teiHeader/*:fileDesc/*:titleStmt/*:title[@type eq 'sub'][@subtype eq 'commentary']/text()
     return
         if ($commentary-titles)
         then tei-to-html:serialize-list($commentary-titles)
@@ -401,6 +401,7 @@ declare function app:copy-params($node as node(), $model as map(*)) {
 
 declare function app:work-authors($node as node(), $model as map(*)) {
     let $authors := distinct-values(collection($config:remote-data-root)//tei:fileDesc/tei:titleStmt/tei:author)
+    let $authors := for $author in $authors order by translate($author, 'ĀŚ', 'AS') return $author 
     let $control := 
         <select multiple="multiple" name="work-authors" class="form-control">
             <option value="all" selected="selected">Search In Texts By Any Author</option>
