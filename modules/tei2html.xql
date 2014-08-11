@@ -481,15 +481,15 @@ declare function tei-to-html:pb($node as element(tei:pb), $options) {
 };
 
 declare function tei-to-html:lg($node as element(tei:lg), $options) as element()+ {
-   if ($node/@type eq 'mūla')
+   if ($node/@type eq 'base-text')
     then
-        <div xmlns="http://www.w3.org/1999/xhtml" class="lg mula" title="tei:lg mūla"  id="{$node/@xml:id}">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="lg base-text" title="tei:lg base-text"  id="{$node/@xml:id}">
             {tei-to-html:recurse($node, $options)}
         </div>
     else
-        if ($node/../@type eq 'mūla')
+        if ($node/../@type eq 'base-text')
         then
-            <div xmlns="http://www.w3.org/1999/xhtml" class="lg" title="tei:lg mūla"  id="{$node/@xml:id}">
+            <div xmlns="http://www.w3.org/1999/xhtml" class="lg" title="tei:lg base-text"  id="{$node/@xml:id}">
                 {tei-to-html:recurse($node, $options)}
             </div>
         else
@@ -501,6 +501,10 @@ declare function tei-to-html:lg($node as element(tei:lg), $options) as element()
 declare function tei-to-html:l($node as element(tei:l), $options) as element()+ {
     let $class := if ($node[last()]) then "l final" else "l non-final" 
     return
+     if ($node/parent::tei:lg/@type eq 'base-text')
+     then
+        <div class="{$class}" title="tei:l base-text" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+     else
         <div class="{$class}" title="tei:l" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
 
 };
@@ -556,15 +560,11 @@ declare function tei-to-html:milestone($node as element(tei:milestone), $options
 };
 
 declare function tei-to-html:quote($node as element(tei:quote), $options) {
-    if ($node/@type eq 'mūla')
+    if ($node/@type eq 'base-text')
     then
-        <blockquote class="mula" title="tei:quote mūla">{tei-to-html:recurse($node, $options)}</blockquote>
+        <blockquote class="base-text" title="tei:quote base-text">{tei-to-html:recurse($node, $options)}</blockquote>
     else
-        if ($node/text())
-        then
-            <blockquote title="tei:quote">{tei-to-html:recurse($node, $options)}</blockquote>
-            else
-                <span title="tei:quote">{tei-to-html:recurse($node, $options)}</span>
+        <span class="inline-quote" title="tei:quote">{tei-to-html:recurse($node, $options)}</span>
 };
 
 declare function tei-to-html:said($node as element(tei:said), $options) {
@@ -644,7 +644,9 @@ declare function tei-to-html:notesStmt($node as element(tei:notesStmt), $options
     <h4>Notes Statement</h4>
         {for $note in $node/tei:note
         return
-            tei-to-html:note($note, $options)
+            <div class="note" title="tei:note" id="{tei-to-html:get-id($node)}">
+                <span class="note" title="tei:note">{tei-to-html:recurse($node/*, $options)}</span>
+            </div>
         }
     </div>
 };
@@ -659,8 +661,12 @@ declare function tei-to-html:note($node as element()+, $options) as element()+ {
         if ($resp and $place) then '; ' else '', 
         if ($place) then concat('place: ', $place) else '')
     return
-    if ($node/parent::tei:head or $node/ancestor::tei:bibl or
-		      $node/ancestor::tei:biblFull or $node/ancestor::tei:biblStruct or $node/ancestor::tei:teiHeader)
+    if (
+        $node/parent::tei:head or 
+        $node/ancestor::tei:bibl or 
+        $node/ancestor::tei:biblFull or 
+        $node/ancestor::tei:biblStruct or 
+        $node/ancestor::tei:teiHeader)
     then 
         <div class="note" title="tei:note" id="{tei-to-html:get-id($node)}">
             <span class="note" title="tei:note">{tei-to-html:recurse($node, $options)}</span>
@@ -1244,7 +1250,6 @@ declare function tei-to-html:titlePage($node as element(tei:titlePage), $options
                 for $titlePart in $titleParts return tei-to-html:recurse($titlePart, $options))
         else ()
     let $other-elements := $node/(tei:* except (tei:titlePart, tei:docTitle, tei:docImprint, tei:docDate, tei:docAuthor))
-    let $log := util:log("DEBUG", ("##$other-elementsxxx): ", $other-elements))
 
     return
     <div class="titlePage" title="tei:titlePage" id="{$node/@xml:id}">

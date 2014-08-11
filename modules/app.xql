@@ -156,7 +156,7 @@ function app:outline($node as node(), $model as map(*), $full as xs:boolean) {
                             }
                         </ul>
                         ,
-                        for $div in $root/following-sibling::*:div
+                        for $div in $root/following-sibling::tei:div
                         return app:toc-div($div, $long, $position, 'list-item')
                         )
                     else
@@ -176,7 +176,7 @@ function app:outline($node as node(), $model as map(*), $full as xs:boolean) {
                             app:toc-div($root, $long, $position, 'list-item')
                             ,
                             (:show its following siblings:)
-                            for $div in $root/following-sibling::*:div
+                            for $div in $root/following-sibling::tei:div
                             return app:toc-div($div, $long, $position, 'list-item')
                             }
                         </ul>
@@ -303,7 +303,13 @@ declare function app:work-title($node as node(), $model as map(*), $type as xs:s
 };
 
 declare %private function app:work-title($work as element(tei:TEI)?) {
-    $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1]/text()
+    let $main-title := $work/*:teiHeader/*:fileDesc/*:titleStmt/*:title[@type eq 'main']/text()
+    let $main-title := if ($main-title) then $main-title else $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1]/text()
+    let $commentary-titles := $work/*:teiHeader/*:fileDesc/*:titleStmt/*:title[@type eq 'sub'][@subtype eq 'commentary']/text()
+    return
+        if ($commentary-titles)
+        then tei-to-html:serialize-list($commentary-titles)
+        else $main-title
 };
 
 declare 
@@ -323,13 +329,13 @@ function app:checkbox($node as node(), $model as map(*), $target-texts as xs:str
 
 declare function app:work-author($node as node(), $model as map(*)) {
     let $work := $model("work")/ancestor-or-self::tei:TEI
-    let $work-authors := $work//tei:fileDesc/tei:titleStmt/tei:author
+    let $work-commentators := $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[@role eq 'commentator']/text()
+    let $work-authors := $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[@role eq 'base-author']/text()
+    let $work-authors := if ($work-authors) then $work-authors else $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/text()
+    let $work-authors := if ($work-commentators) then $work-commentators else $work-authors
+    let $work-authors := if ($work-authors) then tei-to-html:serialize-list($work-authors) else ()
     return 
-        string-join(
-            for $work-author in $work-authors
-            order by $work-author 
-            return $work-author
-        , ', ')    
+        $work-authors    
 };
 
 declare function app:work-lang($node as node(), $model as map(*)) {
@@ -395,6 +401,7 @@ declare function app:copy-params($node as node(), $model as map(*)) {
 
 declare function app:work-authors($node as node(), $model as map(*)) {
     let $authors := distinct-values(collection($config:remote-data-root)//tei:fileDesc/tei:titleStmt/tei:author)
+    let $authors := for $author in $authors order by translate($author, 'ĀŚ', 'AS') return $author 
     let $control := 
         <select multiple="multiple" name="work-authors" class="form-control">
             <option value="all" selected="selected">Search In Texts By Any Author</option>
@@ -456,7 +463,7 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
             $node/node()
         }
     else
-        ()
+        '&#xA0;' (:hack to keep "Next" from dropping into the hr:) 
 };
 
 (: LUCENE :)
@@ -956,7 +963,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
-    let $config := <config width="120" table="yes" link="{$id}.html?query={$model('query')}#{$matchId}"/>
+    let $config := <config width="60" table="yes" link="{$id}.html?query={$model('query')}#{$matchId}"/>
     let $kwic := kwic:summarize($hitExpanded, $config, app:filter#2)
     return
         ($loc, $kwic)        

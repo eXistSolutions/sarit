@@ -8,7 +8,7 @@ body a {
   text-decoration: none;
 }
 
-body .play {
+body .play, .sidebar-offcanvas, .popover-content {
     font-family:@serifFont;
     font-size: 16px;
     line-height: 24px;
@@ -145,11 +145,6 @@ footer{
         margin: 0;
         font-weight: normal;
     }
-
-    .previous {
-        float: left;
-    }
-
     .next {
         float: right;
     }
@@ -272,23 +267,17 @@ tr.note td ul li {
 
   p, li, td, .note, .bibl {
     font-size:16px;
-    font-family:@serifFont;
   }
 }
 
 .sourceDesc {
     table {
-    font-family:@serifFont;
     margin-top:10px;
   td {
     padding:4px;
   }
   
   }
-}
-
-.notesStmt {
-    font-family:@serifFont;
 }
 
 .fileDesc, .titleStmt {
@@ -435,23 +424,17 @@ table > tbody > tr > td.following{
     vertical-align: middle;
 }
 
-.mula {
- border-style: solid;
-    border-color: #D0DDE8;
-    border-width: 3px;
-}
-
 .navigation-top a, .navigation-bottom a {
     font-size: 100%;
 }
 
 body .play button {
     padding-bottom: 1px;
-    padding-top: 1px;
+    padding-top: 2px;
     padding-left: 3px;
     padding-right: 3px;
     vertical-align: super;
-    font-size: 12px;
+    font-size: 8px;
     background-color: #92BCE0;
     border-color: #92BCE0;
 }
@@ -459,4 +442,8 @@ body .play button {
 .lg {
     margin-left:24px;
     font-size: 125%;
+}
+
+.inline-quote {
+    color: #428bca;
 }
