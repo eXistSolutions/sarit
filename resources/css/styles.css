@@ -729,17 +729,12 @@ tr.note td ul li {
 .sourceDesc .bibl,
 .encodingDesc .bibl {
   font-size: 16px;
-  font-family: Siddhanta, serif;
 }
 .sourceDesc table {
-  font-family: Siddhanta, serif;
   margin-top: 10px;
 }
 .sourceDesc table td {
   padding: 4px;
-}
-.notesStmt {
-  font-family: Siddhanta, serif;
 }
 .fileDesc,
 .titleStmt {
