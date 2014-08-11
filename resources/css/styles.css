@@ -472,7 +472,8 @@ body a {
   text-decoration: none;
 }
 body .play,
-.sidebar-offcanvas {
+.sidebar-offcanvas,
+.popover-content {
   font-family: Siddhanta, serif;
   font-size: 16px;
   line-height: 24px;
