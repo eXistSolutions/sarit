@@ -156,7 +156,7 @@ function app:outline($node as node(), $model as map(*), $full as xs:boolean) {
                             }
                         </ul>
                         ,
-                        for $div in $root/following-sibling::div
+                        for $div in $root/following-sibling::tei:div
                         return app:toc-div($div, $long, $position, 'list-item')
                         )
                     else
@@ -176,7 +176,7 @@ function app:outline($node as node(), $model as map(*), $full as xs:boolean) {
                             app:toc-div($root, $long, $position, 'list-item')
                             ,
                             (:show its following siblings:)
-                            for $div in $root/following-sibling::div
+                            for $div in $root/following-sibling::tei:div
                             return app:toc-div($div, $long, $position, 'list-item')
                             }
                         </ul>
@@ -303,9 +303,9 @@ declare function app:work-title($node as node(), $model as map(*), $type as xs:s
 };
 
 declare %private function app:work-title($work as element(tei:TEI)?) {
-    let $main-title := $work/teiHeader/fileDesc/titleStmt/title[@type eq 'main']/text()
+    let $main-title := $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[@type eq 'main']/text()
     let $main-title := if ($main-title) then $main-title else $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1]/text()
-    let $commentary-titles := $work/teiHeader/fileDesc/titleStmt/title[@type eq 'sub'][@subtype eq 'commentary']/text()
+    let $commentary-titles := $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[@type eq 'sub'][@subtype eq 'commentary']/text()
     return
         if ($commentary-titles)
         then tei-to-html:serialize-list($commentary-titles)
