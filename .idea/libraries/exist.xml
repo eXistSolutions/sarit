@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="exist">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../exist/2.2/exist.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../exist/2.2/exist-optional.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../exist/2.2/lib/user/icu4j-4_8_1_1.jar!/" />
+      <root url="file://$PROJECT_DIR$/../../exist/2.2/lib/core" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../exist/2.2/lib/core" recursive="false" />
+  </library>
+</component>

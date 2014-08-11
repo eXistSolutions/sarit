@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://exist-db.org/ns/expath-pkg">
+    <java>
+        <namespace>http://exist-db.org/xquery/sarit</namespace>
+        <class>org.exist.xquery.modules.sarit.SaritModule</class>
+    </java>
+    <jar>sarit.jar</jar>
+</package>

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="sarit">
+    <output-path>$PROJECT_DIR$/content</output-path>
+    <root id="archive" name="sarit.jar">
+      <element id="module-output" name="sarit" />
+    </root>
+  </artifact>
+</component>

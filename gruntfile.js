@@ -107,7 +107,7 @@ module.exports = function (grunt) {
                 files: [
                     {expand: true,
                         cwd: './',
-                        src: ['data/**', 'modules/**','resources/img/**', 'templates/**', '*.xconf','*.xql', '*.xml', '*.txt', '*.ico', '*.html','*.xhtml'],
+                        src: ['data/**', 'modules/**','resources/img/**', 'templates/**', 'content/**', '*.xconf','*.xql', '*.xml', '*.txt', '*.ico', '*.html','*.xhtml'],
                         dest: 'dist/'},
                     {expand: true,
                         cwd: './',
@@ -273,6 +273,7 @@ module.exports = function (grunt) {
                     'modules/**',
                     'resources/**',
                     'templates/**',
+                    'content/**',
                     'components/animate.css/*',
                     'components/bootstrap/dist/**',
                     'components/font-awesome/css/**',
@@ -280,12 +281,12 @@ module.exports = function (grunt) {
                     'components/jquery/dist/**',
                     'components/snap.svg/dist/**'
                 ],
-                dest: 'build/<%=xar.name%>-<%=xar.version%>.zip'
+                dest: 'build/<%=xar.name%>-<%=xar.version%>.xar'
             },
             production: {
                 cwd: 'dist/',
                 src: ['dist/**'],
-                dest: 'build/<%=xar.name%>-<%=xar.version%>.min.zip'
+                dest: 'build/<%=xar.name%>-<%=xar.version%>.min.xar'
             }
         },
 
