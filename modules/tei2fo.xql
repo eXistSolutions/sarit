@@ -10,7 +10,7 @@ declare namespace tei="http://www.tei-c.org/ns/1.0";
 
 (:  Sample doc: Pramāṇavārttika :)
 
-declare variable $tei2fo:font := "Siddhanta, serif";
+declare variable $tei2fo:font := "Sanskrit2003, serif";
 (:declare variable $tei2fo:font := "Helvetica_TCC, serif";:)
 declare variable $tei2fo:fontSize := 11;
 declare variable $tei2fo:lineHeight := "16pt";

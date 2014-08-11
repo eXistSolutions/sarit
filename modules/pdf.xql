@@ -38,6 +38,11 @@ declare function local:fop($id as xs:string, $fo as element()) {
                     embed-url="siddhanta.ttf">
                     <font-triplet name="Siddhanta" style="normal" weight="normal"/>
                 </font>
+                <font kerning="yes"
+                    metrics-url="sanskrit2003.xml"
+                    embed-url="Sanskrit2003.ttf">
+                    <font-triplet name="Sanskrit2003" style="normal" weight="normal"/>
+                </font>
             </fonts>
             </renderer>
         </renderers>
