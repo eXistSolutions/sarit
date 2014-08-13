@@ -463,7 +463,7 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
             $node/node()
         }
     else
-        '&#xA0;' (:hack to keep "Next" from dropping into the hr:) 
+        '&#xA0;' (:hack to keep "Next" from dropping into the hr when there is no Previous:) 
 };
 
 (: LUCENE :)
@@ -959,7 +959,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
         <tr class="reference">
             <td colspan="3">
                 <span class="number">{$start + $p - 1}</span>
-                <a href="{$doc-id}.html">{$work-title}</a>{if ($div-ancestor-head) then ', ' else ''}<a href="{$div-ancestor-id}.html">{$div-ancestor-head}</a>
+                <a href="{$doc-id}">{$work-title}</a>{if ($div-ancestor-head) then ', ' else ''}<a href="{$div-ancestor-id}.html">{$div-ancestor-head}</a>
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
