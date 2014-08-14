@@ -2,7 +2,6 @@
     <div class="container content">
         <h3>Brief Search Help</h3>
         <section>
-            <h4>Search 101</h4>
             <p>Some brief hints are given here — for fuller explanations, please consult the other
                 search instructions.</p>
             <ul>
@@ -15,12 +14,13 @@
                             syntax for ".", "?", "+" , "*", "[]" and "{}". </li>
                     </ul>
                 </li>
-                <li>Do you want to search for the co-occurrence of a number of words. <ul>
+                <li>Do you want to search for the co-occurrence of a number of words? <ul>
                         <li>Check whether the texts are divided into words, and if they are, select
                             Use Lucene Full-Text Index and select All Search Terms Together. </li>
                     </ul>
                 </li>
-                <li>Note that searching for expressions in one script does not search for the equivalent expression in other scripts.</li>
+                <li>Note that searching for expressions in one script does not (yet) search for the
+                    equivalent expression in other scripts.</li>
             </ul>
         </section>
         <section>
@@ -30,56 +30,64 @@
             <ul>
                 <li>Search For What? <ul>
                         <li>You can either enter the precise term to search for or use Regular
-                            Expressions</li>
+                            Expressions.</li>
                     </ul>
                 </li>
                 <li>Use Which Index? <ul>
                         <li>Select Use NGram Index if the texts you are searching are not segmented
                             into words or if you want to be sure that you find each and every
-                            occurence of a string.</li>
+                            occurence of a string. In general, use this index with all texts in
+                            Devanagari.</li>
                         <li>Select Use Lucene Full-Text Index only if the texts you are searching
-                            are segmented into words.</li>
-                        <li>Selecting Use Lucene Full-Text Index gives you extra options, show in
+                            are segmented into words. This applies to a few texts in romanisation,
+                            mainly the Arthaśāstra. For information about the remaining texts, see
+                                <a href="search-help-word-division.html">Word Division</a>. </li>
+                        <li>Selecting Use Lucene Full-Text Index gives you extra options, shown in
                             the dropdown menu Use Which Search Mode? </li>
                     </ul>
                 </li>
                 <li>Use Which Search Mode? <ul>
-                        <li>Only visible if you have selected Use Lucene Full-Text Index. </li>
+                        <li>This dropdown menu is only visible if you have selected Use Lucene
+                            Full-Text Index. </li>
                         <li>Any Search Term <ul>
                                 <li>If you have entered several words to search, hits will also be
                                     retrieved where only one of the terms appear, but the hits with
-                                    occurrences of many search terms will be displayed at the top. </li>
-                                <li>This is the default mode, so use it also if you are only
+                                    occurrences of many search terms will be displayed at the top of
+                                    the hitlist. </li>
+                                <li>This is the default search mode, so use it also if you are only
                                     searching for one word. </li>
                             </ul>
                         </li>
                         <li>All Search Terms Together <ul>
                                 <li>If you have entered several words to search, hits will only be
-                                    retrieved where all of the terms appear. </li>
+                                    retrieved in which all of the terms appear. </li>
                             </ul>
                         </li>
                         <li>Phrase Search <ul>
-                                <li>Searches for words in immediate sequence </li>
+                                <li>Searches for words in immediate sequence. </li>
                             </ul>
                         </li>
                         <li>Proximity Search (Ordered) <ul>
-                                <li>This only has meaning if there is more than one search term. </li>
+                                <li>Using this option only has meaning if there is more than one
+                                    search term. </li>
                                 <li>Searches for words in sequence, with a maximum number of words
-                                    in between your search terms. The maximum number of words
-                                    allowed you enter as a digit after the search terms. </li>
+                                    in between your search terms. Enter the maximum number of words
+                                    allowed as a digit following the search terms, preceded by a
+                                    space. </li>
                             </ul>
                         </li>
                         <li>Proximity Search (Unordered) <ul>
-                                <li>This only has meaning if there is more than one search term. </li>
+                                <li>Using this option only has meaning if there is more than one
+                                    search term. </li>
                                 <li>Searches for words in near each other, regardless of order, with
-                                    a maximum number of words in between your search terms. The
-                                    maximum number of words allowed you enter as a digit after the
-                                    search terms. </li>
+                                    a maximum number of words in between your search terms. Enter
+                                    the maximum number of words allowed as a digit following the
+                                    search terms, preceded by a space. </li>
                             </ul>
                         </li>
                         <li>Fuzzy Search <ul>
-                                <li>This can only be used if there is just one search term. </li>
-                                <li>Enter the number 1 or 2 after the word to get fuzzier and
+                                <li>This option can only be used if there is just one search term. </li>
+                                <li>Enter the number 1 or 2 after the word to get fuzzier and yet
                                     fuzzier results. See explanation in Lucene Search Help.</li>
                             </ul>
                         </li>
@@ -96,10 +104,12 @@
                     </ul>
                 </li>
                 <li>Search Narrowly Or Broadly? <ul>
-                        <li>A narrow search searches for hits in TEI elements below div elements. A
-                            broad search searches for hits in the lowest div elements.</li>
-                        <li>Useful mainly if you are interested in locating cooccurrence of more
-                            than one search term.</li>
+                        <li>This option is mainly relevant you are interested in finding the
+                            cooccurrence of more than one search term within a certain part of the
+                            text.</li>
+                        <li>A narrow search searches for hits in smaller parts, whereas a broad
+                            search searches for hits in larger parts. Two terms may occur together
+                            in a larger part, but not in a smaller part.</li>
                     </ul>
                 </li>
                 <li>Search In Texts By Which Authors? <ul>
@@ -114,6 +124,8 @@
                         <li>You get the point ….</li>
                         <li>Note that you can also select individual texts to search by clicking on
                             the check-boxes to the left of the titles.</li>
+                        <li>Note that searching for expressions in one script does not (yet) search
+                            for the equivalent expression in other scripts.</li>
                     </ul>
                 </li>
             </ul>

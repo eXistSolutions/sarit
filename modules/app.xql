@@ -50,7 +50,7 @@ function app:nav-set-active($node as node(), $model as map(*)) {
                 attribute href {
                     if ($link/@href = "works/" and starts-with($path, "/works/")) then
                         "."
-                    else if (starts-with($path, "/works/")) then
+                    else if (starts-with($path, ("/works/", "/docs/"))) then
                         "../" || $link/@href
                     else
                         $link/@href
@@ -435,7 +435,7 @@ function app:navigation($node as node(), $model as map(*)) {
         }
 };
 
-declare
+(:declare
     %templates:wrap
 function app:breadcrumbs($node as node(), $model as map(*)) {
     let $ancestors := $model("div")/ancestor-or-self::tei:div
@@ -443,7 +443,7 @@ function app:breadcrumbs($node as node(), $model as map(*)) {
     let $id := $ancestor/@xml:id
     return
         <li><a href="{$id}.html">{app:derive-title($ancestor)}</a></li>
-};
+};:)
 
 declare
     %templates:wrap
@@ -463,7 +463,15 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
             $node/node()
         }
     else
-        '&#xA0;' (:hack to keep "Next" from dropping into the hr:) 
+        '&#xA0;' (:hack to keep "Next" from dropping into the hr when there is no Previous:) 
+};
+
+declare 
+    %templates:default("index", "ngram")
+function app:view($node as node(), $model as map(*), $id as xs:string, $index as xs:string, $query as xs:string?) {
+        if ($index eq 'ngram')
+        then app:ngram-view($node, $model, $id, $query)
+        else app:lucene-view($node, $model, $id, $query)
 };
 
 (: LUCENE :)
@@ -501,14 +509,6 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
         { tei-to-html:recurse($view, <options/>) }
         </div>
-};
-
-declare 
-    %templates:default("index", "ngram")
-function app:view($node as node(), $model as map(*), $id as xs:string, $index as xs:string, $query as xs:string?) {
-        if ($index eq 'ngram')
-        then app:ngram-view($node, $model, $id, $query)
-        else app:lucene-view($node, $model, $id, $query)
 };
 
 (: NGRAM :)
@@ -951,6 +951,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
     let $id := if ($id) then $id else ($hit/ancestor-or-self::*/@xml:id)[1]/string()
     let $work-title := app:work-title($hit/ancestor::tei:TEI)
     let $doc-id := $hit/ancestor::tei:TEI/@xml:id
+    (:NB: what if there is no div ancestor, e.g. if the hit is in the header?:)
     let $div-ancestor-id := $hit/ancestor::tei:div[1]/@xml:id
     let $div-ancestor-head := $hit/ancestor::tei:div[1]/tei:head/text()
     (:pad hit with surrounding siblings:)
@@ -959,12 +960,12 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
         <tr class="reference">
             <td colspan="3">
                 <span class="number">{$start + $p - 1}</span>
-                <a href="{$doc-id}.html">{$work-title}</a>{if ($div-ancestor-head) then ', ' else ''}<a href="{$div-ancestor-id}.html">{$div-ancestor-head}</a>
+                <a href="{$doc-id}">{$work-title}</a>{if ($div-ancestor-head) then ', ' else ''}<a href="{$div-ancestor-id}.html">{$div-ancestor-head}</a>
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
     let $config := <config width="60" table="yes" link="{$id}.html?query={$model('query')}#{$matchId}"/>
-    let $kwic := kwic:summarize($hitExpanded, $config, app:filter#2)
+    let $kwic := kwic:summarize($hitExpanded, $config)
     return
         ($loc, $kwic)        
 };
@@ -972,14 +973,12 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
 (:~
     Callback function called from the kwic module.
 :)
-declare %private function app:filter($node as node(), $mode as xs:string) as item()? {
-  if ($node/parent::tei:speaker or $node/parent::tei:stage or $node/parent::tei:head) then 
-      ()
-  else if ($mode eq 'before') then
+(:declare %private function app:filter($node as node(), $mode as xs:string) as item()? {
+  if ($mode eq 'before') then
       concat($node, ' ')
   else 
       concat(' ', $node)
-};
+};:)
 
 declare function app:base($node as node(), $model as map(*)) {
     let $context := request:get-context-path()

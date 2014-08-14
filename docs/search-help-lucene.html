@@ -1,13 +1,11 @@
-<div class="help" data-template="templates:surround" data-template-with="template.html"
-    data-template-at="content">
+<div class="help" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
     <div class="container">
         <div class="row help">
             <div class="col-md-12">
                 <h2>Search Help</h2>
-                <p>In this Shakespeare app, a number of search options are available. Simple
+                <p>In SARIT app, a number of search options are available. Simple
                     searches are possible, but it is also possible to perform quite advanced
-                    searches. Search is based on the open source search engine <a
-                        href="http://lucene.apache.org" target="_blank">Apache Lucene</a> and tries
+                    searches. Search is based on the open source search engine <a href="http://lucene.apache.org" target="_blank">Apache Lucene</a> and tries
                     to bring into play all the options that Lucene provides. </p>
                 <section>
                     <h4>Search Options</h4>
@@ -28,7 +26,7 @@
                         indexes based on certain fields. This contrasts with searches in a word
                         processing document which are made in a document as a whole, as one long
                         string of characters.</p>
-                    <p>Shakespeare's works consist of plays and poems. Plays are made up of speeches
+                    <!--<p>Shakespeare's works consist of plays and poems. Plays are made up of speeches
                         which then usually consist of lines (and notices about who the speaker is),
                         and here each speech is indexed as a whole. This means that of you search
                         for the co-occurrence of two words, say "snake" or "fillet", you do not
@@ -36,7 +34,7 @@
                         in the same speech. Poems are made of stanzas which also consist of lines,
                         and if you search for the occurrence of "bounty" and "boundless" near each
                         other, you search inside a certain stanza, not inside a poem or the Sonnets
-                        as a whole.</p>
+                        as a whole.</p>-->
                     <p>The <em>search scope</em> here described is the default "narrow" search
                         scope. If you choose, you can search more broadly, in the divisions which
                         the speeches or stanzas are part of. This means, in the case of plays, that
@@ -57,7 +55,7 @@
                         your input is stripped of punctuation and lower-cased, so you can just as
                         well spare yourself the effort to input them – whether you search for "To
                         be, or not to be" or "to be or not to be" is all the same. Often words like
-                        "to be or not to be" are removed from indexes, but not in the Shakespeare
+                        "to be or not to be" are removed from indexes, but not in the SARIT
                         app.</p>
                     <p>One may ask: if spaces cannot be searched for, what are phrase searches?
                         Don't phrases consist of words with spaces and punctuation in between? Yes,
@@ -91,11 +89,11 @@
                     <h4>Hitlist and Search Relevance</h4>
                     <p>When searching for books in a library catalogue, one can usually choose to
                         have the hits displayed according to relevance or according to author, title
-                        or suchlike. In the Shakespeare app, hits are only displayed according to
+                        or suchlike. In the SARIT app, hits are only displayed according to
                         relevance, according to a "score" computed for each search. This is quite a
                         complicated thing in itself, but basically, the more times your search terms
                         occur in your search scope and the less common they are in the index (that
-                        is, in Shakespeare's works) the higher the score they will get and the more
+                        is, in SARIT) the higher the score they will get and the more
                         prominent they will be. </p>
                 </section>
                 <section>
@@ -313,8 +311,7 @@
                             <h5> Alternation </h5>
                             <p>The pipe symbol <code>"|"</code> acts as an OR operator. The match
                                 will succeed if the pattern on either the left-hand side OR the
-                                right-hand side matches. The alternation applies to the <span
-                                    class="emphasis">
+                                right-hand side matches. The alternation applies to the <span class="emphasis">
                                     <em>longest pattern</em>
                                 </span>, not the shortest <!--explain!-->.</p>
                             <p>In order to retrieve the strings <code>"proportions"</code> and
@@ -323,7 +320,8 @@
                             <ul>
                                 <li>
                                     <code>(prepara|propor)tions</code>
-                                </li> </ul>
+                                </li>
+                            </ul>
                         </section>
                         <section>
                             <h5> Character classes </h5>
