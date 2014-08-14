@@ -137,6 +137,8 @@ declare function tei-to-html:dispatch($nodes as node()*, $options) as item()* {
             (:case element(tei:analytic) return tei-to-html:analytic($node, $options) belongs to biblStruct only:) 
             case element(tei:byline) return tei-to-html:byline($node, $options)
             case element(tei:caesura) return tei-to-html:caesura($node, $options)
+            case element(tei:idno) return tei-to-html:idno($node, $options)
+            case element(tei:altIdentifier) return tei-to-html:altIdentifier($node, $options)
             case element(tei:cit) return tei-to-html:cit($node, $options)
             case element(tei:listBibl) return tei-to-html:listBibl($node, $options)
             case element(tei:docAuthor) return tei-to-html:docAuthor($node, $options)
@@ -386,6 +388,14 @@ declare function tei-to-html:ref($node as element(tei:ref), $options) {
 
 declare function tei-to-html:foreign($node as element(tei:foreign), $options) as element() {
     <span class="foreign" title="tei:foreign">{tei-to-html:recurse($node, $options)}</span>
+};
+
+declare function tei-to-html:idno($node as element(tei:idno), $options) as element() {
+    <div class="idno" title="tei:idno">{tei-to-html:recurse($node, $options)}</div>    
+};
+
+declare function tei-to-html:altIdentifier($node as element(tei:altIdentifier), $options) as element() {
+    <div class="altIdentifier" title="tei:altIdentifier">{tei-to-html:recurse($node, $options)}</div>    
 };
 
 declare function tei-to-html:mentioned($node as element(tei:mentioned), $options) as element() {
@@ -853,7 +863,7 @@ declare function tei-to-html:publicationStmt($node as element(tei:publicationStm
                 <h5>Availability: {$availability-status}</h5>
                 , 
                 <div class="copyright-notice" id="{$node/@xml:id}">
-                {for $p at $i in $availability/tei:p
+                {for $p at $i in $availability/tei:licence/tei:p
                 return
                     tei-to-html:p($p, $options)}
                 </div>
@@ -1139,11 +1149,17 @@ declare function tei-to-html:msContents($node as element(tei:msContents), $optio
 };
 
 declare function tei-to-html:msDesc($node as element(tei:msDesc), $options) as element()+ {
-    <div class="msDesc" title="tei:msDesc" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="msDesc" id="{$node/@xml:id}">
+        <h4>Manuscript Description</h4>
+        {tei-to-html:recurse($node, $options)}
+    </div>
 };
 
 declare function tei-to-html:msIdentifier($node as element(tei:msIdentifier), $options) as element()+ {
-    <div class="msIdentifier" title="tei:msIdentifier" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="msIdentifier" id="{$node/@xml:id}">
+        <h5>Manuscript Identifier</h5>
+        {tei-to-html:recurse($node, $options)}
+    </div>
 };
 
 declare function tei-to-html:msName($node as element(tei:msName), $options) as element()+ {
