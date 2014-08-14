@@ -272,6 +272,7 @@ module.exports = function (grunt) {
                     'data/**',
                     'modules/**',
                     'resources/**',
+                    'docs/**',
                     'templates/**',
                     'content/**',
                     'components/animate.css/*',
