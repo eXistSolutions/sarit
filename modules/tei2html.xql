@@ -862,11 +862,7 @@ declare function tei-to-html:publicationStmt($node as element(tei:publicationStm
                 (
                 <h5>Availability: {$availability-status}</h5>
                 , 
-                <div class="copyright-notice" id="{$node/@xml:id}">
-                {for $p at $i in $availability/tei:licence/tei:p
-                return
-                    tei-to-html:p($p, $options)}
-                </div>
+                <div class="copyright-notice" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
                 )
             else ()
         

@@ -1,5 +1,4 @@
-<div class="help" data-template="templates:surround" data-template-with="template.html"
-    data-template-at="content">
+<div class="help" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
     <div class="container">
         <div class="row help">
             <div class="col-md-12">
@@ -47,12 +46,10 @@
                     <p>However, though there are these differences, if you are looking simply for a
                         string match of a single search term, and do not mind if the string occurs
                         as part of a larger string, use the defaults and search using the NGram
-                        index, optionally with the regex methods described in <a
-                            href="search-help-ngram">NGram Search</a>. This is easiest and very
+                        index, optionally with the regex methods described in <a href="search-help-ngram">NGram Search</a>. This is easiest and very
                         fast. If the text is divided into words, use the Lucene Full-Text index
                         index and its many options. Now, to complicate matters, the Lucene Full-Text
-                        Index has quite advanced regex options, described in <a
-                            href="search-help-lucene-regex">Lucene Regex Search</a>, and one could,
+                        Index has quite advanced regex options, described in <a href="search-help-lucene-regex">Lucene Regex Search</a>, and one could,
                         if one wished to do so, use these options instead of the NGram Index, but
                         the drawback here is that this would make searches quite slow and
                         resource-demanding. Choose your index wisely!</p>
@@ -60,15 +57,11 @@
                             range of characters, say 10-50, which can be useful, but generally
                             speaking, the word index is much more powerful, though precisely this,
                             it cannot do.)</p>-->
-                    <p>The texts Aṣṭāṅgahṛdayasaṃhitā (and its commentaries), Aṣṭāvakragītā,
-                        Brahmapurāṇa, Carakasaṃhitā, Nyāyabhāṣya, Padārthadharmasaṅgraha,
-                        Pātañjalayogaśāstra, Rājamārtaṇḍa or Bhojavṛtti, Rasaratnasamuccaya,
-                        Suśrutasaṃhitā, Tattvavaiśāradī, and Vākyapadīya all basically divide
-                        strings into what can be called words (though with different rules for
-                        dealing with sandhi phenomena), so here the word index will be of greatest
-                        use. For the rest of the texts, words will be run together, so here you will
-                        have to use the string index, unless you are sure that you know the complete
-                        string you are searching for.</p>
+                    <p>Word division is a matter of degree. Among the SARIT texts, only the
+                        Arthaśāstra is can be said to be divided into words in a way which makes
+                        use of the Lucene Full-Text index immediately possible. For information
+                        about the remaining texts, see <a href="search-help-word-division.html">Word Division</a>. With these texts, you should as a rule use the
+                        NGram Index.</p>
                 </div>
                 <div>
                     <h5>Search Targets</h5>
