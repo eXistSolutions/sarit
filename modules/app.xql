@@ -946,6 +946,8 @@ declare
     %templates:default("start", 1)
     %templates:default("per-page", 10)
 function app:show-hits($node as node()*, $model as map(*), $start as xs:integer, $per-page as xs:integer) {
+    (:NB: When the link is passed on to view(), one one search term can be handled.:) 
+    let $first-query-term := $model('query')//text()[1]
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
     let $id := $hit/ancestor-or-self::tei:div[1]/@xml:id/string()
     let $id := if ($id) then $id else ($hit/ancestor-or-self::*/@xml:id)[1]/string()
@@ -964,7 +966,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
-    let $config := <config width="60" table="yes" link="{$id}.html?query={$model('query')}#{$matchId}"/>
+    let $config := <config width="60" table="yes" link="{$id}.html?query={$first-query-term}#{$matchId}"/>
     let $kwic := kwic:summarize($hitExpanded, $config)
     return
         ($loc, $kwic)        
