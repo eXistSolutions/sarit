@@ -463,7 +463,7 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
             $node/node()
         }
     else
-        '&#xA0;' (:hack to keep "Next" from dropping into the hr when there is no Previous:) 
+        '&#xA0;' (:hack to keep "Next" from dropping into the hr when there is no "Previous":) 
 };
 
 declare 
@@ -946,6 +946,11 @@ declare
     %templates:default("start", 1)
     %templates:default("per-page", 10)
 function app:show-hits($node as node()*, $model as map(*), $start as xs:integer, $per-page as xs:integer) {
+    (:NB: When the link is passed on to app:view(), only one search term can be handled.:) 
+    let $first-query-term := 
+        if ($model('query') instance of xs:string)
+        then string($model('query'))
+        else $model('query')//text()[1]
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
     let $id := $hit/ancestor-or-self::tei:div[1]/@xml:id/string()
     let $id := if ($id) then $id else ($hit/ancestor-or-self::*/@xml:id)[1]/string()
@@ -953,6 +958,10 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
     let $doc-id := $hit/ancestor::tei:TEI/@xml:id
     (:NB: what if there is no div ancestor, e.g. if the hit is in the header?:)
     let $div-ancestor-id := $hit/ancestor::tei:div[1]/@xml:id
+    let $div-ancestor-id :=
+        if ($div-ancestor-id)
+        then $div-ancestor-id
+        else $hit/ancestor::tei:teiHeader/@xml:id
     let $div-ancestor-head := $hit/ancestor::tei:div[1]/tei:head/text()
     (:pad hit with surrounding siblings:)
     let $hitExpanded := <hit>{($hit/preceding-sibling::*[1], $hit, $hit/following-sibling::*[1])}</hit>
@@ -964,7 +973,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
-    let $config := <config width="60" table="yes" link="{$id}.html?query={$model('query')}#{$matchId}"/>
+    let $config := <config width="60" table="yes" link="{$id}.html?query={$first-query-term}#{$matchId}"/>
     let $kwic := kwic:summarize($hitExpanded, $config)
     return
         ($loc, $kwic)        
