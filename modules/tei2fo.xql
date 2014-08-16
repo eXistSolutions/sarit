@@ -1268,66 +1268,64 @@ declare function tei2fo:table-of-contents($work as element(tei:TEI)) {
     </fo:page-sequence>
 };
 
-declare function tei2fo:main($id as xs:string) {
-    let $play := collection($config:remote-data-root)/tei:TEI[@xml:id = $id]
-    return
-        <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
-            <fo:layout-master-set>
-                <fo:simple-page-master master-name="SARIT-left" margin-top="10mm"
-                        margin-bottom="10mm" margin-left="24mm"
-                        margin-right="12mm" page-height="297mm" page-width="210mm">
-                    <fo:region-body margin-bottom="10mm" margin-top="16mm"/>
-                    <fo:region-before region-name="head-left" extent="10mm"/>
-                </fo:simple-page-master>
-                <fo:simple-page-master master-name="SARIT-right" margin-top="10mm"
-                        margin-bottom="10mm" margin-left="12mm"
-                        margin-right="24mm" page-height="297mm" page-width="210mm">
-                    <fo:region-body margin-bottom="10mm" margin-top="16mm"/>
-                    <fo:region-before region-name="head-right" extent="10mm"/>
-                </fo:simple-page-master>
-                <fo:page-sequence-master master-name="SARIT-Content">
-                    <fo:repeatable-page-master-alternatives>
-                        <fo:conditional-page-master-reference 
-                            master-reference="SARIT-right" odd-or-even="odd"/>
-                        <fo:conditional-page-master-reference 
-                            master-reference="SARIT-left" odd-or-even="even"/>
-                    </fo:repeatable-page-master-alternatives>
-                </fo:page-sequence-master>
-            </fo:layout-master-set>
-            { tei2fo:titlepage($play/tei:teiHeader) }
-            <fo:page-sequence master-reference="SARIT-Content">
-                
-                <fo:static-content flow-name="head-left">
-                    <fo:block margin-bottom="0.7mm" text-align-last="justify" font-family="{$tei2fo:font}"
-                        font-size="10pt">
-                        <fo:page-number/>
-                        <fo:leader/>
-                        <fo:retrieve-marker retrieve-class-name="heading"/>
-                    </fo:block>
-                </fo:static-content>
-                <fo:static-content flow-name="head-right">
-                    <fo:block margin-bottom="0.7mm" text-align-last="justify" font-family="{$tei2fo:font}"
-                        font-size="10pt">
-                        <fo:retrieve-marker retrieve-class-name="heading"/>
-                        <fo:leader/>
-                        <fo:page-number/>
-                    </fo:block>
-                </fo:static-content>
-                <fo:static-content flow-name="xsl-footnote-separator">
-                    <fo:block margin-top="4mm"/>
-                </fo:static-content>
-                <!--fo:static-content flow-name="xsl-footnote-separator">
-                    <fo:block text-align-last="justify" margin-top="4mm" space-after="2mm">
-                        <fo:leader leader-length="40%" rule-thickness="2pt" leader-pattern="rule" color="grey"/>
-                    </fo:block>
-                </fo:static-content-->
-                <fo:flow flow-name="xsl-region-body" font-family="{$tei2fo:font}"
-                    font-size="{$tei2fo:fontSize}pt" line-height="{$tei2fo:lineHeight}"
-                    xml:lang="sa" language="sa" hyphenate="true">
-                    { tei2fo:render($play/tei:text/tei:body/tei:div) }
-                </fo:flow>                         
-            </fo:page-sequence>
-        </fo:root>
+declare function tei2fo:main($doc as element(tei:TEI)) {
+    <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+        <fo:layout-master-set>
+            <fo:simple-page-master master-name="SARIT-left" margin-top="10mm"
+                    margin-bottom="10mm" margin-left="24mm"
+                    margin-right="12mm" page-height="297mm" page-width="210mm">
+                <fo:region-body margin-bottom="10mm" margin-top="16mm"/>
+                <fo:region-before region-name="head-left" extent="10mm"/>
+            </fo:simple-page-master>
+            <fo:simple-page-master master-name="SARIT-right" margin-top="10mm"
+                    margin-bottom="10mm" margin-left="12mm"
+                    margin-right="24mm" page-height="297mm" page-width="210mm">
+                <fo:region-body margin-bottom="10mm" margin-top="16mm"/>
+                <fo:region-before region-name="head-right" extent="10mm"/>
+            </fo:simple-page-master>
+            <fo:page-sequence-master master-name="SARIT-Content">
+                <fo:repeatable-page-master-alternatives>
+                    <fo:conditional-page-master-reference 
+                        master-reference="SARIT-right" odd-or-even="odd"/>
+                    <fo:conditional-page-master-reference 
+                        master-reference="SARIT-left" odd-or-even="even"/>
+                </fo:repeatable-page-master-alternatives>
+            </fo:page-sequence-master>
+        </fo:layout-master-set>
+        { tei2fo:titlepage($doc/tei:teiHeader) }
+        <fo:page-sequence master-reference="SARIT-Content">
+            
+            <fo:static-content flow-name="head-left">
+                <fo:block margin-bottom="0.7mm" text-align-last="justify" font-family="{$tei2fo:font}"
+                    font-size="10pt">
+                    <fo:page-number/>
+                    <fo:leader/>
+                    <fo:retrieve-marker retrieve-class-name="heading"/>
+                </fo:block>
+            </fo:static-content>
+            <fo:static-content flow-name="head-right">
+                <fo:block margin-bottom="0.7mm" text-align-last="justify" font-family="{$tei2fo:font}"
+                    font-size="10pt">
+                    <fo:retrieve-marker retrieve-class-name="heading"/>
+                    <fo:leader/>
+                    <fo:page-number/>
+                </fo:block>
+            </fo:static-content>
+            <!--fo:static-content flow-name="xsl-footnote-separator">
+                <fo:block margin-top="4mm"/>
+            </fo:static-content-->
+            <fo:static-content flow-name="xsl-footnote-separator">
+                <fo:block text-align-last="justify" margin-top="4mm" space-after="2mm">
+                    <fo:leader leader-length="40%" rule-thickness="2pt" leader-pattern="rule" color="grey"/>
+                </fo:block>
+            </fo:static-content>
+            <fo:flow flow-name="xsl-region-body" font-family="{$tei2fo:font}"
+                font-size="{$tei2fo:fontSize}pt" line-height="{$tei2fo:lineHeight}"
+                xml:lang="sa" language="sa" hyphenate="true">
+                { tei2fo:render($doc/tei:text/tei:body/tei:div) }
+            </fo:flow>                         
+        </fo:page-sequence>
+    </fo:root>
 };
 
 declare function tei2fo:attributes($attrs as map(*)) {
