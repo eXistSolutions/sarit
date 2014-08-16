@@ -124,103 +124,111 @@ function app:outline($node as node(), $model as map(*), $full as xs:boolean) {
     let $work := $root/ancestor-or-self::tei:TEI
     return
         if (
-            $work/tei:text/tei:front/tei:titlePage, 
-            $work/tei:text/tei:front/tei:div, 
-            $work/tei:text/tei:body/tei:div, 
-            $work/tei:text/tei:back/tei:div
+            exists($work/tei:text/tei:front/tei:titlePage) or 
+            exists($work/tei:text/tei:front/tei:div) or 
+            exists($work/tei:text/tei:body/tei:div) or 
+            exists($work/tei:text/tei:back/tei:div)
            ) 
         then (
             <ul class="contents">{
-                (:if it is not the whole work:)
-                if (local-name($root) = ('div', 'titlePage')) then
-                    (:if it has divs below itself:)
-                    <li>{
-                    if ($root/tei:div) then
+                typeswitch($root)
+                    case element(tei:div) return
+                        (:if it is not the whole work:)
+                        app:generate-toc-from-div($root, $long, $position) 
+                    case element(tei:titlePage) return
+                        (:if it is not the whole work:)
+                        app:generate-toc-from-div($root, $long, $position)
+                    default return
+                        (:if it is the whole work:)
                         (
-                        if ($root/parent::tei:div) 
-                        (:show the parent:)
-                        then app:toc-div($root/parent::tei:div, $long, $position, 'no-list-item') 
-                        (:NB: this creates an empty <li> if there is no div parent:)
-                        (:show nothing:)
-                        else ()
-                        ,
-                        for $div in $root/preceding-sibling::tei:div
-                        return app:toc-div($div, $long, $position, 'list-item')
-                        ,
-                        app:toc-div($root, $long, $position, 'list-item')
-                        ,
-                        <ul>
-                            {
-                            for $div in $root/tei:div
+                        if ($work/tei:text/tei:front/tei:titlePage, $work/tei:text/tei:front/tei:div)
+                        then
+                            <div class="text-front">
+                            <h6>Front Matter</h6>
+                            {for $div in 
+                                (
+                                $work/tei:text/tei:front/tei:titlePage, 
+                                $work/tei:text/tei:front/tei:div 
+                                )
                             return app:toc-div($div, $long, $position, 'list-item')
-                            }
-                        </ul>
+                            }</div>
+                            else ()
                         ,
-                        for $div in $root/following-sibling::tei:div
-                        return app:toc-div($div, $long, $position, 'list-item')
-                        )
-                    else
-                    (
-                        (:if it is a leaf:)
-                        (:show its parent:)
-                        app:toc-div($root/parent::tei:div, $long, $position, 'no-list-item')
-                        ,
-                        (:show its preceding siblings:)
-                        <ul>
-                            {
-                            for $div in $root/preceding-sibling::tei:div
-                            return app:toc-div($div, $long, $position, 'list-item')
-                            ,
-                            (:show itself:)
-                            (:NB: should not have link:)
-                            app:toc-div($root, $long, $position, 'list-item')
-                            ,
-                            (:show its following siblings:)
-                            for $div in $root/following-sibling::tei:div
-                            return app:toc-div($div, $long, $position, 'list-item')
-                            }
-                        </ul>
-                        )
-                       }</li> 
-                else
-                    (:if it is the whole work:)
-                    (
-                    if ($work/tei:text/tei:front/tei:titlePage, $work/tei:text/tei:front/tei:div)
-                    then
-                        <div class="text-front">
-                        <h6>Front Matter</h6>
+                        <div class="text-body">
+                        <h6>{if ($work/tei:text/tei:front/tei:titlePage, $work/tei:text/tei:front/tei:div, $work/tei:text/tei:back/tei:div) then 'Text' else ''}</h6>
                         {for $div in 
                             (
-                            $work/tei:text/tei:front/tei:titlePage, 
-                            $work/tei:text/tei:front/tei:div 
+                            $work/tei:text/tei:body/tei:div 
                             )
                         return app:toc-div($div, $long, $position, 'list-item')
                         }</div>
+                        ,
+                        if ($work/tei:text/tei:back/tei:div)
+                        then
+                            <h6 class="text-back">
+                            <h6>Back Matter</h6>
+                            {for $div in 
+                                (
+                                $work/tei:text/tei:back/tei:div 
+                                )
+                            return app:toc-div($div, $long, $position, 'list-item')
+                            }</h6>
                         else ()
-                    ,
-                    <div class="text-body">
-                    <h6>{if ($work/tei:text/tei:front/tei:titlePage, $work/tei:text/tei:front/tei:div, $work/tei:text/tei:back/tei:div) then 'Text' else ''}</h6>
-                    {for $div in 
-                        (
-                        $work/tei:text/tei:body/tei:div 
                         )
-                    return app:toc-div($div, $long, $position, 'list-item')
-                    }</div>
-                    ,
-                    if ($work/tei:text/tei:back/tei:div)
-                    then
-                        <h6 class="text-back">
-                        <h6>Back Matter</h6>
-                        {for $div in 
-                            (
-                            $work/tei:text/tei:back/tei:div 
-                            )
-                        return app:toc-div($div, $long, $position, 'list-item')
-                        }</h6>
-                    else ()
-                    )
             }</ul>
         ) else ()
+};
+
+declare function app:generate-toc-from-div($root, $long, $position) {
+	(:if it has divs below itself:)
+    <li>{
+    if ($root/tei:div) then
+        (
+        if ($root/parent::tei:div) 
+        (:show the parent:)
+        then app:toc-div($root/parent::tei:div, $long, $position, 'no-list-item') 
+        (:NB: this creates an empty <li> if there is no div parent:)
+        (:show nothing:)
+        else ()
+        ,
+        for $div in $root/preceding-sibling::tei:div
+        return app:toc-div($div, $long, $position, 'list-item')
+        ,
+        app:toc-div($root, $long, $position, 'list-item')
+        ,
+        <ul>
+            {
+            for $div in $root/tei:div
+            return app:toc-div($div, $long, $position, 'list-item')
+            }
+        </ul>
+        ,
+        for $div in $root/following-sibling::tei:div
+        return app:toc-div($div, $long, $position, 'list-item')
+        )
+    else
+    (
+        (:if it is a leaf:)
+        (:show its parent:)
+        app:toc-div($root/parent::tei:div, $long, $position, 'no-list-item')
+        ,
+        (:show its preceding siblings:)
+        <ul>
+            {
+            for $div in $root/preceding-sibling::tei:div
+            return app:toc-div($div, $long, $position, 'list-item')
+            ,
+            (:show itself:)
+            (:NB: should not have link:)
+            app:toc-div($root, $long, $position, 'list-item')
+            ,
+            (:show its following siblings:)
+            for $div in $root/following-sibling::tei:div
+            return app:toc-div($div, $long, $position, 'list-item')
+            }
+        </ul>
+        )
+       }</li>
 };
 
 (:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
@@ -236,42 +244,44 @@ declare function app:generate-toc-from-divs($node, $current as element()?, $long
 
 (:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
 declare function app:derive-title($div) {
-    if (local-name($div) eq 'div')
-    then
-        let $n := $div/@n/string()
-        let $title := 
-            (:if the div has a header:)
-            if ($div/tei:head) 
-            then
-                concat(
-                    if ($n) then concat($n, ': ') else ''
-                    ,
-                    string-join(
-                        for $node in $div/tei:head/node() 
-                        return data($node)
-                    , ' ')
-                )
-            else
-                (:otherwise, take part of the text itself:)
-                if (string-length(data($div)) gt 0) 
-                then 
+    typeswitch ($div)
+        case element(tei:div) return
+            let $n := $div/@n/string()
+            let $title := 
+                (:if the div has a header:)
+                if ($div/tei:head) 
+                then
                     concat(
-                        if ($div/@type) 
-                        then concat('[', $div/@type/string(), '] ') 
-                        else ''
-                    , substring(data($div), 1, 25), '…') 
-                else concat('[', $div/@type/string(), ']')
-        return $title
-    else
-        if (local-name($div) eq 'titlePage')
-        then tei-to-html:titlePage($div, <options/>)
-        else ()
+                        if ($n) then concat($n, ': ') else ''
+                        ,
+                        string-join(
+                            for $node in $div/tei:head/node() 
+                            return data($node)
+                        , ' ')
+                    )
+                else
+                    let $type := $div/@type
+                    let $data := data($div)
+                    return
+                        (:otherwise, take part of the text itself:)
+                        if (string-length($data) gt 0) 
+                        then
+                            concat(
+                                if ($type) 
+                                then concat('[', $type/string(), '] ') 
+                                else ''
+                            , substring($data, 1, 25), '…') 
+                        else concat('[', $type/string(), ']')
+            return $title
+        case element(tei:titlePage) return
+            tei-to-html:titlePage($div, <options/>)
+        default return
+            ()
 };
 
 (:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
 declare function app:toc-div($div, $long as xs:string?, $current as element()?, $list-item as xs:string?) {
     let $div-id := $div/@xml:id/string()
-    let $title := app:derive-title($div)
     return
         if ($list-item eq 'list-item')
         then
@@ -284,12 +294,12 @@ declare function app:toc-div($div, $long as xs:string?, $current as element()?, 
                         else
                             ()
                     }
-                    <a href="{$div-id}.html" class="toc-link">{$title}</a> 
+                    <a href="{$div-id}.html" class="toc-link">{app:derive-title($div)}</a> 
                     {if ($long eq 'yes') then app:generate-toc-from-divs($div, $current, $long) else ()}
                 </li>
             else ()
         else
-            <a href="{$div-id}.html">{$title}</a> 
+            <a href="{$div-id}.html">{app:derive-title($div)}</a> 
 };
 
 (:~
