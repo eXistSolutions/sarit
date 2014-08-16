@@ -243,7 +243,7 @@ declare function app:generate-toc-from-divs($node, $current as element()?, $long
 };
 
 (:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
-declare function app:derive-title($div) {
+declare %private function app:derive-title($div) {
     typeswitch ($div)
         case element(tei:div) return
             let $n := $div/@n/string()
@@ -261,7 +261,7 @@ declare function app:derive-title($div) {
                     )
                 else
                     let $type := $div/@type
-                    let $data := data($div)
+                    let $data := app:generate-title($div//text(), 0)
                     return
                         (:otherwise, take part of the text itself:)
                         if (string-length($data) gt 0) 
@@ -277,6 +277,18 @@ declare function app:derive-title($div) {
             tei-to-html:titlePage($div, <options/>)
         default return
             ()
+};
+
+declare %private function app:generate-title($nodes as text()*, $length as xs:int) {
+    if ($nodes) then
+        let $text := head($nodes)
+        return
+            if ($length + string-length($text) > 25) then
+                (substring($text, 1, 25 - $length) || "…")
+            else
+                ($text || app:generate-title(tail($nodes), $length + string-length($text)))
+    else
+        ()
 };
 
 (:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
