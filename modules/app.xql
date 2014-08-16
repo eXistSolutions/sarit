@@ -377,8 +377,10 @@ declare function app:epub-link($node as node(), $model as map(*)) {
 
 declare function app:pdf-link($node as node(), $model as map(*)) {
     let $id := $model("work")/@xml:id/string()
+    let $uuid := util:uuid()
     return
-        <a xmlns="http://www.w3.org/1999/xhtml" href="{$node/@href}{$id}.pdf">{ $node/node() }</a>
+        <a class="pdf-link" xmlns="http://www.w3.org/1999/xhtml" 
+            data-token="{$uuid}" href="{$node/@href}{$id}.pdf?token={$uuid}">{ $node/node() }</a>
 };
 
 declare function app:zip-link($node as node(), $model as map(*)) {

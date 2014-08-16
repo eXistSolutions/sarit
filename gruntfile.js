@@ -171,6 +171,7 @@ module.exports = function (grunt) {
                 src: [
                     'components/jquery/dist/jquery.min.js',
                     'components/bootstrap/dist/js/bootstrap.min.js',
+                    'components/Macaroon/jquery.fs.macaroon.min.js',
                     'components/snap.svg/dist/snap.svg-min.js',
                     'resources/js/app.min.js'],
                 // the location of the resulting JS file
@@ -277,6 +278,7 @@ module.exports = function (grunt) {
                     'content/**',
                     'components/animate.css/*',
                     'components/bootstrap/dist/**',
+                    'components/Macaroon/*',
                     'components/font-awesome/css/**',
                     'components/font-awesome/fonts/**',
                     'components/jquery/dist/**',

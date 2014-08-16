@@ -58,5 +58,22 @@ $(document).ready(function() {
         {
             $(note).next(".note-contents").html()
         }
-});
+    });
+    
+    var downloadCheck;
+    
+    $(".pdf-link").click(function(ev) {
+        $("#pdf-info").modal({
+            show: true
+        });
+        var token = $(this).attr("data-token");
+        downloadCheck = window.setInterval(function() {
+            var cookieValue = $.macaroon("sarit.token");
+            if (cookieValue == token) {
+                window.clearInterval(downloadCheck);
+                $.macaroon("sarit.token", null);
+                $("#pdf-info").modal("hide");
+            }
+        });
+    });
 });

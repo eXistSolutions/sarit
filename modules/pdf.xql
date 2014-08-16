@@ -13,7 +13,7 @@ import module namespace tei2fo="http://exist-db.org/xquery/app/sarit/tei2fo" at 
 
 declare variable $local:WORKING_DIR := system:get-exist-home() || "/webapp";
 (:  Set to 'ah' for AntennaHouse, 'fop' for Apache fop :)
-declare variable $local:PROCESSOR := "fop";
+declare variable $local:PROCESSOR := "ah";
 
 declare function local:fop($id as xs:string, $fo as element()) {
 	let $config :=
@@ -85,11 +85,13 @@ declare function local:antenna-house($id as xs:string, $fo as element()) {
 };
 
 let $id := request:get-parameter("id", ())
+let $token := request:get-parameter("token", ())
 let $source := request:get-parameter("source", ())
 let $start := util:system-time()
 let $fo := tei2fo:main($id)
 return (
     console:log("sarit", "Generated fo for " || $id || " in " || util:system-time() - $start),
+    response:set-cookie("sarit.token", $token),
     if ($source) then
         $fo
     else
