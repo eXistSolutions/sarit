@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <meta xmlns="http://exist-db.org/xquery/repo">
-    <description>SARIT: Search and Retrieval of Indic Texts</description>
-    <author>Joern Turner</author>
-    <author>Wolfgang Meier</author>
-    <author>Lars Windauer</author>
-    <author>Tobias Krebs</author>
-    <author>Jens Østergaard Petersen</author>
+    <description>The SARIT provides electronic editions of Sanskrit and other Indian-language texts.</description>
+    <author>Joern Turner, Wolfgang Meier, Lars Windauer</author>
     <website>http://sarit.indology.info/</website>
     <status>alpha</status>
     <license>MIT</license>
@@ -14,5 +10,4 @@
     <target>sarit</target>
     <prepare>pre-install.xql</prepare>
     <finish/>
-    <deployed/>
 </meta>

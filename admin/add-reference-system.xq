@@ -97,7 +97,7 @@ declare function local:tei-normalize-space($input)
 };
 
 
-let $doc := doc('/db/apps/sarit-data/data/tsp.xml')/*
+let $doc := doc('/db/apps/sarit-data/data/abh-volume1-dn.xml')/*
 let $doc := local:tei-normalize-space($doc)
 let $doc := local:add-references-recursively($doc)
 return $doc

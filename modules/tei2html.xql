@@ -124,6 +124,7 @@ declare function tei-to-html:dispatch($nodes as node()*, $options) as item()* {
             case element(tei:q) return tei-to-html:q($node, $options) (:contains: macro.specialPara:)
             case element(tei:seg) return tei-to-html:seg($node, $options)
             case element(tei:respStmt) return tei-to-html:respStmt($node, $options)
+            case element(tei:app) return tei-to-html:app($node, $options)
             case element(tei:note) return tei-to-html:note($node, $options)
             case element(tei:w) return tei-to-html:w($node, $options)
             case element(tei:address) return tei-to-html:address($node, $options)
@@ -661,6 +662,35 @@ declare function tei-to-html:notesStmt($node as element(tei:notesStmt), $options
     </div>
 };
 
+declare function tei-to-html:app($node as element()+, $options) as element()+ {
+    let $title := "Apparatus"
+    let $lem := $node/tei:lem
+    let $notes := $node/tei:note
+    let $rdgs := $node/tei:rdg
+    let $siglum := ""
+    let $content := (
+                if ($lem/@wit)
+                then 
+                    concat('&lt;span class="appentry"&gt;&lt;span class="siglum"&gt;',$siglum,'&lt;/span&gt;: ',$lem,'&lt;/span&gt;')
+                else '',
+                if ($notes)
+                then
+                    for $note in $notes
+                    return
+                        concat('&lt;span class="appentry"&gt;&lt;span class="siglum"&gt;Note:&lt;/span&gt; ',$note,'&lt;/span&gt;')
+                else '',
+                if ($rdgs)
+                then 
+                    for $rdg in $rdgs
+                    let $siglum := translate(translate($rdg/@wit/string(), '#', ''), ' ', '')
+                    return
+                        concat('&lt;span class="appentry"&gt;&lt;span class="siglum"&gt;',$siglum,'&lt;/span&gt;: ',$rdg,'&lt;/span&gt;')
+                else '')
+    return
+    (<button type="button" class="btn btn-lg btn-primary popover-dismiss" data-toggle="popover" id="{tei-to-html:get-id($node)}" title="{$title}" data-content="{$content}">a</button>, 
+    <span style="style=display:none"></span>)
+};
+
 (:SR:)
 declare function tei-to-html:note($node as element()+, $options) as element()+ {
     let $resp := $node/@resp
@@ -683,7 +713,7 @@ declare function tei-to-html:note($node as element()+, $options) as element()+ {
         </div>
     else
     (:<span class="note" title="tei:note">{'('}{tei-to-html:recurse($node, $options)}{')'}</span>:)
-    (<button type="button" class="btn btn-lg btn-primary popover-dismiss" data-toggle="popover" id="{tei-to-html:get-id($node)}" title="{$title}" data-content="{tei-to-html:recurse($node, $options)}">ⓝ</button>, 
+    (<button type="button" class="btn btn-lg btn-primary popover-dismiss" data-toggle="popover" id="{tei-to-html:get-id($node)}" title="{$title}" data-content="{tei-to-html:recurse($node, $options)}">n</button>, 
     <span style="style=display:none"></span>)
     (:    let $id := util:hash(util:random(), "md5")
     return

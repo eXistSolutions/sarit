@@ -836,7 +836,16 @@ mark,
   margin-right: 18px;
 }
 .pb {
-  margin-right: .5em;
+  display: block;
+  float: right;
+  clear: right;
+  margin-right: 10px;
+  font-size: 10pt;
+  font-family: serif;
+  text-align: right;
+  background: #eeeeee;
+  border-radius: 5px;
+  padding: 5px;
 }
 section {
   margin-top: 0;
@@ -872,4 +881,10 @@ body .play button {
 }
 .inline-quote {
   color: #428bca;
+}
+.appentry {
+  display:block;
+}
+.siglum {
+  font-weight:bold;
 }
