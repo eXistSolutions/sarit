@@ -2,7 +2,7 @@
   "name": "sarit",
   "version": "0.0.1",
   "url":"http://sarit.indology.info/",
-  "description": "The SARIT provides electronic editions of Sanskrit and other Indian-language texts.",
+  "description": "SARIT: Search and Retrieval of Indic Texts",
   "main": "resources/js/app.js",
   "directories": {
     "doc": "doc",
@@ -11,7 +11,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Joern Turner, Wolfgang Meier, Lars Windauer",
+  "author": "Joern Turner, Wolfgang Meier, Lars Windauer, Tobias Krebs, Jens Østergaard Petersen",
   "license": "MIT",
   "devDependencies": {
     "grunt": "~0.4.4",
