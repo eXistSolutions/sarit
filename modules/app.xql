@@ -500,6 +500,7 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $index as
 
 (: LUCENE :)
 
+(:NB: Does not handle regex searches:)
 declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
     for $div in $model("work")/id($id)
     let $div :=
@@ -528,7 +529,7 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
                 $div/tei:div[1]/preceding-sibling::*
             }
         else
-            $div
+            $div[1] (:NB: why is '[1]' necessary?:)
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
         { tei-to-html:recurse($view, <options/>) }
@@ -970,11 +971,14 @@ declare
     %templates:default("start", 1)
     %templates:default("per-page", 10)
 function app:show-hits($node as node()*, $model as map(*), $start as xs:integer, $per-page as xs:integer) {
-    (:NB: When the link is passed on to app:view(), only one search term can be handled.:) 
-    let $first-query-term := 
+    let $index :=
         if ($model('query') instance of xs:string)
-        then string($model('query'))
-        else $model('query')//text()[1]
+        then 'ngram'
+        else 'lucene'
+    let $query := 
+        if ($model('query') instance of xs:string)
+        then $model('query')
+        else string-join($model('query')//text(), ' ')
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
     let $id := $hit/ancestor-or-self::tei:div[1]/@xml:id/string()
     let $id := if ($id) then $id else ($hit/ancestor-or-self::*/@xml:id)[1]/string()
@@ -997,7 +1001,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
-    let $config := <config width="60" table="yes" link="{$id}.html?query={$first-query-term}#{$matchId}"/>
+    let $config := <config width="60" table="yes" link="{$id}.html?index={$index}&amp;query={xmldb:encode-uri($query)}#{$matchId}"/>
     let $kwic := kwic:summarize($hitExpanded, $config)
     return
         ($loc, $kwic)        
