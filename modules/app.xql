@@ -492,15 +492,17 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
 
 declare 
     %templates:default("index", "ngram")
-function app:view($node as node(), $model as map(*), $id as xs:string, $index as xs:string, $query as xs:string?) {
-        if ($index eq 'ngram')
-        then app:ngram-view($node, $model, $id, $query)
-        else app:lucene-view($node, $model, $id, $query)
+function app:view($node as node(), $model as map(*), $id as xs:string) {
+        let $query := session:get-attribute("apps.sarit.query")
+        return
+            if ($query instance of xs:string)
+            then app:ngram-view($node, $model, $id, $query)
+            else app:lucene-view($node, $model, $id, $query)
 };
 
 (: LUCENE :)
 
-declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
+declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?) {    
     for $div in $model("work")/id($id)
     let $div :=
         if ($query) then
@@ -528,7 +530,7 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
                 $div/tei:div[1]/preceding-sibling::*
             }
         else
-            $div
+            $div[1] (:NB: why is '[1]' necessary?:)
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
         { tei-to-html:recurse($view, <options/>) }
@@ -555,7 +557,7 @@ declare function app:ngram-view($node as node(), $model as map(*), $id as xs:str
             $div[.//tei:cit[ngram:wildcard-contains(., $query)]]),
             "add-exist-id=all")
         else
-            $div
+            $div[1]
     let $view := 
         if ($div/tei:div) then
             (: If the current section has child divs, display only the text up to the first div. :)
@@ -564,7 +566,7 @@ declare function app:ngram-view($node as node(), $model as map(*), $id as xs:str
                 $div/tei:div[1]/preceding-sibling::*
             }
         else
-            $div
+            $div[1]
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
         { tei-to-html:recurse($view, <options/>) }
@@ -970,11 +972,10 @@ declare
     %templates:default("start", 1)
     %templates:default("per-page", 10)
 function app:show-hits($node as node()*, $model as map(*), $start as xs:integer, $per-page as xs:integer) {
-    (:NB: When the link is passed on to app:view(), only one search term can be handled.:) 
-    let $first-query-term := 
+    let $index :=
         if ($model('query') instance of xs:string)
-        then string($model('query'))
-        else $model('query')//text()[1]
+        then 'ngram'
+        else 'lucene'
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
     let $id := $hit/ancestor-or-self::tei:div[1]/@xml:id/string()
     let $id := if ($id) then $id else ($hit/ancestor-or-self::*/@xml:id)[1]/string()
@@ -997,7 +998,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
-    let $config := <config width="60" table="yes" link="{$id}.html?query={$first-query-term}#{$matchId}"/>
+    let $config := <config width="60" table="yes" link="{$id}.html#{$matchId}"/>
     let $kwic := kwic:summarize($hitExpanded, $config)
     return
         ($loc, $kwic)        
