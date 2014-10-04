@@ -492,8 +492,12 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
 
 declare 
     %templates:default("index", "ngram")
-function app:view($node as node(), $model as map(*), $id as xs:string) {
-        let $query := session:get-attribute("apps.sarit.query")
+    %templates:default("action", "browse")
+function app:view($node as node(), $model as map(*), $id as xs:string, $action as xs:string) {
+        let $query := 
+            if ($action eq 'search')
+            then session:get-attribute("apps.sarit.query")
+            else ()
         return
             if ($query instance of xs:string)
             then app:ngram-view($node, $model, $id, $query)
@@ -503,7 +507,7 @@ function app:view($node as node(), $model as map(*), $id as xs:string) {
 (: LUCENE :)
 
 declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?) {    
-    for $div in $model("work")/id($id)
+    for $div in $model("work")/id($id) (:Why a for loop?:)
     let $div :=
         if ($query) then
             util:expand((
@@ -587,12 +591,10 @@ declare
     %templates:default("target-texts", "all")
 function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $mode as xs:string, $tei-target as xs:string+, $scope as xs:string, 
     $work-authors as xs:string+, $scripts as xs:string+, $target-texts as xs:string+) {
-    (:let $log := console:log("Preparing query..."):)
     let $queryExpr := 
         if ($index eq 'ngram')
         then $query
         else app:create-query($query, $mode)
-    (:let $log := console:log($query):)
     return
         if (empty($queryExpr) or $queryExpr = "") then
             let $cached := session:get-attribute("apps.sarit")
@@ -998,7 +1000,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
-    let $config := <config width="60" table="yes" link="{$id}.html#{$matchId}"/>
+    let $config := <config width="60" table="yes" link="{$id}.html?action=search#{$matchId}"/>
     let $kwic := kwic:summarize($hitExpanded, $config)
     return
         ($loc, $kwic)        
