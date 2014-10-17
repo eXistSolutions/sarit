@@ -511,7 +511,7 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
 (: LUCENE :)
 
 declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $scope as xs:string?) {    
-    for $div in $model("work")/id($id) (:Why a for loop?:)
+    let $div := $model("work")/id($id)
     let $div :=
         if ($query) then
             if ($scope eq 'narrow') then
@@ -522,7 +522,7 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
                 $div[.//tei:trailer[ft:query(., $query)]],
                 $div[.//tei:note[ft:query(., $query)]],
                 $div[.//tei:list[ft:query(., $query)]],
-                $div[.//tei:l[ft:query(., $query)]],
+                $div[.//tei:l[not(local-name(./..) eq 'lg')][ft:query(., $query)]],
                 $div[.//tei:quote[ft:query(., $query)]],
                 $div[.//tei:table[ft:query(., $query)]],
                 $div[.//tei:listApp[ft:query(., $query)]],
@@ -560,7 +560,7 @@ declare function app:ngram-view($node as node(), $model as map(*), $id as xs:str
                 $div[.//tei:trailer[ngram:wildcard-contains(., $query)]],
                 $div[.//tei:note[ngram:wildcard-contains(., $query)]],
                 $div[.//tei:list[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:l[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query)]],
                 $div[.//tei:quote[ngram:wildcard-contains(., $query)]],
                 $div[.//tei:table[ngram:wildcard-contains(., $query)]],
                 $div[.//tei:listApp[ngram:wildcard-contains(., $query)]],
@@ -694,7 +694,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                 $context//tei:trailer[ft:query(., $queryExpr)],
                                 $context//tei:note[ft:query(., $queryExpr)],
                                 $context//tei:list[ft:query(., $queryExpr)],
-                                $context//tei:l[ft:query(., $queryExpr)],
+                                $context//tei:l[not(local-name(./..) eq 'lg')][ft:query(., $queryExpr)],
                                 $context//tei:quote[ft:query(., $queryExpr)],
                                 $context//tei:table[ft:query(., $queryExpr)],
                                 $context//tei:listApp[ft:query(., $queryExpr)],
@@ -715,7 +715,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                     $context//tei:trailer[ft:query(., $queryExpr)],
                                     $context//tei:note[ft:query(., $queryExpr)],
                                     $context//tei:list[ft:query(., $queryExpr)],
-                                    $context//tei:l[ft:query(., $queryExpr)],
+                                    $context//tei:l[not(local-name(./..) eq 'lg')][ft:query(., $queryExpr)],
                                     $context//tei:quote[ft:query(., $queryExpr)],
                                     $context//tei:table[ft:query(., $queryExpr)],
                                     $context//tei:listApp[ft:query(., $queryExpr)],
@@ -746,7 +746,6 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                 if ($tei-target = 'tei-text')
                                 then
                                     (
-                                    $context//tei:div[not(tei:div)][ft:query(., $queryExpr)], 
                                     $context//tei:div[not(tei:div)][ft:query(., $queryExpr)]
                                     )
                                 else 
@@ -768,7 +767,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                         $context//tei:trailer[ngram:wildcard-contains(., $queryExpr)],
                         $context//tei:note[ngram:wildcard-contains(., $queryExpr)],
                         $context//tei:list[ngram:wildcard-contains(., $queryExpr)],
-                        $context//tei:l[ngram:wildcard-contains(., $queryExpr)],
+                        $context//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $queryExpr)],
                         $context//tei:quote[ngram:wildcard-contains(., $queryExpr)],
                         $context//tei:table[ngram:wildcard-contains(., $queryExpr)],
                         $context//tei:listApp[ngram:wildcard-contains(., $queryExpr)],
@@ -788,7 +787,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             $context//tei:trailer[ngram:wildcard-contains(., $queryExpr)],
                             $context//tei:note[ngram:wildcard-contains(., $queryExpr)],
                             $context//tei:list[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:l[ngram:wildcard-contains(., $queryExpr)],
+                            $context//tei:l[not(local-name(./..) eq 'lg')][not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $queryExpr)],
                             $context//tei:quote[ngram:wildcard-contains(., $queryExpr)],
                             $context//tei:table[ngram:wildcard-contains(., $queryExpr)],
                             $context//tei:listApp[ngram:wildcard-contains(., $queryExpr)],
