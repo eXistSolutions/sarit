@@ -498,32 +498,38 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
             if ($action eq 'search')
             then session:get-attribute("apps.sarit.query")
             else ()
+        let $scope := 
+            if ($query)
+            then session:get-attribute("apps.sarit.scope")
+            else ()
         return
             if ($query instance of xs:string)
-            then app:ngram-view($node, $model, $id, $query)
-            else app:lucene-view($node, $model, $id, $query)
+            then app:ngram-view($node, $model, $id, $query, $scope)
+            else app:lucene-view($node, $model, $id, $query, $scope)
 };
 
 (: LUCENE :)
 
-declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?) {    
+declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $scope as xs:string?) {    
     for $div in $model("work")/id($id) (:Why a for loop?:)
     let $div :=
         if ($query) then
-            util:expand((
-            $div[.//tei:p[ft:query(., $query)]],
-            $div[.//tei:head[ft:query(., $query)]],
-            $div[.//tei:lg[ft:query(., $query)]],
-            $div[.//tei:trailer[ft:query(., $query)]],
-            $div[.//tei:note[ft:query(., $query)]],
-            $div[.//tei:list[ft:query(., $query)]],
-            $div[.//tei:l[ft:query(., $query)]],
-            $div[.//tei:quote[ft:query(., $query)]],
-            $div[.//tei:table[ft:query(., $query)]],
-            $div[.//tei:listApp[ft:query(., $query)]],
-            $div[.//tei:listBibl[ft:query(., $query)]],
-            $div[.//tei:cit[ft:query(., $query)]]),
-            "add-exist-id=all")
+            if ($scope eq 'narrow') then
+                util:expand((
+                $div[.//tei:p[ft:query(., $query)]],
+                $div[.//tei:head[ft:query(., $query)]],
+                $div[.//tei:lg[ft:query(., $query)]],
+                $div[.//tei:trailer[ft:query(., $query)]],
+                $div[.//tei:note[ft:query(., $query)]],
+                $div[.//tei:list[ft:query(., $query)]],
+                $div[.//tei:l[ft:query(., $query)]],
+                $div[.//tei:quote[ft:query(., $query)]],
+                $div[.//tei:table[ft:query(., $query)]],
+                $div[.//tei:listApp[ft:query(., $query)]],
+                $div[.//tei:listBibl[ft:query(., $query)]],
+                $div[.//tei:cit[ft:query(., $query)]]),
+                "add-exist-id=all")
+            else $div[ft:query(., $query)]
         else
             $div
     let $view := 
@@ -542,24 +548,26 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
 };
 
 (: NGRAM :)
-declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?) {
+declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?, $scope as xs:string?) {
     for $div in $model("work")/id($id)
     let $div :=
         if ($query) then
-            util:expand((
-            $div[.//tei:p[ngram:wildcard-contains(., $query)]],
-            $div[.//tei:head[ngram:wildcard-contains(., $query)]],
-            $div[.//tei:lg[ngram:wildcard-contains(., $query)]],
-            $div[.//tei:trailer[ngram:wildcard-contains(., $query)]],
-            $div[.//tei:note[ngram:wildcard-contains(., $query)]],
-            $div[.//tei:list[ngram:wildcard-contains(., $query)]],
-            $div[.//tei:l[ngram:wildcard-contains(., $query)]],
-            $div[.//tei:quote[ngram:wildcard-contains(., $query)]],
-            $div[.//tei:table[ngram:wildcard-contains(., $query)]],
-            $div[.//tei:listApp[ngram:wildcard-contains(., $query)]],
-            $div[.//tei:listBibl[ngram:wildcard-contains(., $query)]],
-            $div[.//tei:cit[ngram:wildcard-contains(., $query)]]),
-            "add-exist-id=all")
+            if ($scope eq 'narrow') then
+                util:expand((
+                $div[.//tei:p[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:head[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:lg[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:trailer[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:note[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:list[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:l[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:quote[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:table[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:listApp[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:listBibl[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:cit[ngram:wildcard-contains(., $query)]]),
+                "add-exist-id=all")
+            else $div[ngram:wildcard-contains(., $query)]
         else
             $div[1]
     let $view := 
@@ -601,7 +609,8 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
             return
                 map {
                     "hits" := $cached,
-                    "query" := session:get-attribute("apps.sarit.query")
+                    "query" := session:get-attribute("apps.sarit.query"),
+                    "scope" := $scope
                 }
         else
             (:$target-texts will either have the value 'all' or a sequence of text xml:ids.:)
@@ -730,7 +739,6 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             if (count($tei-target) eq 2)
                             then
                                 (
-                                $context//tei:div[not(tei:div)][ft:query(., $queryExpr)], 
                                 $context//tei:div[not(tei:div)][ft:query(., $queryExpr)],
                                 $context/descendant-or-self::tei:teiHeader[ft:query(., $queryExpr)]
                                 )
@@ -829,7 +837,8 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                     else ()
             let $store := (
                 session:set-attribute("apps.sarit", $hits),
-                session:set-attribute("apps.sarit.query", $queryExpr)
+                session:set-attribute("apps.sarit.query", $queryExpr),
+                session:set-attribute("apps.sarit.scope", $scope)
             )
             return
                 (: Process nested templates :)
