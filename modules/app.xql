@@ -987,29 +987,32 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
         then 'ngram'
         else 'lucene'
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
-    let $id := $hit/ancestor-or-self::tei:div[1]/@xml:id/string()
-    let $id := if ($id) then $id else ($hit/ancestor-or-self::*/@xml:id)[1]/string()
-    let $work-title := app:work-title($hit/ancestor::tei:TEI)
-    let $doc-id := $hit/ancestor::tei:TEI/@xml:id
-    (:NB: what if there is no div ancestor, e.g. if the hit is in the header?:)
-    let $div-ancestor-id := $hit/ancestor::tei:div[1]/@xml:id
-    let $div-ancestor-id :=
-        if ($div-ancestor-id)
-        then $div-ancestor-id
-        else $hit/ancestor::tei:teiHeader/@xml:id
-    let $div-ancestor-head := $hit/ancestor::tei:div[1]/tei:head/text()
+    let $div := $hit/ancestor-or-self::tei:div[1]
+    let $div-id := $div/@xml:id/string()
+    (:if the nearest div does not have an xml:id, find the nearest element with an xml:id and use it:)
+    (:is this necessary - can't we just use the nearest ancestor?:) 
+    let $div-id := 
+        if ($div-id) 
+        then $div-id 
+        else ($hit/ancestor-or-self::*[@xml:id]/@xml:id)[1]/string()
+    (:if it is not a div, it will not have a head:)
+    let $div-head := $div/tei:head/text()
+    (:TODO: what if the hit is in the header?:)
+    let $work := $hit/ancestor::tei:TEI
+    let $work-title := app:work-title($work)
+    let $work-id := $work/@xml:id/string()
     (:pad hit with surrounding siblings:)
-    let $hitExpanded := <hit>{($hit/preceding-sibling::*[1], $hit, $hit/following-sibling::*[1])}</hit>
+    let $hit-padded := <hit>{($hit/preceding-sibling::*[1], $hit, $hit/following-sibling::*[1])}</hit>
     let $loc := 
         <tr class="reference">
             <td colspan="3">
                 <span class="number">{$start + $p - 1}</span>
-                <a href="{$doc-id}">{$work-title}</a>{if ($div-ancestor-head) then ', ' else ''}<a href="{$div-ancestor-id}.html">{$div-ancestor-head}</a>
+                <a href="{$work-id}">{$work-title}</a>{if ($div-head) then ', ' else ''}<a href="{$div-id}.html">{$div-head}</a>
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
-    let $config := <config width="60" table="yes" link="{$id}.html?action=search#{$matchId}"/>
-    let $kwic := kwic:summarize($hitExpanded, $config)
+    let $config := <config width="60" table="yes" link="{$div-id}.html?action=search#{$matchId}"/>
+    let $kwic := kwic:summarize($hit-padded, $config)
     return
         ($loc, $kwic)        
 };
