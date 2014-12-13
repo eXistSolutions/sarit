@@ -463,14 +463,14 @@ declare
     %templates:wrap
 function app:navigation($node as node(), $model as map(*)) {
     let $div := $model("work")
-    let $parent := $div/parent::tei:div
-    let $prevDiv := $div/preceding::tei:div[1]
+    let $parent := $div/ancestor::tei:div[not(*[1] instance of element(tei:div))][1]
+    let $prevDiv := $div/preceding::tei:div[not(*[1] instance of element(tei:div))][1]
     let $prevDiv :=
         if (empty($prevDiv) or $parent >> $prevDiv) then
             $parent
         else
             $prevDiv
-    let $nextDiv := ($div//tei:div | $div/following::tei:div)[1]
+    let $nextDiv := ($div//tei:div[not(*[1] instance of element(tei:div))] | $div/following::tei:div)[1]
     let $work := $div/ancestor-or-self::tei:TEI
     return
         map {
