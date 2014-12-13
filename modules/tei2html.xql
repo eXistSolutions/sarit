@@ -328,7 +328,7 @@ declare function tei-to-html:p($node as element(tei:p), $options) as element()+ 
         then
             <p class="{concat('p', '-', data($rend))}" title="tei:p" id="{$node/@xml:id}">{ tei-to-html:recurse($node, $options) }</p>
         else 
-            <p class="p" title="tei:p">{tei-to-html:recurse($node, $options)}</p>
+            <p class="p" title="tei:p" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</p>
 };
 
 declare function tei-to-html:hi($node as element(tei:hi), $options) as element()* {

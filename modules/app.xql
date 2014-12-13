@@ -105,9 +105,27 @@ function app:list-works($node as node(), $model as map(*)) {
 declare
     %templates:wrap
 function app:work($node as node(), $model as map(*), $id as xs:string) {
-    let $work := collection($config:remote-data-root)//id($id)
+    console:log("sarit", "id: " || $id),
+    let $work := app:load(collection($config:remote-data-root), $id)
     return
         map { "work" := $work[1] }
+};
+
+declare %private function app:load($context as node()*, $id as xs:string) {
+    let $work := $context//id($id)
+    return
+        if ($work) then
+            $work
+        else if (matches($id, "_[\d\.]+$")) then
+            let $analyzed := analyze-string($id, "^(.*)_([^_]+)$")
+            let $docName := $analyzed//fn:group[@nr = 1]/text()
+            let $doc := doc($config:remote-data-root || "/" || $docName)
+            let $node-id := $analyzed//fn:group[@nr = 2]/string()
+            let $log := console:log("sarit", "loading node '" || $node-id || "' from document " || $config:remote-data-root || "/" || $docName)
+            return
+                util:node-by-id($doc, $node-id)
+        else
+            doc($config:remote-data-root || "/" || $id)/tei:TEI
 };
 
 declare function app:header($node as node(), $model as map(*)) {
@@ -296,6 +314,8 @@ declare %private function app:generate-title($nodes as text()*, $length as xs:in
 (:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
 declare function app:toc-div($div, $long as xs:string?, $current as element()?, $list-item as xs:string?) {
     let $div-id := $div/@xml:id/string()
+    let $div-id := 
+        if ($div-id) then $div-id else util:document-name($div) || "_" || util:node-id($div)
     return
         if ($list-item eq 'list-item')
         then
@@ -474,18 +494,30 @@ function app:breadcrumbs($node as node(), $model as map(*)) {
 declare
     %templates:wrap
 function app:navigation-title($node as node(), $model as map(*)) {
-    element { node-name($node) } {
-        attribute href { $model('work')/@xml:id },
-        $node/@* except $node/@href,
-        app:work-title($model('work'))
-    }
+    let $id :=
+        if ($model("work")/@xml:id) then
+            $model("work")/@xml:id
+        else
+            util:document-name($model("work")) || "_" || util:node-id($model("work"))
+    return
+        element { node-name($node) } {
+            attribute href { $id },
+            $node/@* except $node/@href,
+            app:work-title($model('work'))
+        }
 };
 
 declare function app:navigation-link($node as node(), $model as map(*), $direction as xs:string) {
     if ($model($direction)) then
         element { node-name($node) } {
             $node/@* except $node/@href,
-            attribute href { $model($direction)/@xml:id || ".html" },
+            let $id := 
+                if ($model($direction)/@xml:id) then
+                    $model($direction)/@xml:id/string()
+                else
+                    util:document-name($model($direction)) || "_" || util:node-id($model($direction))
+            return
+                attribute href { $id || ".html" },
             $node/node()
         }
     else
@@ -513,7 +545,7 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
 (: LUCENE :)
 
 declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $scope as xs:string?) {    
-    let $div := $model("work")/id($id)
+    for $div in app:load($model("work"), $id)
     let $div :=
         if ($query) then
             if ($scope eq 'narrow') then
@@ -551,8 +583,9 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
 
 (: NGRAM :)
 declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?, $scope as xs:string?) {
+    console:log("sarit", "ngram-view: " || $id),
     let $transQuery := app:expand-query($query, "all")
-    for $div in $model("work")/id($id)
+    for $div in app:load($model("work"), $id)
     let $div :=
         if ($query) then
             if ($scope eq 'narrow') then
@@ -1077,12 +1110,13 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
     let $div := $hit/ancestor-or-self::tei:div[1]
     let $div-id := $div/@xml:id/string()
+    let $div-id := if ($div-id) then $div-id else util:document-name($div) || "_" || util:node-id($div)
     (:if the nearest div does not have an xml:id, find the nearest element with an xml:id and use it:)
     (:is this necessary - can't we just use the nearest ancestor?:) 
-    let $div-id := 
-        if ($div-id) 
-        then $div-id 
-        else ($hit/ancestor-or-self::*[@xml:id]/@xml:id)[1]/string()
+(:    let $div-id := :)
+(:        if ($div-id) :)
+(:        then $div-id :)
+(:        else ($hit/ancestor-or-self::*[@xml:id]/@xml:id)[1]/string():)
     (:if it is not a div, it will not have a head:)
     let $div-head := $div/tei:head/text()
     (:TODO: what if the hit is in the header?:)
