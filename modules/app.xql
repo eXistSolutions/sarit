@@ -251,7 +251,7 @@ declare function app:generate-toc-from-div($root, $long, $position) {
        }</li>
 };
 
-(:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
+(:based on Joe Wicentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
 declare function app:generate-toc-from-divs($node, $current as element()?, $long as xs:string?) {
     if ($node/tei:div) 
     then
@@ -262,7 +262,7 @@ declare function app:generate-toc-from-divs($node, $current as element()?, $long
     else ()
 };
 
-(:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
+(:based on Joe Wicentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
 declare %private function app:derive-title($div) {
     typeswitch ($div)
         case element(tei:div) return
@@ -311,7 +311,7 @@ declare %private function app:generate-title($nodes as text()*, $length as xs:in
         ()
 };
 
-(:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
+(:based on Joe Wicentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
 declare function app:toc-div($div, $long as xs:string?, $current as element()?, $list-item as xs:string?) {
     let $div-id := $div/@xml:id/string()
     let $div-id := 
