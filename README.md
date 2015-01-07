@@ -3,8 +3,10 @@
 
 ## Installation
 
-The Sarit.xar is based on the eXist Solutions App Blueprint which serves as a template for building XAR applications with the help of GruntJS.
+The sarit.xar is based on the eXist Solutions App Blueprint which serves as a template for building XAR applications with the help of GruntJS.
+
 For installation and building instructions read the installation section in [README-AppBlueprint.md](README-AppBlueprint.md).
 
+Sanskrit data can be installed from https://github.com/eXistSolutions/sarit-data/.
 
 
