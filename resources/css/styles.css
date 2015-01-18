@@ -520,6 +520,7 @@ li,
 a {
   font-family: Siddhanta, serif;
   font-size: 16px;
+  line-height: 24px;
   letter-spacing: normal;
 }
 dt {
@@ -878,13 +879,8 @@ body .play button {
 .lg {
   margin-left: 24px;
   font-size: 125%;
+  line-height: 30px;
 }
 .inline-quote {
   color: #428bca;
-}
-.appentry {
-  display:block;
-}
-.siglum {
-  font-weight:bold;
 }
