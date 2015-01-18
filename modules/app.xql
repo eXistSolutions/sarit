@@ -116,14 +116,19 @@ declare %private function app:load($context as node()*, $id as xs:string) {
     return
         if ($work) then
             $work
-        else if (matches($id, "_[\d\.]+$")) then
+        else if (matches($id, "_[p\d\.]+$")) then
             let $analyzed := analyze-string($id, "^(.*)_([^_]+)$")
             let $docName := $analyzed//fn:group[@nr = 1]/text()
             let $doc := doc($config:remote-data-root || "/" || $docName)
-            let $node-id := $analyzed//fn:group[@nr = 2]/string()
-            let $log := console:log("sarit", "loading node '" || $node-id || "' from document " || $config:remote-data-root || "/" || $docName)
+            let $nodeId := $analyzed//fn:group[@nr = 2]/string()
+            let $log := console:log("sarit", "loading node '" || $nodeId || "' from document " || $config:remote-data-root || "/" || $docName)
             return
-                util:node-by-id($doc, $node-id)
+                if (starts-with($nodeId, "p")) then
+                    let $page := number(substring-after($nodeId, "p"))
+                    return
+                        ($doc//tei:pb)[$page]
+                else
+                    util:node-by-id($doc, $nodeId)
         else
             doc($config:remote-data-root || "/" || $id)/tei:TEI
 };
@@ -251,7 +256,7 @@ declare function app:generate-toc-from-div($root, $long, $position) {
        }</li>
 };
 
-(:based on Joe Wicentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
+(:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
 declare function app:generate-toc-from-divs($node, $current as element()?, $long as xs:string?) {
     if ($node/tei:div) 
     then
@@ -262,7 +267,7 @@ declare function app:generate-toc-from-divs($node, $current as element()?, $long
     else ()
 };
 
-(:based on Joe Wicentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
+(:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
 declare %private function app:derive-title($div) {
     typeswitch ($div)
         case element(tei:div) return
@@ -311,7 +316,7 @@ declare %private function app:generate-title($nodes as text()*, $length as xs:in
         ()
 };
 
-(:based on Joe Wicentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
+(:based on Joe Wincentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
 declare function app:toc-div($div, $long as xs:string?, $current as element()?, $list-item as xs:string?) {
     let $div-id := $div/@xml:id/string()
     let $div-id := 
@@ -464,13 +469,10 @@ declare
 function app:navigation($node as node(), $model as map(*)) {
     let $div := $model("work")
     let $parent := $div/ancestor::tei:div[not(*[1] instance of element(tei:div))][1]
-    let $prevDiv := $div/preceding::tei:div[not(*[1] instance of element(tei:div))][1]
-    let $prevDiv :=
-        if (empty($prevDiv) or $parent >> $prevDiv) then
-            $parent
-        else
-            $prevDiv
-    let $nextDiv := ($div//tei:div[not(*[1] instance of element(tei:div))] | $div/following::tei:div)[1]
+    let $prevDiv := $div/preceding::tei:div[1]
+    let $prevDiv := app:get-previous(if ($div/.. >> $prevDiv) then $div/.. else $prevDiv)
+    let $nextDiv := app:get-next($div)
+(:        ($div//tei:div[not(*[1] instance of element(tei:div))] | $div/following::tei:div)[1]:)
     let $work := $div/ancestor-or-self::tei:TEI
     return
         map {
@@ -479,6 +481,30 @@ function app:navigation($node as node(), $model as map(*)) {
             "work" := $work,
             "div" := $div
         }
+};
+
+declare %private function app:get-next($div as element(tei:div)) {
+    if ($div/tei:div) then
+        if (count(($div/tei:div[1])/preceding-sibling::*) < 5) then
+            app:get-next($div/tei:div[1])
+        else
+            $div/tei:div[1]
+    else
+        $div/following::tei:div[1]
+};
+
+declare %private function app:get-previous($div as element(tei:div)?) {
+    if (empty($div)) then
+        ()
+    else
+        if (
+            empty($div/preceding-sibling::tei:div)  (: first div in section :)
+            and count($div/preceding-sibling::*) < 5 (: less than 5 elements before div :)
+            and $div/.. instance of element(tei:div) (: parent is a div :)
+        ) then
+            app:get-previous($div/..)
+        else
+            $div
 };
 
 (:declare
@@ -544,8 +570,9 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
 
 (: LUCENE :)
 
-declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $scope as xs:string?) {    
-    for $div in app:load($model("work"), $id)
+declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string,
+    $query as element()?, $scope as xs:string?) {    
+    for $div in $model("work")
     let $div :=
         if ($query) then
             if ($scope eq 'narrow') then
@@ -566,19 +593,30 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
             else $div[ft:query(., $query)]
         else
             $div
-    let $view := 
-        if ($div/tei:div) then
-             (:If the current section has child divs, display only the text up to the first div.:) 
-            element { node-name($div) } {
-                $div/@*,
-                $div/tei:div[1]/preceding-sibling::*
-            }
-        else
-            $div[1] (:NB: why is '[1]' necessary?:)
+    let $view := app:get-content($div[1])
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
         { tei-to-html:recurse($view, <options/>) }
         </div>
+};
+
+declare function app:get-content($div as element(tei:div)) {
+    if ($div/tei:div) then
+        if (count(($div/tei:div[1])/preceding-sibling::*) < 5) then
+            let $child := $div/tei:div[1]
+            return
+                element { node-name($div) } {
+                    $div/@*,
+                    $child/preceding-sibling::*,
+                    app:get-content($child)
+                }
+        else
+            element { node-name($div) } {
+                $div/@*,
+                $div/tei:div[1]/preceding-sibling::*
+            }
+    else
+        $div
 };
 
 (: NGRAM :)
