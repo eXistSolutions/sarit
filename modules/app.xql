@@ -507,6 +507,20 @@ declare %private function app:get-previous($div as element(tei:div)?) {
             $div
 };
 
+declare %private function app:get-current($div as element(tei:div)?) {
+    if (empty($div)) then
+        ()
+    else
+        if (
+            empty($div/preceding-sibling::tei:div)  (: first div in section :)
+            and count($div/preceding-sibling::*) < 5 (: less than 5 elements before div :)
+            and $div/.. instance of element(tei:div) (: parent is a div :)
+        ) then
+            app:get-previous($div/..)
+        else
+            $div
+};
+
 (:declare
     %templates:wrap
 function app:breadcrumbs($node as node(), $model as map(*)) {
@@ -660,15 +674,7 @@ declare function app:ngram-view($node as node(), $model as map(*), $id as xs:str
             )
         else
             $div[1]
-    let $view := 
-        if ($div/tei:div) then
-            (: If the current section has child divs, display only the text up to the first div. :)
-            element { node-name($div) } {
-                $div/@*,
-                $div/tei:div[1]/preceding-sibling::*
-            }
-        else
-            $div[1]
+    let $view := app:get-content($div[1])
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
         { tei-to-html:recurse($view, <options/>) }
@@ -1146,7 +1152,10 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
         then 'ngram'
         else 'lucene'
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
-    let $div := $hit/ancestor-or-self::tei:div[1]
+    let $parent := $hit/ancestor-or-self::tei:div[1]
+    let $div := app:get-current($parent)
+    let $parent-id := $parent/@xml:id/string()
+    let $parent-id := if ($parent-id) then $parent-id else util:document-name($parent) || "_" || util:node-id($parent)
     let $div-id := $div/@xml:id/string()
     let $div-id := if ($div-id) then $div-id else util:document-name($div) || "_" || util:node-id($div)
     (:if the nearest div does not have an xml:id, find the nearest element with an xml:id and use it:)
@@ -1156,7 +1165,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
 (:        then $div-id :)
 (:        else ($hit/ancestor-or-self::*[@xml:id]/@xml:id)[1]/string():)
     (:if it is not a div, it will not have a head:)
-    let $div-head := $div/tei:head/text()
+    let $div-head := $parent/tei:head/text()
     (:TODO: what if the hit is in the header?:)
     let $work := $hit/ancestor::tei:TEI
     let $work-title := app:work-title($work)
@@ -1167,7 +1176,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
         <tr class="reference">
             <td colspan="3">
                 <span class="number">{$start + $p - 1}</span>
-                <a href="{$work-id}">{$work-title}</a>{if ($div-head) then ', ' else ''}<a href="{$div-id}.html">{$div-head}</a>
+                <a href="{$work-id}">{$work-title}</a>{if ($div-head) then ', ' else ''}<a href="{$parent-id}.html">{$div-head}</a>
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
