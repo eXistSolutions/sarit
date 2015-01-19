@@ -223,7 +223,7 @@ declare function tei-to-html:recurse($node as node(), $options) as item()* {
         tei-to-html:dispatch($node, $options)
 };
 
-declare function tei-to-html:div($node as element(tei:div), $options) as element()+ {
+declare function tei-to-html:div($node as element(tei:div)?, $options) as element()* {
     if ($node/@xml:id) 
     then tei-to-html:xmlid($node, $options) 
     else ()
