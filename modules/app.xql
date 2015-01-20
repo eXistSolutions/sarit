@@ -17,6 +17,7 @@ declare namespace functx="http://www.functx.com";
 
 declare variable $app:devnag2roman := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "devnag2roman"];
 declare variable $app:roman2devnag := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "roman2devnag"];
+declare variable $app:iast-char-repertoire := '[aābcdḍeĕghḥiïījklḷḹmṁṃnñṅṇoŏprṛṝsśṣtṭuüūvy0-9]';
 
 declare variable $app:EXIDE := 
     let $pkg := collection(repo:get-root())//expath:package[@name = "http://exist-db.org/apps/eXide"]
@@ -116,7 +117,8 @@ declare %private function app:load($context as node()*, $id as xs:string) {
     return
         if ($work) then
             $work
-        else if (matches($id, "_[p\d\.]+$")) then
+        (:NB: why was this "_[p\d\.]+$"?:)
+        else if (matches($id, "_[\d\.]+$")) then
             let $analyzed := analyze-string($id, "^(.*)_([^_]+)$")
             let $docName := $analyzed//fn:group[@nr = 1]/text()
             let $doc := doc($config:remote-data-root || "/" || $docName)
@@ -205,7 +207,7 @@ function app:outline($node as node(), $model as map(*), $full as xs:boolean) {
 };
 
 declare function app:generate-toc-from-div($root, $long, $position) {
-    (:if it has divs below itself:)
+	(:if it has divs below itself:)
     <li>{
     if ($root/tei:div) then
         (
@@ -567,7 +569,8 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
 declare 
     %templates:default("index", "ngram")
     %templates:default("action", "browse")
-function app:view($node as node(), $model as map(*), $id as xs:string, $action as xs:string) {
+    %templates:default("scripts", "all")
+function app:view($node as node(), $model as map(*), $id as xs:string, $action as xs:string, $scripts as xs:string) {
         let $query := 
             if ($action eq 'search')
             then session:get-attribute("apps.sarit.query")
@@ -578,15 +581,24 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
             else ()
         return
             if ($query instance of xs:string)
-            then app:ngram-view($node, $model, $id, $query, $scope)
-            else app:lucene-view($node, $model, $id, $query, $scope)
+            then app:ngram-view($node, $model, $id, $query, $scope, $scripts)
+            else app:lucene-view($node, $model, $id, $query, $scope, $scripts)
 };
 
 (: LUCENE :)
 
-declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $scope as xs:string?) {    
+declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $scope as xs:string?, $scripts as xs:string) {    
     console:log("sarit", "lucene-view: " || $id),
-    let $transQuery := app:expand-query($query, "all")
+    let $transQuery := 
+        if ($scripts eq "all")
+        then app:expand-query($query, $scripts)
+        else 
+            if ($scripts eq "sa-Deva" and matches($query, $app:iast-char-repertoire)) 
+            then app:expand-query($query, $scripts)
+            else
+                if ($scripts eq "sa-Latn" and not(matches($query, $app:iast-char-repertoire))) 
+                then app:expand-query($query, $scripts)
+                else ()
     for $div in $model("work")
     let $div :=
         if ($query) then
@@ -651,9 +663,18 @@ declare function app:get-content($div as element(tei:div)) {
 };
 
 (: NGRAM :)
-declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?, $scope as xs:string?) {
+declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?, $scope as xs:string?, $scripts as xs:string) {
     console:log("sarit", "ngram-view: " || $id),
-    let $transQuery := app:expand-query($query, "all")
+    let $transQuery := 
+        if ($scripts eq "all")
+        then app:expand-query($query, $scripts)
+        else 
+            if ($scripts eq "sa-Deva" and matches($query, $app:iast-char-repertoire)) 
+            then app:expand-query($query, $scripts)
+            else
+                if ($scripts eq "sa-Latn" and not(matches($query, $app:iast-char-repertoire))) 
+                then app:expand-query($query, $scripts)
+                else ()
     for $div in app:load($model("work"), $id)
     let $div :=
         if ($query) then
@@ -872,7 +893,16 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                         return $hit
             (: NGRAM :)
             else
-                let $transExpr := app:expand-query($queryExpr, $scripts)
+                let $transExpr :=  
+                    if ($scripts eq "all")
+                    then app:expand-query($queryExpr, $scripts)
+                    else 
+                        if ($scripts eq "sa-Deva" and matches($queryExpr, $app:iast-char-repertoire)) 
+                        then app:expand-query($queryExpr, $scripts)
+                        else
+                            if ($scripts eq "sa-Latn" and not(matches($queryExpr, $app:iast-char-repertoire))) 
+                            then app:expand-query($queryExpr, $scripts)
+                            else ()
                 let $log := console:log("sarit", $transExpr)
                 return
                     if ($scope eq 'narrow' and count($tei-target) eq 2)
@@ -1024,18 +1054,18 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
     app:expand-query transliterates the query string from Devanagari to transcription and/or from transcription to Devanagari, 
     if the user has indicated that this search is wanted. 
 :)
-declare %private function app:expand-query($query as xs:string?, $scripts as xs:string*) {
+declare %private function app:expand-query($query as xs:string, $scripts as xs:string*) {
     if ($query) then (
         sarit:create("devnag2roman", $app:devnag2roman/string()),
         sarit:create("roman2devnag", $app:roman2devnag/string()),
-        if (matches($query, "[a-zA-Z0-9]") and $scripts = ("sa-Deva", "all")) then
+        if (matches($query, $app:iast-char-repertoire) and $scripts = ("sa-Deva", "all")) then
             translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")
         else if ($scripts = ("sa-Latn", "all")) then
             sarit:transliterate("devnag2roman", $query)
         else
             ()
-    ) else
-        ()
+    ) 
+    else ()
 };
 
 (:~
@@ -1091,25 +1121,30 @@ declare %private function app:create-query($query-string as xs:string?, $mode as
                                             if ($mode eq 'regex')
                                             then <regex>{$query-string}</regex>
                                             else ()
-                    
             let $transQuery := 
                 if ($scripts eq "all")
-                then app:transliterate-query(<bool class="b">{$query}</bool>)
-                else ()
+                then app:transliterate-lucene-xml-query(<bool>{$query}</bool>, $scripts)
+                else 
+                    if ($scripts eq "sa-Deva" and matches($query, $app:iast-char-repertoire)) 
+                    then app:transliterate-lucene-xml-query(<bool>{$query}</bool>, $scripts)
+                    else
+                        if ($scripts eq "sa-Latn" and not(matches($query, $app:iast-char-repertoire))) 
+                        then app:transliterate-lucene-xml-query(<bool>{$query}</bool>, $scripts)
+                        else ()
             let $query := <query><bool>{$query}</bool>{$transQuery}</query>
             return $query
     return $query
     
 };
 
-declare function app:transliterate-query($element as element()) as element() {
+declare function app:transliterate-lucene-xml-query($element as element(), $scripts as xs:string) as element() {
    element {node-name($element)}
       {$element/@*,
           for $child in $element/node()
               return
                if ($child instance of element())
-                 then app:transliterate-query($child)
-                 else app:expand-query($child, "all")
+                 then app:transliterate-lucene-xml-query($child, $scripts)
+                 else app:expand-query($child, $scripts)
       }
 };
 
