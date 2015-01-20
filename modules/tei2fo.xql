@@ -23,6 +23,8 @@ declare variable $tei2fo:subTitleHeader := map {
     "keep-with-next.within-page" := "always"
 };
 
+declare variable $tei2fo:SanskritFontFile := "url(file:/home/wmeier/sarit/fonts/Sanskrit2003.ttf)";
+
 (: A helper function in case no options are passed to the function :)
 declare function tei2fo:render($content as node()*) as element()+ {
     (
@@ -1269,7 +1271,7 @@ declare function tei2fo:table-of-contents($work as element(tei:TEI)) {
 };
 
 declare function tei2fo:main($doc as element(tei:TEI)) {
-    <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+    <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:axf="http://www.antennahouse.com/names/XSL/Extensions">
         <fo:layout-master-set>
             <fo:simple-page-master master-name="SARIT-left" margin-top="10mm"
                     margin-bottom="10mm" margin-left="24mm"
@@ -1292,6 +1294,10 @@ declare function tei2fo:main($doc as element(tei:TEI)) {
                 </fo:repeatable-page-master-alternatives>
             </fo:page-sequence-master>
         </fo:layout-master-set>
+        <fo:declarations>
+          <axf:font-face src="{$tei2fo:SanskritFontFile}"
+                         font-family="Sanskrit2003"/>
+        </fo:declarations>
         { tei2fo:titlepage($doc/tei:teiHeader) }
         <fo:page-sequence master-reference="SARIT-Content">
             

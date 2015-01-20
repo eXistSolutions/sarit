@@ -31,7 +31,7 @@ declare function local:prepare-cache-collection() {
 };
 
 declare function local:fop($id as xs:string, $fo as element()) {
-	let $config :=
+    let $config :=
     <fop version="1.0">
       <!-- Strict user configuration -->
       <strict-configuration>true</strict-configuration>
@@ -81,7 +81,7 @@ declare function local:antenna-house($id as xs:string, $fo as element()) {
         console:log("sarit", "Calling AntennaHouse ..."),
         process:execute(
             (
-                "AHFCmd", "-d", $file || ".fo", "-o", $file || ".pdf", "-x", "2",
+                "sh", "/usr/AHFormatterV6_64/run.sh", "-d", $file || ".fo", "-o", $file || ".pdf", "-x", "2",
                 "-peb", "1", "-pdfver", "PDF1.6", 
                 "-p", "@PDF",
                 "-tpdf"
@@ -123,34 +123,35 @@ let $id := request:get-parameter("id", ())
 let $token := request:get-parameter("token", ())
 let $source := request:get-parameter("source", ())
 let $doc := collection($config:remote-data-root)/tei:TEI[@xml:id = $id]
+let $name := util:document-name($doc)
 return
     if ($doc) then
-        let $cached := local:get-cached($id, $doc)
+        let $cached := local:get-cached($name, $doc)
         return (
             response:set-cookie("sarit.token", $token),
             if (not($source) and exists($cached)) then (
-                console:log("sarit", "Reading " || $id || " pdf from cache"),
-                response:stream-binary($cached, "media-type=application/pdf", $id || ".pdf")
+                console:log("sarit", "Reading " || $name || " pdf from cache"),
+                response:stream-binary($cached, "media-type=application/pdf", $name || ".pdf")
             ) else
                 let $start := util:system-time()
                 let $fo := tei2fo:main($doc)
                 return (
-                    console:log("sarit", "Generated fo for " || $id || " in " || util:system-time() - $start),
+                    console:log("sarit", "Generated fo for " || $name || " in " || util:system-time() - $start),
                     if ($source) then
                         $fo
                     else
                         let $output :=
                             switch ($local:PROCESSOR)
                                 case "ah" return
-                                    local:antenna-house($id, $fo)
+                                    local:antenna-house($name, $fo)
                                 default return
-                                    local:fop($id, $fo)
+                                    local:fop($name, $fo)
                         return
                             typeswitch($output)
                                 case xs:base64Binary return (
-                                    let $path := local:cache($id, $output)
+                                    let $path := local:cache($name, $output)
                                     return
-                                        response:stream-binary(util:binary-doc($path), "media-type=application/pdf", $id || ".pdf")
+                                        response:stream-binary(util:binary-doc($path), "media-type=application/pdf", $name || ".pdf")
                                 )
                                 default return
                                     $output
