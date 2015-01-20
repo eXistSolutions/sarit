@@ -584,8 +584,9 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
 
 (: LUCENE :)
 
-declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string,
-    $query as element()?, $scope as xs:string?) {    
+declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $scope as xs:string?) {    
+    console:log("sarit", "lucene-view: " || $id),
+    let $transQuery := app:expand-query($query, "all")
     for $div in $model("work")
     let $div :=
         if ($query) then
@@ -602,9 +603,25 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
                 $div[.//tei:table[ft:query(., $query)]],
                 $div[.//tei:listApp[ft:query(., $query)]],
                 $div[.//tei:listBibl[ft:query(., $query)]],
-                $div[.//tei:cit[ft:query(., $query)]]),
+                $div[.//tei:cit[ft:query(., $query)]],
+                
+                $div[.//tei:p[ft:query(., $transQuery)]],
+                $div[.//tei:head[ft:query(., $transQuery)]],
+                $div[.//tei:lg[ft:query(., $transQuery)]],
+                $div[.//tei:trailer[ft:query(., $transQuery)]],
+                $div[.//tei:note[ft:query(., $transQuery)]],
+                $div[.//tei:list[ft:query(., $transQuery)]],
+                $div[.//tei:l[not(local-name(./..) eq 'lg')][ft:query(., $transQuery)]],
+                $div[.//tei:quote[ft:query(., $transQuery)]],
+                $div[.//tei:table[ft:query(., $transQuery)]],
+                $div[.//tei:listApp[ft:query(., $transQuery)]],
+                $div[.//tei:listBibl[ft:query(., $transQuery)]],
+                $div[.//tei:cit[ft:query(., $transQuery)]]),
                 "add-exist-id=all")
-            else $div[ft:query(., $query)]
+            else (
+                $div[ft:query(., $query)], 
+                $div[ft:query(., $transQuery)]
+                )
         else
             $div
     let $view := app:get-content($div[1])
@@ -671,7 +688,7 @@ declare function app:ngram-view($node as node(), $model as map(*), $id as xs:str
             else (
                 $div[ngram:wildcard-contains(., $query)],
                 $div[ngram:wildcard-contains(., $transQuery)]
-            )
+                )
         else
             $div[1]
     let $view := app:get-content($div[1])
@@ -698,7 +715,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
     let $queryExpr := 
         if ($index eq 'ngram')
         then $query
-        else app:create-query($query, $mode)
+        else app:create-query($query, $mode, $scripts)
     return
         if (empty($queryExpr) or $queryExpr = "") then
             let $cached := session:get-attribute("apps.sarit")
@@ -716,44 +733,46 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                 if ($target-texts = 'all' and $work-authors = 'all' and $scripts = 'all')
                 then 'all' 
                 else 
-                    (:("target-texts", "not-all")("work-authors", "all")("scripts", "all"):)
+                    (:("target-texts", "sequence of text xml:ids")("work-authors", "all")("scripts", "all"):)
                     (:If one or more texts have been selected, but no authors and no scripts have been selected, search in selected texts:)
                     if ($target-texts != 'all' and $work-authors = 'all' and $scripts = 'all')
                     then $target-texts
                     else 
-                        (:("target-texts", "all")("work-authors", "not-all")("scripts", "all"):)
+                        (:("target-texts", "all")("work-authors", "sequence of text xml:ids")("scripts", "all"):)
                         (:If no texts and no scripts have been selected, but one or more authors have been selected, search in texts selected by author:)
                         if ($target-texts = 'all' and $work-authors != 'all' and $scripts = 'all')
                         then distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id)
                         else
-                            (:("target-texts", "all")("work-authors", "all")("scripts", "not-all"):)
+                            (:("target-texts", "all")("work-authors", "all")("scripts", "sequence of text xml:ids"):)
                             (:If no texts and no authors have been selected, but one or more scripts have been selected, search in texts selected by script:)
                             if ($target-texts = 'all' and $work-authors = 'all' and $scripts != 'all')
                             then distinct-values(collection($config:remote-data-root)//tei:TEI[tei:text/@xml:lang = $scripts]/@xml:id)
                             else
-                                (:("target-texts", "not-all")("work-authors", "not-all")("scripts", "not-all"):)
+                                (:("target-texts", "sequence of text xml:ids")("work-authors", "sequence of text xml:ids")("scripts", "sequence of text xml:ids"):)
                                 (:If one or more texts and one or more scripts and one or more authors have been selected, search in the union of the three:)
                                 if ($target-texts != 'all' and $work-authors != 'all' and $scripts != 'all')
                                 then ($target-texts, distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id), distinct-values(collection($config:remote-data-root)//tei:TEI[tei:text/@xml:lang = $scripts]/@xml:id))
                                 else
-                                    (:("target-texts", "not-all")("work-authors", "not-all")("scripts", "all"):)
+                                    (:("target-texts", "sequence of text xml:ids")("work-authors", "sequence of text xml:ids")("scripts", "all"):)
                                     (:If one or more texts and more authors have been selected, but no scripts have been selected, search in the union of selected texts and texts selected by authors:)
                                     if ($target-texts != 'all' and $work-authors != 'all' and $scripts = 'all')
                                     then ($target-texts, distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id))
                                     else    
-                                        (:("target-texts", "not-all")("work-authors", "all")("scripts", "not-all"):)
+                                        (:("target-texts", "sequence of text xml:ids")("work-authors", "all")("scripts", "sequence of text xml:ids"):)
                                         (:If one or more texts have been selected and one or more scripts have been selected, but no authors have been selected, search in union of selected texts and texts selected by script:)
                                         if ($work-authors != 'all' and $target-texts = 'all' and $scripts != 'all') 
                                         then ($target-texts, distinct-values(collection($config:remote-data-root)//tei:TEI[tei:text/@xml:lang = $scripts]/@xml:id)) 
                                         else
-                                            (:("target-texts", "all")("work-authors", "not-all")("scripts", "not-all"):)
+                                            (:("target-texts", "all")("work-authors", "sequence of text xml:ids")("scripts", "sequence of text xml:ids"):)
                                             (:If no texts have been selected, but one or more scripts and one or more authors have been selected, search in union of texts selected by author and texts selected by script:)
                                             if ($work-authors != 'all' and $target-texts = 'all' and $scripts != 'all') 
                                             then (distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id), distinct-values(collection($config:remote-data-root)//tei:TEI[./@xml:lang = $scripts]/@xml:id)) 
                                             else ()
+            (:the context can be "tei-text" or "tei:header" or "all" (that is, both "tei-text" or "tei:header":)
             let $context := 
                 if ($target-texts = 'all')
                 then 
+                    (:if there is more than one target, we can assume "all":)
                     if (count($tei-target) eq 2)
                     then collection($config:remote-data-root)/tei:TEI
                     else
@@ -1001,6 +1020,10 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                 }
 };
 
+(:~
+    app:expand-query transliterates the query string from Devanagari to transcription and/or from transcription to Devanagari, 
+    if the user has indicated that this search is wanted. 
+:)
 declare %private function app:expand-query($query as xs:string, $scripts as xs:string*) {
     sarit:create("devnag2roman", $app:devnag2roman/string()),
     sarit:create("roman2devnag", $app:roman2devnag/string()),
@@ -1015,7 +1038,7 @@ declare %private function app:expand-query($query as xs:string, $scripts as xs:s
 (:~
     Helper function: create a lucene query from the user input
 :)
-declare %private function app:create-query($query-string as xs:string?, $mode as xs:string) {
+declare %private function app:create-query($query-string as xs:string?, $mode as xs:string, $scripts as xs:string) {
     let $query-string := if ($query-string) then app:sanitize-lucene-query($query-string) else ''
     let $query-string := normalize-space($query-string)
     let $query:=
@@ -1036,41 +1059,55 @@ declare %private function app:create-query($query-string as xs:string?, $mode as
                 then string-join(subsequence($query-string, 1, count($query-string) - 1), ' ') 
                 else string-join($query-string, ' ')
             let $query :=
-                <query>
-                    {
-                        if ($mode eq 'any') then
+                    if ($mode eq 'any') then
+                        for $term in tokenize($query-string, '\s')
+                        return <term occur="should">{$term}</term>
+                    else if ($mode eq 'all') then
+                        <bool>
+                        {
                             for $term in tokenize($query-string, '\s')
-                            return <term occur="should">{$term}</term>
-                        else if ($mode eq 'all') then
-                            <bool>
-                            {
-                                for $term in tokenize($query-string, '\s')
-                                return <term occur="must">{$term}</term>
-                            }
-                            </bool>
-                        else 
-                            if ($mode eq 'phrase') 
-                            then <phrase>{$query-string}</phrase>
-                            else
-                                if ($mode eq 'near-unordered')
-                                then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="no">{$query-string}</near>
+                            return <term occur="must">{$term}</term>
+                        }
+                        </bool>
+                    else 
+                        if ($mode eq 'phrase') 
+                        then <phrase>{$query-string}</phrase>
+                        else
+                            if ($mode eq 'near-unordered')
+                            then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="no">{$query-string}</near>
+                            else 
+                                if ($mode eq 'near-ordered')
+                                then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="yes">{$query-string}</near>
                                 else 
-                                    if ($mode eq 'near-ordered')
-                                    then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="yes">{$query-string}</near>
+                                    if ($mode eq 'fuzzy')
+                                    then <fuzzy max-edits="{if ($last-item castable as xs:integer and number($last-item) < 3) then $last-item else 2}">{tokenize($query-string, ' ')[1]}</fuzzy>
                                     else 
-                                        if ($mode eq 'fuzzy')
-                                        then <fuzzy max-edits="{if ($last-item castable as xs:integer and number($last-item) < 3) then $last-item else 2}">{tokenize($query-string, ' ')[1]}</fuzzy>
+                                        if ($mode eq 'wildcard')
+                                        then <wildcard>{$query-string}</wildcard>
                                         else 
-                                            if ($mode eq 'wildcard')
-                                            then <wildcard>{$query-string}</wildcard>
-                                            else 
-                                                if ($mode eq 'regex')
-                                                then <regex>{$query-string}</regex>
-                                                else ()
-                    }</query>
+                                            if ($mode eq 'regex')
+                                            then <regex>{$query-string}</regex>
+                                            else ()
+                    
+            let $transQuery := 
+                if ($scripts eq "all")
+                then app:transliterate-query(<bool class="b">{$query}</bool>)
+                else ()
+            let $query := <query><bool>{$query}</bool>{$transQuery}</query>
             return $query
     return $query
     
+};
+
+declare function app:transliterate-query($element as element()) as element() {
+   element {node-name($element)}
+      {$element/@*,
+          for $child in $element/node()
+              return
+               if ($child instance of element())
+                 then app:transliterate-query($child)
+                 else app:expand-query($child, "all")
+      }
 };
 
 (:~
@@ -1395,58 +1432,53 @@ declare %private function app:lucene2xml($node as item(), $mode as xs:string) {
 
 
 (:~
- : This is a sample templating function. It will be called by the templating module if
- : it encounters an HTML element with an attribute: data-template="app:test" or class="app:test" (deprecated). 
- : The function has to take 2 default parameters. Additional parameters are automatically mapped to
- : any matching request or function parameter.
+ : This is a function for supplying links to download the files in remote-download-root. 
+ : It is assumed that the XML files in $config:remote-data-root are mirrored in $config:remote-download-root, 
+ : except 00-SARIT-TEI-header-template.xml.
  : 
  : @param $node the HTML node with the attribute which triggered this call
  : @param $model a map containing arbitrary data - used to pass information between template calls
  :)
 
-declare function app:list-downloads($node as node(), $model as map(*)) {
+(:declare function app:list-downloads($node as node(), $model as map(*)) {
     let $child-resources := xmldb:get-child-resources($config:remote-data-root)
-    let $xml-resources := for $file in $child-resources 
-                            return 
-                                if(contains($file, ".xml") and $file ne "00-SARIT-TEI-header-template.xml")
-                                then (
-                                    let $header := doc($config:remote-data-root || "/" || $file)//tei:titleStmt
-                                    let $title := $header//tei:title[@type eq "main"]
-                                    let $subtitle := $header//tei:title[@type eq "sub"][1]
-                                    let $author :=  if(exists($header//tei:respStmt/tei:persName)) 
-                                                    then (string-join($header//tei:respStmt/tei:persName,', '))
-                                                    else (
-                                                        if(exists($header//tei:respStmt/tei:orgName))
-                                                        then ($header//tei:respStmt/tei:orgName)
-                                                        else (
-                                                            if(exists($header//tei:respStmt/tei:name))
-                                                            then ($header//tei:respStmt/tei:name)
-                                                            else string-join($header//tei:author,', ')
-                                                            
-                                                        )
-                                                        
-                                                    )
-                                                    
-                                    let $bytes := xmldb:size($config:remote-data-root, $file)
-                                    
-                                    let $size := if($bytes lt 1048576) 
-                                                    then (format-number($bytes div 1024,"#,###.##") || "kB") 
-                                                    else (format-number($bytes div 1048576,"#,###.##") || "MB" )
-                                                    
-                                    let $downloadPath := request:get-scheme() ||"://" || request:get-server-name() || ":" || request:get-server-port() || substring-before(request:get-effective-uri(),"/db/apps/sarit/modules/view.xql") || $config:remote-download-root || "/" || substring-before($file,".xml") || ".zip"
-                                    
-                                    return 
-                                        <div style="border-top:1px solid gray;padding-top:5px;" class="row">
-                                            <div class="col-md-12">
-                                                <p><strong>{$title/text()}</strong> - <small>{$subtitle/text()}</small></p>
-                                                <p>Author(s): {$author}</p>
-                                                <p>File: <a href="{$downloadPath}">{xmldb:decode($file)}</a> - Size: {$size}</p>
-                                            </div>
-                                        </div>
-                                )
-                                else ()
-                            
+    let $xml-resources := 
+        for $file in $child-resources 
+        return 
+            if (contains($file, ".xml") and $file ne "00-SARIT-TEI-header-template.xml")
+            then (
+                let $header := doc($config:remote-data-root || "/" || $file)//tei:titleStmt
+                let $title := $header//tei:title[@type eq "main"]
+                let $subtitle := $header//tei:title[@type eq "sub"][1]
+                let $author :=  
+                    if (exists($header//tei:respStmt/tei:persName)) 
+                    then (string-join($header//tei:respStmt/tei:persName,', '))
+                    else (
+                        if (exists($header//tei:respStmt/tei:orgName))
+                        then (string-join($header//tei:respStmt/tei:orgName,', '))
+                        else (
+                            if (exists($header//tei:respStmt/tei:name))
+                            then (string-join($header//tei:respStmt/tei:name,', '))
+                            else string-join($header//tei:author,', ')
+                        )
+                    )       
+                let $bytes := xmldb:size($config:remote-data-root, $file)                
+                let $size := 
+                    if ($bytes lt 1048576) 
+                    then (format-number($bytes div 1024,"#,###.##") || "kB") 
+                    else (format-number($bytes div 1048576,"#,###.##") || "MB" )
+                let $downloadPath := request:get-scheme() ||"://" || request:get-server-name() || ":" || request:get-server-port() || substring-before(request:get-effective-uri(),"/db/apps/sarit/modules/view.xql") || $config:remote-download-root || "/" || substring-before($file,".xml") || ".zip"
+                
+                return 
+                    <div style="border-top:1px solid gray;padding-top:5px;" class="row">
+                        <div class="col-md-12">
+                            <p><strong>{$title/text()}</strong> - <small>{$subtitle/text()}</small></p>
+                            <p>Author(s): {$author}</p>
+                            <p>File: <a href="{$downloadPath}">{xmldb:decode($file)}</a> - Size: {$size}</p>
+                        </div>
+                    </div>
+            )
+            else ()        
     return     
         $xml-resources
-    
-};
+};:)
