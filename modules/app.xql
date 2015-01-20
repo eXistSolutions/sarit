@@ -205,7 +205,7 @@ function app:outline($node as node(), $model as map(*), $full as xs:boolean) {
 };
 
 declare function app:generate-toc-from-div($root, $long, $position) {
-	(:if it has divs below itself:)
+    (:if it has divs below itself:)
     <li>{
     if ($root/tei:div) then
         (
@@ -1024,14 +1024,17 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
     app:expand-query transliterates the query string from Devanagari to transcription and/or from transcription to Devanagari, 
     if the user has indicated that this search is wanted. 
 :)
-declare %private function app:expand-query($query as xs:string, $scripts as xs:string*) {
-    sarit:create("devnag2roman", $app:devnag2roman/string()),
-    sarit:create("roman2devnag", $app:roman2devnag/string()),
-    if (matches($query, "[a-zA-Z0-9]") and $scripts = ("sa-Deva", "all")) then
-        translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")
-    else if ($scripts = ("sa-Latn", "all")) then
-        sarit:transliterate("devnag2roman", $query)
-    else
+declare %private function app:expand-query($query as xs:string?, $scripts as xs:string*) {
+    if ($query) then (
+        sarit:create("devnag2roman", $app:devnag2roman/string()),
+        sarit:create("roman2devnag", $app:roman2devnag/string()),
+        if (matches($query, "[a-zA-Z0-9]") and $scripts = ("sa-Deva", "all")) then
+            translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")
+        else if ($scripts = ("sa-Latn", "all")) then
+            sarit:transliterate("devnag2roman", $query)
+        else
+            ()
+    ) else
         ()
 };
 
@@ -1248,25 +1251,25 @@ declare %private function app:sanitize-lucene-query($query-string as xs:string) 
     (:Remove colons – Lucene fields are not supported.:)
     let $query-string := translate($query-string, ":", " ")
     let $query-string := 
-	   if (functx:number-of-matches($query-string, '"') mod 2) 
-	   then $query-string
-	   else replace($query-string, '"', ' ') (:if there is an uneven number of quotation marks, delete all quotation marks.:)
+       if (functx:number-of-matches($query-string, '"') mod 2) 
+       then $query-string
+       else replace($query-string, '"', ' ') (:if there is an uneven number of quotation marks, delete all quotation marks.:)
     let $query-string := 
-	   if ((functx:number-of-matches($query-string, '\(') + functx:number-of-matches($query-string, '\)')) mod 2 eq 0) 
-	   then $query-string
-	   else translate($query-string, '()', ' ') (:if there is an uneven number of parentheses, delete all parentheses.:)
+       if ((functx:number-of-matches($query-string, '\(') + functx:number-of-matches($query-string, '\)')) mod 2 eq 0) 
+       then $query-string
+       else translate($query-string, '()', ' ') (:if there is an uneven number of parentheses, delete all parentheses.:)
     let $query-string := 
-	   if ((functx:number-of-matches($query-string, '\[') + functx:number-of-matches($query-string, '\]')) mod 2 eq 0) 
-	   then $query-string
-	   else translate($query-string, '[]', ' ') (:if there is an uneven number of brackets, delete all brackets.:)
+       if ((functx:number-of-matches($query-string, '\[') + functx:number-of-matches($query-string, '\]')) mod 2 eq 0) 
+       then $query-string
+       else translate($query-string, '[]', ' ') (:if there is an uneven number of brackets, delete all brackets.:)
     let $query-string := 
-	   if ((functx:number-of-matches($query-string, '{') + functx:number-of-matches($query-string, '}')) mod 2 eq 0) 
-	   then $query-string
-	   else translate($query-string, '{}', ' ') (:if there is an uneven number of braces, delete all braces.:)
+       if ((functx:number-of-matches($query-string, '{') + functx:number-of-matches($query-string, '}')) mod 2 eq 0) 
+       then $query-string
+       else translate($query-string, '{}', ' ') (:if there is an uneven number of braces, delete all braces.:)
     let $query-string := 
-	   if ((functx:number-of-matches($query-string, '<') + functx:number-of-matches($query-string, '>')) mod 2 eq 0) 
-	   then $query-string
-	   else translate($query-string, '<>', ' ') (:if there is an uneven number of angle brackets, delete all angle brackets.:)
+       if ((functx:number-of-matches($query-string, '<') + functx:number-of-matches($query-string, '>')) mod 2 eq 0) 
+       then $query-string
+       else translate($query-string, '<>', ' ') (:if there is an uneven number of angle brackets, delete all angle brackets.:)
     return $query-string
 };
 
