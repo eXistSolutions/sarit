@@ -1,4 +1,5 @@
-<div class="help" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
+<div class="help" data-template="templates:surround" data-template-with="template.html"
+    data-template-at="content">
     <div class="container content">
         <h3>Brief Search Help</h3>
         <section>
@@ -20,8 +21,9 @@
                             Use Lucene Full-Text Index and select All Search Terms Together. </li>
                     </ul>
                 </li>
-                <li>Note that searching for expressions in one script does not (yet) search for the
-                    equivalent expression in other scripts.</li>
+                <li>If you input a IAST search term or Devanagari search term, your search term will
+                    by default be automatically converted to make your search apply to texts both in
+                    IAST and in Devanagari. If you wish to choose whether to search using IAST or using Devanagari, see below.</li>
             </ul>
         </section>
         <section>
@@ -73,8 +75,8 @@
                                     search term. </li>
                                 <li>Searches for words in sequence, with a maximum number of words
                                     in between your search terms. Enter the maximum number of words
-                                    allowed as a digit following the search terms, preceded by a
-                                    space. </li>
+                                    you wish to allow as a digit following the search terms,
+                                    preceded by a space. </li>
                             </ul>
                         </li>
                         <li>Proximity Search (Unordered) <ul>
@@ -82,20 +84,21 @@
                                     search term. </li>
                                 <li>Searches for words in near each other, regardless of order, with
                                     a maximum number of words in between your search terms. Enter
-                                    the maximum number of words allowed as a digit following the
-                                    search terms, preceded by a space. </li>
+                                    the maximum number of words you wish to allow as a digit
+                                    following the search terms, preceded by a space. </li>
                             </ul>
                         </li>
                         <li>Fuzzy Search <ul>
                                 <li>This option can only be used if there is just one search term. </li>
                                 <li>Enter the number 1 or 2 after the word to get fuzzier and yet
-                                    fuzzier results. See explanation in Lucene Search Help.</li>
+                                    fuzzier results. See further explanation in Lucene Search
+                                    Help.</li>
                             </ul>
                         </li>
                         <li>Regex Search <ul>
                                 <li>For starters, use standard regex syntax for ".", "?", "+" , "*",
-                                    "[]" and "{}". Read about more options in Lucene Search Help.
-                                </li>
+                                    "[]" and "{}". Read about additional options in Lucene Search
+                                    Help. </li>
                             </ul>
                         </li>
                     </ul>
@@ -121,12 +124,30 @@
                             the check-boxes to the left of the titles.</li>
                     </ul>
                 </li>
-                <li>Search In Texts In Which Script? <ul>
-                        <li>You get the point ….</li>
-                        <li>Note that you can also select individual texts to search by clicking on
-                            the check-boxes to the left of the titles.</li>
-                        <li>Note that searching for expressions in one script does not (yet) search
-                            for the equivalent expression in other scripts.</li>
+                <li>Search With Which Scripts? <ul>
+                        <li>If you enter a search term in IAST and choose "Search with Devanagari
+                            and IAST", you search term will be converted to Devanagari and your
+                            search will include both your original (IAST) search term and the search
+                            term converted into Devanagari.</li>
+                        <li>If you enter a search term in IAST and choose "Search with Devanagari",
+                            you search term will be converted to Devanagari and your search will not
+                            be performed with the original (IAST) search term, only with the search
+                            term converted into Devanagari.</li>
+                        <li>If you enter a search term in IAST and choose "Search with IAST", the
+                            search term will not be converted and your search will only be performed
+                            with your original (IAST) search term.</li>
+                    <li>This applies the other way 'round as well, so:</li>
+                        <li>If you enter a search term in Devanagari and choose "Search with
+                            Devanagari and IAST", you search term will be converted to IAST
+                            and your search will include both your original (Devanagari) search term
+                            and the search term converted into IAST.</li>
+                        <li>If you enter a search term in Devanagari and choose "Search with IAST",
+                            you search term will be converted to IAST and your search will not be
+                            performed with the original (Devanagari) search term, only with the
+                            search term converted into IAST.</li>
+                        <li>If you enter a search term in Devanagari and choose "Search with
+                            Devanagari", the search term will not be converted and your search will
+                            only be performed with your original (Devanagari) search term.</li>
                     </ul>
                 </li>
             </ul>
