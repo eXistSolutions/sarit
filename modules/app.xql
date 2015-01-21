@@ -424,7 +424,7 @@ declare function app:xml-link($node as node(), $model as map(*)) {
     let $eXide-link := $app:EXIDE || "?open=" || $doc-path
     let $rest-link := '/exist/rest' || $doc-path
     return
-        if (xmldb:collection-available('/db/apps/eXide'))
+        if ($app:EXIDE)
         then 
             <a xmlns="http://www.w3.org/1999/xhtml" href="{$eXide-link}" 
                 target="eXide" class="eXide-open" data-exide-open="{$doc-path}">{ $node/node() }</a>
@@ -1054,7 +1054,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
     app:expand-query transliterates the query string from Devanagari to transcription and/or from transcription to Devanagari, 
     if the user has indicated that this search is wanted. 
 :)
-declare %private function app:expand-query($query as xs:string, $scripts as xs:string*) {
+declare %private function app:expand-query($query as xs:string?, $scripts as xs:string*) {
     if ($query) then (
         sarit:create("devnag2roman", $app:devnag2roman/string()),
         sarit:create("roman2devnag", $app:roman2devnag/string()),
