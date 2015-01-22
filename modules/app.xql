@@ -113,12 +113,12 @@ function app:work($node as node(), $model as map(*), $id as xs:string) {
 };
 
 declare %private function app:load($context as node()*, $id as xs:string) {
-    let $work := $context//id($id)
+    let $work := if ($context instance of element(tei:teiHeader)) then $context else $context//id($id)
     return
         if ($work) then
             $work
-        (:NB: why was this "_[p\d\.]+$"?:)
-        else if (matches($id, "_[\d\.]+$")) then
+        else 
+            if (matches($id, "_[p\d\.]+$")) then
             let $analyzed := analyze-string($id, "^(.*)_([^_]+)$")
             let $docName := $analyzed//fn:group[@nr = 1]/text()
             let $doc := doc($config:remote-data-root || "/" || $docName)
@@ -485,7 +485,7 @@ function app:navigation($node as node(), $model as map(*)) {
         }
 };
 
-declare %private function app:get-next($div as element(tei:div)) {
+declare %private function app:get-next($div as element()) {
     if ($div/tei:div) then
         if (count(($div/tei:div[1])/preceding-sibling::*) < 5) then
             app:get-next($div/tei:div[1])
@@ -509,18 +509,21 @@ declare %private function app:get-previous($div as element(tei:div)?) {
             $div
 };
 
-declare %private function app:get-current($div as element(tei:div)?) {
+declare %private function app:get-current($div as element()?) {
     if (empty($div)) then
         ()
     else
-        if (
-            empty($div/preceding-sibling::tei:div)  (: first div in section :)
-            and count($div/preceding-sibling::*) < 5 (: less than 5 elements before div :)
-            and $div/.. instance of element(tei:div) (: parent is a div :)
-        ) then
-            app:get-previous($div/..)
+        if ($div instance of element(tei:teiHeader)) then
+        $div
         else
-            $div
+            if (
+                empty($div/preceding-sibling::tei:div)  (: first div in section :)
+                and count($div/preceding-sibling::*) < 5 (: less than 5 elements before div :)
+                and $div/.. instance of element(tei:div) (: parent is a div :)
+            ) then
+                app:get-previous($div/..)
+            else
+                $div
 };
 
 (:declare
@@ -589,7 +592,6 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
 
 declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $scope as xs:string?, $scripts as xs:string) {    
     console:log("sarit", "lucene-view: " || $id),
-    let $transQuery := app:expand-query($query, $scripts) 
     for $div in $model("work")
     let $div :=
         if ($query) then
@@ -607,24 +609,12 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
                 $div[.//tei:listApp[ft:query(., $query)]],
                 $div[.//tei:listBibl[ft:query(., $query)]],
                 $div[.//tei:cit[ft:query(., $query)]],
-                
-                $div[.//tei:p[ft:query(., $transQuery)]],
-                $div[.//tei:head[ft:query(., $transQuery)]],
-                $div[.//tei:lg[ft:query(., $transQuery)]],
-                $div[.//tei:trailer[ft:query(., $transQuery)]],
-                $div[.//tei:note[ft:query(., $transQuery)]],
-                $div[.//tei:list[ft:query(., $transQuery)]],
-                $div[.//tei:l[not(local-name(./..) eq 'lg')][ft:query(., $transQuery)]],
-                $div[.//tei:quote[ft:query(., $transQuery)]],
-                $div[.//tei:table[ft:query(., $transQuery)]],
-                $div[.//tei:listApp[ft:query(., $transQuery)]],
-                $div[.//tei:listBibl[ft:query(., $transQuery)]],
-                $div[.//tei:cit[ft:query(., $transQuery)]]),
+                $div[.//tei:teiHeader[ft:query(., $query)]]),
                 "add-exist-id=all")
-            else (
-                $div[ft:query(., $query)], 
-                $div[ft:query(., $transQuery)]
-                )
+            else
+                util:expand(
+                ($div[ft:query(., $query)], $div[.//tei:teiHeader[ft:query(., $query)]])
+                , "add-exist-id=all")
         else
             $div
     let $view := app:get-content($div[1])
@@ -634,23 +624,28 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
         </div>
 };
 
-declare function app:get-content($div as element(tei:div)) {
-    if ($div/tei:div) then
-        if (count(($div/tei:div[1])/preceding-sibling::*) < 5) then
-            let $child := $div/tei:div[1]
-            return
-                element { node-name($div) } {
-                    $div/@*,
-                    $child/preceding-sibling::*,
-                    app:get-content($child)
-                }
-        else
-            element { node-name($div) } {
-                $div/@*,
-                $div/tei:div[1]/preceding-sibling::*
-            }
-    else
+declare function app:get-content($div as element()) {
+    if ($div instance of element(tei:teiHeader)) then 
         $div
+    else
+        if ($div instance of element(tei:div)) then
+            if ($div/tei:div) then
+                if (count(($div/tei:div[1])/preceding-sibling::*) < 5) then
+                    let $child := $div/tei:div[1]
+                    return
+                        element { node-name($div) } {
+                            $div/@*,
+                            $child/preceding-sibling::*,
+                            app:get-content($child)
+                        }
+                else
+                    element { node-name($div) } {
+                        $div/@*,
+                        $div/tei:div[1]/preceding-sibling::*
+                    }
+            else
+                $div
+        else ()
 };
 
 (: NGRAM :)
@@ -674,6 +669,7 @@ declare function app:ngram-view($node as node(), $model as map(*), $id as xs:str
                 $div[.//tei:listApp[ngram:wildcard-contains(., $query)]],
                 $div[.//tei:listBibl[ngram:wildcard-contains(., $query)]],
                 $div[.//tei:cit[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:teiHeader[ngram:wildcard-contains(., $query)]],
                 
                 $div[.//tei:p[ngram:wildcard-contains(., $transQuery)]],
                 $div[.//tei:head[ngram:wildcard-contains(., $transQuery)]],
@@ -686,11 +682,14 @@ declare function app:ngram-view($node as node(), $model as map(*), $id as xs:str
                 $div[.//tei:table[ngram:wildcard-contains(., $transQuery)]],
                 $div[.//tei:listApp[ngram:wildcard-contains(., $transQuery)]],
                 $div[.//tei:listBibl[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:cit[ngram:wildcard-contains(., $transQuery)]]),
+                $div[.//tei:cit[ngram:wildcard-contains(., $transQuery)]],
+                $div[.//tei:teiHeader[ngram:wildcard-contains(., $transQuery)]]),
                 "add-exist-id=all")
             else (
-                $div[ngram:wildcard-contains(., $query)],
-                $div[ngram:wildcard-contains(., $transQuery)]
+                util:expand((
+                    $div[ngram:wildcard-contains(., $query)],
+                    $div[ngram:wildcard-contains(., $transQuery)]),
+                "add-exist-id=all")
                 )
         else
             $div[1]
@@ -1201,6 +1200,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
         else 'lucene'
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
     let $parent := $hit/ancestor-or-self::tei:div[1]
+    let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:teiHeader  
     let $div := app:get-current($parent)
     let $parent-id := $parent/@xml:id/string()
     let $parent-id := if ($parent-id) then $parent-id else util:document-name($parent) || "_" || util:node-id($parent)
