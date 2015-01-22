@@ -457,7 +457,7 @@ declare function app:work-authors($node as node(), $model as map(*)) {
     let $authors := for $author in $authors order by translate($author, 'ĀŚ', 'AS') return $author 
     let $control := 
         <select multiple="multiple" name="work-authors" class="form-control">
-            <option value="all" selected="selected">Search In Texts By Any Author</option>
+            <option value="all" selected="selected">In Texts By Any Author</option>
             {for $author in $authors
             return <option value="{$author}">{$author}</option>
             }
