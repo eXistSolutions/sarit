@@ -589,16 +589,7 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
 
 declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $scope as xs:string?, $scripts as xs:string) {    
     console:log("sarit", "lucene-view: " || $id),
-    let $transQuery := 
-        if ($scripts eq "all")
-        then app:expand-query($query, $scripts)
-        else 
-            if ($scripts eq "sa-Deva" and matches($query, $app:iast-char-repertoire)) 
-            then app:expand-query($query, $scripts)
-            else
-                if ($scripts eq "sa-Latn" and not(matches($query, $app:iast-char-repertoire))) 
-                then app:expand-query($query, $scripts)
-                else ()
+    let $transQuery := app:expand-query($query, $scripts) 
     for $div in $model("work")
     let $div :=
         if ($query) then
@@ -665,16 +656,7 @@ declare function app:get-content($div as element(tei:div)) {
 (: NGRAM :)
 declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?, $scope as xs:string?, $scripts as xs:string) {
     console:log("sarit", "ngram-view: " || $id),
-    let $transQuery := 
-        if ($scripts eq "all")
-        then app:expand-query($query, $scripts)
-        else 
-            if ($scripts eq "sa-Deva" and matches($query, $app:iast-char-repertoire)) 
-            then app:expand-query($query, $scripts)
-            else
-                if ($scripts eq "sa-Latn" and not(matches($query, $app:iast-char-repertoire))) 
-                then app:expand-query($query, $scripts)
-                else ()
+    let $transQuery := app:expand-query($query, $scripts)
     for $div in app:load($model("work"), $id)
     let $div :=
         if ($query) then
@@ -893,16 +875,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                         return $hit
             (: NGRAM :)
             else
-                let $transExpr :=  
-                    if ($scripts eq "all")
-                    then app:expand-query($queryExpr, $scripts)
-                    else 
-                        if ($scripts eq "sa-Deva" and matches($queryExpr, $app:iast-char-repertoire)) 
-                        then app:expand-query($queryExpr, $scripts)
-                        else
-                            if ($scripts eq "sa-Latn" and not(matches($queryExpr, $app:iast-char-repertoire))) 
-                            then app:expand-query($queryExpr, $scripts)
-                            else ()
+                let $transExpr := app:expand-query($queryExpr, $scripts)  
                 let $log := console:log("sarit", $transExpr)
                 return
                     if ($scope eq 'narrow' and count($tei-target) eq 2)
@@ -1051,10 +1024,10 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
 };
 
 (:~
-    app:expand-query transliterates the query string from Devanagari to transcription and/or from transcription to Devanagari, 
+    app:expand-query transliterates the query string from Devanagari to IAST transcription and/or from IAST transcription to Devanagari, 
     if the user has indicated that this search is wanted. 
 :)
-declare %private function app:expand-query($query as xs:string?, $scripts as xs:string*) {
+declare %private function app:expand-query($query as xs:string?, $scripts as xs:string?) {
     if ($query) then (
         sarit:create("devnag2roman", $app:devnag2roman/string()),
         sarit:create("roman2devnag", $app:roman2devnag/string()),
