@@ -884,3 +884,6 @@ body .play button {
 .inline-quote {
   color: #428bca;
 }
+.lemma {
+  font-weight: bold;
+}
