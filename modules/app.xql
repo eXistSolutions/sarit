@@ -113,8 +113,9 @@ function app:work($node as node(), $model as map(*), $id as xs:string) {
 };
 
 declare %private function app:load($context as node()*, $id as xs:string) {
+    (:$context is tei:TEI when loading a document from the TOC and when loading a hit from tei:text; when loading a hit from tei:teiHeader, it is tei:teiHeader.:)
     let $work := if ($context instance of element(tei:teiHeader)) then $context else $context//id($id)
-    return
+	return
         if ($work) then
             $work
         else 
@@ -609,11 +610,19 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
                 $div[.//tei:listApp[ft:query(., $query)]],
                 $div[.//tei:listBibl[ft:query(., $query)]],
                 $div[.//tei:cit[ft:query(., $query)]],
-                $div[.//tei:teiHeader[ft:query(., $query)]]),
+                $div[.//tei:label[ft:query(., $query)]],
+                $div[.//tei:encodingDesc[ft:query(., $query)]],
+                $div[.//tei:fileDesc[ft:query(., $query)]],
+                $div[.//tei:profileDesc[ft:query(., $query)]],
+                $div[.//tei:revisionDesc[ft:query(., $query)]]
+                ),
                 "add-exist-id=all")
             else
                 util:expand(
-                ($div[ft:query(., $query)], $div[.//tei:teiHeader[ft:query(., $query)]])
+                (
+                    $div[ft:query(., $query)], 
+                    $div[.//tei:teiHeader[ft:query(., $query)]]
+                )
                 , "add-exist-id=all")
         else
             $div
@@ -669,7 +678,11 @@ declare function app:ngram-view($node as node(), $model as map(*), $id as xs:str
                 $div[.//tei:listApp[ngram:wildcard-contains(., $query)]],
                 $div[.//tei:listBibl[ngram:wildcard-contains(., $query)]],
                 $div[.//tei:cit[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:teiHeader[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:label[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:encodingDesc[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:fileDesc[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:profileDesc[ngram:wildcard-contains(., $query)]],
+                $div[.//tei:revisionDesc[ngram:wildcard-contains(., $query)]],
                 
                 $div[.//tei:p[ngram:wildcard-contains(., $transQuery)]],
                 $div[.//tei:head[ngram:wildcard-contains(., $transQuery)]],
@@ -683,7 +696,12 @@ declare function app:ngram-view($node as node(), $model as map(*), $id as xs:str
                 $div[.//tei:listApp[ngram:wildcard-contains(., $transQuery)]],
                 $div[.//tei:listBibl[ngram:wildcard-contains(., $transQuery)]],
                 $div[.//tei:cit[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:teiHeader[ngram:wildcard-contains(., $transQuery)]]),
+                $div[.//tei:label[ngram:wildcard-contains(., $transQuery)]],
+                $div[.//tei:encodingDesc[ngram:wildcard-contains(., $transQuery)]],
+                $div[.//tei:fileDesc[ngram:wildcard-contains(., $transQuery)]],
+                $div[.//tei:profileDesc[ngram:wildcard-contains(., $transQuery)]],
+                $div[.//tei:revisionDesc[ngram:wildcard-contains(., $transQuery)]]
+                ),
                 "add-exist-id=all")
             else (
                 util:expand((
@@ -817,6 +835,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                 $context//tei:listApp[ft:query(., $queryExpr)],
                                 $context//tei:listBibl[ft:query(., $queryExpr)],
                                 $context//tei:cit[ft:query(., $queryExpr)],
+                                $context//tei:label[ft:query(., $queryExpr)],
                                 $context//tei:encodingDesc[ft:query(., $queryExpr)],
                                 $context//tei:fileDesc[ft:query(., $queryExpr)],
                                 $context//tei:profileDesc[ft:query(., $queryExpr)],
@@ -837,7 +856,12 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                     $context//tei:table[ft:query(., $queryExpr)],
                                     $context//tei:listApp[ft:query(., $queryExpr)],
                                     $context//tei:listBibl[ft:query(., $queryExpr)],
-                                    $context//tei:cit[ft:query(., $queryExpr)]
+                                    $context//tei:cit[ft:query(., $queryExpr)],
+                                    $context//tei:label[ft:query(., $queryExpr)],
+                                    $context//tei:encodingDesc[ft:query(., $queryExpr)],
+                                    $context//tei:fileDesc[ft:query(., $queryExpr)],
+                                    $context//tei:profileDesc[ft:query(., $queryExpr)],
+                                    $context//tei:revisionDesc[ft:query(., $queryExpr)]
                                     )
                                 else 
                                     if ($tei-target = 'tei-header')
@@ -893,6 +917,11 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             $context//tei:listApp[ngram:wildcard-contains(., $queryExpr)],
                             $context//tei:listBibl[ngram:wildcard-contains(., $queryExpr)],
                             $context//tei:cit[ngram:wildcard-contains(., $queryExpr)],
+                            $context//tei:label[ngram:wildcard-contains(., $queryExpr)],
+                            $context//tei:encodingDesc[ngram:wildcard-contains(., $queryExpr)],
+                            $context//tei:fileDesc[ngram:wildcard-contains(., $queryExpr)],
+                            $context//tei:profileDesc[ngram:wildcard-contains(., $queryExpr)],
+                            $context//tei:revisionDesc[ngram:wildcard-contains(., $queryExpr)],
                             
                             if ($transExpr) then (
                                 $context//tei:p[ngram:wildcard-contains(., $transExpr)],
@@ -906,7 +935,12 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                 $context//tei:table[ngram:wildcard-contains(., $transExpr)],
                                 $context//tei:listApp[ngram:wildcard-contains(., $transExpr)],
                                 $context//tei:listBibl[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:cit[ngram:wildcard-contains(., $transExpr)]
+                                $context//tei:cit[ngram:wildcard-contains(., $transExpr)],
+                                $context//tei:label[ngram:wildcard-contains(., $transExpr)],
+                                $context//tei:encodingDesc[ngram:wildcard-contains(., $transExpr)],
+                                $context//tei:fileDesc[ngram:wildcard-contains(., $transExpr)],
+                                $context//tei:profileDesc[ngram:wildcard-contains(., $transExpr)],
+                                $context//tei:revisionDesc[ngram:wildcard-contains(., $transExpr)]
                             ) else
                                 ()
                             )
@@ -929,6 +963,11 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                 $context//tei:listApp[ngram:wildcard-contains(., $queryExpr)],
                                 $context//tei:listBibl[ngram:wildcard-contains(., $queryExpr)],
                                 $context//tei:cit[ngram:wildcard-contains(., $queryExpr)],
+                                $context//tei:label[ngram:wildcard-contains(., $queryExpr)],
+                                $context//tei:encodingDesc[ngram:wildcard-contains(., $queryExpr)],
+                                $context//tei:fileDesc[ngram:wildcard-contains(., $queryExpr)],
+                                $context//tei:profileDesc[ngram:wildcard-contains(., $queryExpr)],
+                                $context//tei:revisionDesc[ngram:wildcard-contains(., $queryExpr)],
                                 
                                 if ($transExpr) then (
                                     $context//tei:p[ngram:wildcard-contains(., $transExpr)],
@@ -942,7 +981,12 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                     $context//tei:table[ngram:wildcard-contains(., $transExpr)],
                                     $context//tei:listApp[ngram:wildcard-contains(., $transExpr)],
                                     $context//tei:listBibl[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:cit[ngram:wildcard-contains(., $transExpr)]
+                                    $context//tei:cit[ngram:wildcard-contains(., $transExpr)],
+                                    $context//tei:label[ngram:wildcard-contains(., $transExpr)],
+                                    $context//tei:encodingDesc[ngram:wildcard-contains(., $transExpr)],
+                                    $context//tei:fileDesc[ngram:wildcard-contains(., $transExpr)],
+                                    $context//tei:profileDesc[ngram:wildcard-contains(., $transExpr)],
+                                    $context//tei:revisionDesc[ngram:wildcard-contains(., $transExpr)]
                                 ) else
                                     ()
                                 )
