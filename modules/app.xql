@@ -661,6 +661,8 @@ declare function app:get-content($div as element()) {
 declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?, $scope as xs:string?, $scripts as xs:string) {
     console:log("sarit", "ngram-view: " || $id),
     let $transQuery := app:expand-query($query, $scripts)
+    let $query := if ($transExpr[2] eq "keep") then $queryExpr else ''
+    let $transQuery := $transQuery[1]
     for $div in app:load($model("work"), $id)
     let $div :=
         if ($query) then
@@ -731,63 +733,44 @@ declare
     %templates:default("scripts", "all")
     %templates:default("target-texts", "all")
 function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $mode as xs:string, $tei-target as xs:string+, $scope as xs:string, 
-    $work-authors as xs:string+, $scripts as xs:string+, $target-texts as xs:string+) {
+    $work-authors as xs:string+, $scripts as xs:string, $target-texts as xs:string+) {
     let $queryExpr := 
         if ($index eq 'ngram')
         then $query
         else app:create-query($query, $mode, $scripts)
     return
-        if (empty($queryExpr) or $queryExpr = "") then
+        if (empty($queryExpr) or $queryExpr = "") (:NB: can a lucene query be empty after it has passed through app:create-query()?:)
+        then
             let $cached := session:get-attribute("apps.sarit")
             return
                 map {
                     "hits" := $cached,
                     "query" := session:get-attribute("apps.sarit.query"),
-                    "scope" := $scope
+                    "scope" := $scope (:NB: what about the other arguments?:)
                 }
         else
             (:$target-texts will either have the value 'all' or a sequence of text xml:ids.:)
             let $target-texts := 
-                (:("target-texts", "all")("work-authors", "all")("scripts", "all"):)
+                (:("target-texts", "all")("work-authors", "all"):)
                 (:If no texts have been selected and no authors have been selected and no scripts have been selected, search in all texts:)
-                if ($target-texts = 'all' and $work-authors = 'all' and $scripts = 'all')
+                if ($target-texts = 'all' and $work-authors = 'all')
                 then 'all' 
-                else 
-                    (:("target-texts", "sequence of text xml:ids")("work-authors", "all")("scripts", "all"):)
+                else
+                    (:("target-texts", "sequence of text xml:ids")("work-authors", "all"):)
                     (:If one or more texts have been selected, but no authors and no scripts have been selected, search in selected texts:)
-                    if ($target-texts != 'all' and $work-authors = 'all' and $scripts = 'all')
+                    if ($target-texts != 'all' and $work-authors = 'all')
                     then $target-texts
                     else 
-                        (:("target-texts", "all")("work-authors", "sequence of text xml:ids")("scripts", "all"):)
+                        (:("target-texts", "all")("work-authors", "sequence of text xml:ids"):)
                         (:If no texts and no scripts have been selected, but one or more authors have been selected, search in texts selected by author:)
-                        if ($target-texts = 'all' and $work-authors != 'all' and $scripts = 'all')
+                        if ($target-texts = 'all' and $work-authors != 'all')
                         then distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id)
                         else
-                            (:("target-texts", "all")("work-authors", "all")("scripts", "sequence of text xml:ids"):)
-                            (:If no texts and no authors have been selected, but one or more scripts have been selected, search in texts selected by script:)
-                            if ($target-texts = 'all' and $work-authors = 'all' and $scripts != 'all')
-                            then distinct-values(collection($config:remote-data-root)//tei:TEI[tei:text/@xml:lang = $scripts]/@xml:id)
-                            else
-                                (:("target-texts", "sequence of text xml:ids")("work-authors", "sequence of text xml:ids")("scripts", "sequence of text xml:ids"):)
-                                (:If one or more texts and one or more scripts and one or more authors have been selected, search in the union of the three:)
-                                if ($target-texts != 'all' and $work-authors != 'all' and $scripts != 'all')
-                                then ($target-texts, distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id), distinct-values(collection($config:remote-data-root)//tei:TEI[tei:text/@xml:lang = $scripts]/@xml:id))
-                                else
-                                    (:("target-texts", "sequence of text xml:ids")("work-authors", "sequence of text xml:ids")("scripts", "all"):)
-                                    (:If one or more texts and more authors have been selected, but no scripts have been selected, search in the union of selected texts and texts selected by authors:)
-                                    if ($target-texts != 'all' and $work-authors != 'all' and $scripts = 'all')
-                                    then ($target-texts, distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id))
-                                    else    
-                                        (:("target-texts", "sequence of text xml:ids")("work-authors", "all")("scripts", "sequence of text xml:ids"):)
-                                        (:If one or more texts have been selected and one or more scripts have been selected, but no authors have been selected, search in union of selected texts and texts selected by script:)
-                                        if ($work-authors != 'all' and $target-texts = 'all' and $scripts != 'all') 
-                                        then ($target-texts, distinct-values(collection($config:remote-data-root)//tei:TEI[tei:text/@xml:lang = $scripts]/@xml:id)) 
-                                        else
-                                            (:("target-texts", "all")("work-authors", "sequence of text xml:ids")("scripts", "sequence of text xml:ids"):)
-                                            (:If no texts have been selected, but one or more scripts and one or more authors have been selected, search in union of texts selected by author and texts selected by script:)
-                                            if ($work-authors != 'all' and $target-texts = 'all' and $scripts != 'all') 
-                                            then (distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id), distinct-values(collection($config:remote-data-root)//tei:TEI[./@xml:lang = $scripts]/@xml:id)) 
-                                            else ()
+                            (:("target-texts", "sequence of text xml:ids")("work-authors", "sequence of text xml:ids"):)
+                            (:If one or more texts and more authors have been selected, but no scripts have been selected, search in the union of selected texts and texts selected by authors:)
+                            if ($target-texts != 'all' and $work-authors != 'all')
+                            then distinct-values(($target-texts, collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id))
+                            else ()
             (:the context can be "tei-text" or "tei:header" or "all" (that is, both "tei-text" or "tei:header":)
             let $context := 
                 if ($target-texts = 'all')
@@ -812,7 +795,6 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             if ($tei-target = 'tei-header')
                             then collection($config:remote-data-root)//tei:TEI[@xml:id = $target-texts]/tei:teiHeader
                             else ()
-            
             (: LUCENE :)
             let $hits :=
                 if ($index eq 'lucene')
@@ -898,8 +880,9 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                         return $hit
             (: NGRAM :)
             else
-                let $transExpr := app:expand-query($queryExpr, $scripts)  
-                let $log := console:log("sarit", $transExpr)
+                let $transExpr := app:expand-query($queryExpr, $scripts)
+                let $queryExpr := if ($transExpr[2] eq "keep") then $queryExpr else ''
+                let $transExpr := $transExpr[1]
                 return
                     if ($scope eq 'narrow' and count($tei-target) eq 2)
                     then
@@ -1070,16 +1053,36 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
     app:expand-query transliterates the query string from Devanagari to IAST transcription and/or from IAST transcription to Devanagari, 
     if the user has indicated that this search is wanted. 
 :)
-declare %private function app:expand-query($query as xs:string?, $scripts as xs:string?) {
+declare %private function app:expand-query($query as xs:string?, $scripts as xs:string?) as item()+ {
     if ($query) then (
         sarit:create("devnag2roman", $app:devnag2roman/string()),
         sarit:create("roman2devnag", $app:roman2devnag/string()),
-        if (matches($query, $app:iast-char-repertoire) and $scripts = ("sa-Deva", "all")) then
-            translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")
-        else if ($scripts = ("sa-Latn", "all")) then
-            sarit:transliterate("devnag2roman", $query)
-        else
-            ()
+        (:if there is romanized input and the user wants to search in Devanagri, then transliterate and discard original query:)
+        if (matches($query, $app:iast-char-repertoire) and $scripts = "sa-Deva") 
+        then
+            (translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""), "delete")
+        else 
+            (:if there is romanized input and the user wants to search in both romanization and Devanagri, then transliterate and keep original query:)
+            if (matches($query, $app:iast-char-repertoire) and $scripts = "all")
+            then
+                (translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""), "keep")
+            else 
+                (:if there is romanized input and the user wants to search in romanization, then do not transliterate but keep original query:)
+                (:this exhausts all options for romanized input strings:)
+                if (matches($query, $app:iast-char-repertoire) and $scripts = "sa-Latn") 
+                then ('', "keep")
+                else
+                    (:if there is Devanagri input and the user wants to search in romanization, then transliterate but delete original query:)
+                    if ($scripts = "sa-Latn") 
+                    then
+                        (sarit:transliterate("devnag2roman", $query), "delete")
+                    else
+                        (:if there is Devanagri input and the user wants to search in both Devanagri and romanization, then transliterate but keep original query:)
+                        if ($scripts = "all")
+                    then
+                        (sarit:transliterate("devnag2roman", $query), "keep")
+                    else (:if there is Devanagri input and the user wants to search in Devanagri, then do not transliterate but keep original query:)
+                        ('', "keep")
     ) 
     else ()
 };
@@ -1137,18 +1140,33 @@ declare %private function app:create-query($query-string as xs:string?, $mode as
                                             if ($mode eq 'regex')
                                             then <regex>{$query-string}</regex>
                                             else ()
-            let $transQuery := 
-                if ($scripts eq "all")
-                then app:transliterate-lucene-xml-query(<bool>{$query}</bool>, $scripts)
-                else 
-                    if ($scripts eq "sa-Deva" and matches($query, $app:iast-char-repertoire)) 
-                    then app:transliterate-lucene-xml-query(<bool>{$query}</bool>, $scripts)
+            let $query := <bool>{$query}</bool>
+            let $query :=
+                (:if there is romanized input and the user wishes to search in Devanagari, transliterate original query and delete it:)
+                if (matches($query, $app:iast-char-repertoire) and $scripts eq "sa-Deva") 
+                then (app:transliterate-lucene-xml-query($query, $scripts))
+                else
+                    (:if there is romanized input and the user wishes to search in both romanization and  Devanagari, transliterate original query and keep it:)
+                    if (matches($query, $app:iast-char-repertoire) and $scripts eq "all") 
+                    then ($query, app:transliterate-lucene-xml-query($query, $scripts))
                     else
-                        if ($scripts eq "sa-Latn" and not(matches($query, $app:iast-char-repertoire))) 
-                        then app:transliterate-lucene-xml-query(<bool>{$query}</bool>, $scripts)
-                        else ()
-            let $query := <query><bool>{$query}</bool>{$transQuery}</query>
-            return $query
+                        (:if there is romanized input and the user wishes to search in romanization only, do not transliterate original query but keep it:)
+                        if (matches($query, $app:iast-char-repertoire) and $scripts eq "sa-Latn") 
+                        then $query
+                        else
+                            (:if there is Devanagari input and the user wishes to search in romanization, transliterate original query and delete it:)
+                            if ($scripts eq "sa-Latn")
+                            then (app:transliterate-lucene-xml-query($query, $scripts))
+                            else
+                                (:if there is Devanagari input and the user wishes to search in Devanagari, do not transliterate original query but keep it:)
+                                if ($scripts eq "sa-Deva")
+                                then $query
+                                else
+                                    (:if there is Devanagari input and the user wishes to search in both romanization and  Devanagari, transliterate original query and keep it:)
+                                    if ($scripts eq "all")
+                                    then ($query, app:transliterate-lucene-xml-query($query, $scripts))
+                                    else ('', "keep")
+            return <query>{$query}</query>
     return $query
     
 };
