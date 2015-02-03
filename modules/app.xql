@@ -17,7 +17,7 @@ declare namespace functx="http://www.functx.com";
 
 declare variable $app:devnag2roman := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "devnag2roman"];
 declare variable $app:roman2devnag := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "roman2devnag"];
-declare variable $app:iast-char-repertoire := '[aābcdḍeĕghḥiïījklḷḹmṁṃnñṅṇoŏprṛṝsśṣtṭuüūvy0-9]';
+declare variable $app:iast-char-repertoire-negation := '[^aābcdḍeĕghḥiïījklḷḹmṁṃnñṅṇoŏprṛṝsśṣtṭuüūvy0-9\s]';
 
 declare variable $app:EXIDE := 
     let $pkg := collection(repo:get-root())//expath:package[@name = "http://exist-db.org/apps/eXide"]
@@ -1058,31 +1058,31 @@ declare %private function app:expand-query($query as xs:string?, $scripts as xs:
         sarit:create("devnag2roman", $app:devnag2roman/string()),
         sarit:create("roman2devnag", $app:roman2devnag/string()),
         (:if there is romanized input and the user wants to search in Devanagri, then transliterate and discard original query:)
-        if (matches($query, $app:iast-char-repertoire) and $scripts = "sa-Deva") 
+        if (not(matches($query, $app:iast-char-repertoire-negation)) and $scripts = "sa-Deva") 
         then
             (translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""), "delete")
         else 
             (:if there is romanized input and the user wants to search in both romanization and Devanagri, then transliterate and keep original query:)
-            if (matches($query, $app:iast-char-repertoire) and $scripts = "all")
+            if (not(matches($query, $app:iast-char-repertoire-negation)) and $scripts = "all")
             then
                 (translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""), "keep")
             else 
                 (:if there is romanized input and the user wants to search in romanization, then do not transliterate but keep original query:)
                 (:this exhausts all options for romanized input strings:)
-                if (matches($query, $app:iast-char-repertoire) and $scripts = "sa-Latn") 
+                if (not(matches($query, $app:iast-char-repertoire-negation)) and $scripts = "sa-Latn") 
                 then ('', "keep")
                 else
                     (:if there is Devanagri input and the user wants to search in romanization, then transliterate but delete original query:)
-                    if (string-to-codepoints($query) = (2304 to 2431, 43232 to 43259, 7376 to 7412) and $scripts = "sa-Latn") 
+                    if (not(string-to-codepoints($query)[empty(index-of((32, 2304 to 2431, 43232 to 43259, 7376 to 7412), .))]) and $scripts = "sa-Latn") 
                     then
                         (sarit:transliterate("devnag2roman", $query), "delete")
                     else
                         (:if there is Devanagri input and the user wants to search in both Devanagri and romanization, then transliterate but keep original query:)
-                        if (string-to-codepoints($query) = (2304 to 2431, 43232 to 43259, 7376 to 7412) and $scripts = "all")
+                        if (not(string-to-codepoints($query)[empty(index-of((32, 2304 to 2431, 43232 to 43259, 7376 to 7412), .))]) and $scripts = "all")
                         then
                         (sarit:transliterate("devnag2roman", $query), "keep")
                         else 
-                            if (string-to-codepoints($query) = (2304 to 2431, 43232 to 43259, 7376 to 7412) and $scripts = "sa-Deva")
+                            if (not(string-to-codepoints($query)[empty(index-of((32, 2304 to 2431, 43232 to 43259, 7376 to 7412), .))]) and $scripts = "sa-Deva")
                             then
                                 (:if there is Devanagri input and the user wants to search in Devanagri, then do not transliterate but keep original query:)
                                 ('', "keep")
@@ -1148,27 +1148,27 @@ declare %private function app:create-query($query-string as xs:string?, $mode as
             let $query := <bool>{$query}</bool>
             let $query :=
                 (:if there is romanized input and the user wishes to search in Devanagari, transliterate original query and delete it:)
-                if (matches($query, $app:iast-char-repertoire) and $scripts eq "sa-Deva") 
+                if (not(matches($query, $app:iast-char-repertoire-negation)) and $scripts eq "sa-Deva") 
                 then (app:transliterate-lucene-xml-query($query, $scripts))
                 else
                     (:if there is romanized input and the user wishes to search in both romanization and  Devanagari, transliterate original query and keep it:)
-                    if (matches($query, $app:iast-char-repertoire) and $scripts eq "all") 
+                    if (not(matches($query, $app:iast-char-repertoire-negation)) and $scripts eq "all") 
                     then ($query, app:transliterate-lucene-xml-query($query, $scripts))
                     else
                         (:if there is romanized input and the user wishes to search in romanization only, do not transliterate original query but keep it:)
-                        if (matches($query, $app:iast-char-repertoire) and $scripts eq "sa-Latn") 
+                        if (not(matches($query, $app:iast-char-repertoire-negation)) and $scripts eq "sa-Latn") 
                         then $query
                         else
                             (:if there is Devanagari input and the user wishes to search in romanization, transliterate original query and delete it:)
-                            if (string-to-codepoints($query) = (2304 to 2431, 43232 to 43259, 7376 to 7412) and $scripts eq "sa-Latn")
+                            if (not(string-to-codepoints($query)[empty(index-of((32, 2304 to 2431, 43232 to 43259, 7376 to 7412), .))]) and $scripts eq "sa-Latn")
                             then (app:transliterate-lucene-xml-query($query, $scripts))
                             else
                                 (:if there is Devanagari input and the user wishes to search in Devanagari, do not transliterate original query but keep it:)
-                                if (string-to-codepoints($query) = (2304 to 2431, 43232 to 43259, 7376 to 7412) and $scripts eq "sa-Deva")
+                                if (not(string-to-codepoints($query)[empty(index-of((32, 2304 to 2431, 43232 to 43259, 7376 to 7412), .))]) and $scripts eq "sa-Deva")
                                 then $query
                                 else
                                     (:if there is Devanagari input and the user wishes to search in both romanization and  Devanagari, transliterate original query and keep it:)
-                                    if (string-to-codepoints($query) = (2304 to 2431, 43232 to 43259, 7376 to 7412) and $scripts eq "all")
+                                    if (not(string-to-codepoints($query)[empty(index-of((32, 2304 to 2431, 43232 to 43259, 7376 to 7412), .))]) and $scripts eq "all")
                                     then ($query, app:transliterate-lucene-xml-query($query, $scripts))
                                     else ($query, ())
             return <query>{$query}</query>
