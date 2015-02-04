@@ -661,7 +661,7 @@ declare function app:get-content($div as element()) {
 declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?, $scope as xs:string?, $scripts as xs:string) {
     console:log("sarit", "ngram-view: " || $id),
     let $transQuery := app:expand-query($query, $scripts, false())
-    let $query := if ($transExpr[2] eq "keep") then $queryExpr else ''
+    let $query := if ($transQuery[2] eq "keep") then $transQuery else ''
     let $transQuery := $transQuery[1]
     for $div in app:load($model("work"), $id)
     let $div :=
