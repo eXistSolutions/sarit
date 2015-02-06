@@ -223,11 +223,8 @@ declare function tei-to-html:recurse($node as node(), $options) as item()* {
         tei-to-html:dispatch($node, $options)
 };
 
+(:search target:)
 declare function tei-to-html:div($node as element(tei:div)?, $options) as element()* {
-    if ($node/@xml:id) 
-    then tei-to-html:xmlid($node, $options) 
-    else ()
-    ,
     if ($node/@type eq 'adhyāya')
     then
         if ($node//tei:persName)
@@ -235,7 +232,7 @@ declare function tei-to-html:div($node as element(tei:div)?, $options) as elemen
             (
             <a class="linebefore"/>
             ,
-            <div class="notes" id="{$node/@xml:id}">
+            <div class="notes" id="{tei-to-html:get-id($node)}">
                 <h3>Persons mentioned</h3>
                 <ul>
                 {
@@ -266,7 +263,7 @@ declare function tei-to-html:div($node as element(tei:div)?, $options) as elemen
                 (
                 <a class="linebefore"/>
                 ,
-                <div class="notes" id="{$node/@xml:id}">
+                <div class="notes" id="{tei-to-html:get-id($node)}">
                     <h3>Texts quoted</h3>
                     <ul>
                     {
@@ -294,41 +291,43 @@ declare function tei-to-html:div($node as element(tei:div)?, $options) as elemen
                 )
             else ()
     else        
-        <div>{tei-to-html:recurse($node, $options)}</div>
+        <div id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
 };
 
+(:search target:)
 declare function tei-to-html:head($node as element(tei:head), $options) as element() {
     (: div heads :)
     if ($node/parent::tei:div) then
         let $type := $node/parent::tei:div/@type
         let $div-level := count($node/ancestor::div)
         return
-            element {concat('h', $div-level + 2)} {tei-to-html:recurse($node, $options)}
+            element {concat('h', $div-level + 2)} {tei-to-html:recurse($node, $options)} (:NB: add id attribute:)
     (: figure heads :)
     else if ($node/parent::tei:figure) then
         if ($node/parent::tei:figure/parent::tei:p) then
-            <strong>{tei-to-html:recurse($node, $options)}</strong>
+            <strong id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</strong>
         else (: if ($node/parent::tei:figure/parent::tei:div) then :)
-            <p><strong>{tei-to-html:recurse($node, $options)}</strong></p>
+            <p><strong id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</strong></p>
     (: list heads :)
     else if ($node/parent::tei:list) then
-        <li>{tei-to-html:recurse($node, $options)}</li>
+        <li id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</li>
     (: table heads :)
     else if ($node/parent::tei:table) then
-        <p class="center">{tei-to-html:recurse($node, $options)}</p>
+        <p class="center" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</p>
     (: other heads? :)
     else
-        <span style="color: red;">{tei-to-html:recurse($node, $options)}</span>
+        <span style="color: red;" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</span>
 };
 
+(:search target:)
 declare function tei-to-html:p($node as element(tei:p), $options) as element()+ {
     let $rend := $node/@rend
     return 
         if ($rend = ('right', 'center', 'first', 'indent') ) 
         then
-            <p class="{concat('p', '-', data($rend))}" title="tei:p" id="{$node/@xml:id}">{ tei-to-html:recurse($node, $options) }</p>
+            <p class="{concat('p', '-', data($rend))}" title="tei:p" id="{tei-to-html:get-id($node)}">{ tei-to-html:recurse($node, $options) }</p>
         else 
-            <p class="p" title="tei:p" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</p>
+            <p class="p" title="tei:p" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</p>
 };
 
 declare function tei-to-html:hi($node as element(tei:hi), $options) as element()* {
@@ -347,32 +346,29 @@ declare function tei-to-html:hi($node as element(tei:hi), $options) as element()
                     <span class="hi" title="tei:hi">{tei-to-html:recurse($node, $options)}</span>
 };
 
+(:search target:)
 declare function tei-to-html:list($node as element(tei:list), $options) as element()+ {
         if ($options/*:param[@name='ordered']/@value eq 'true')
         then 
-            <ol title="tei:list" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</ol>
+            <ol title="tei:list" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</ol>
         else
-            <ul title="tei:list" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</ul>
+            <ul title="tei:list" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</ul>
 };
 
 declare function tei-to-html:item($node as element(tei:item), $options) as element()+ {
-    if ($node/@xml:id) then tei-to-html:xmlid($node, $options) else (),
-    <li class="item" title="tei:item">{tei-to-html:recurse($node, $options)}</li>
+        <li class="item" title="tei:item">{tei-to-html:recurse($node, $options)}</li>
 };
 
+(:search target:)
 declare function tei-to-html:label($node as element(tei:label), $options) as element()* {
     if ($node/parent::tei:list) 
     then 
         (
-        <dt title="tei:label">{$node/text()}</dt>,
+        <dt title="tei:label" id="{tei-to-html:get-id($node)}">{$node/text()}</dt>,
         <dd title="tei:label">{$node/following-sibling::tei:item[1]}</dd>
         )
     else 
         <div class="label" title="tei:label" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
-};
-
-declare function tei-to-html:xmlid($node as element(), $options) as element() {
-    <a name="{$node/@xml:id}"/>
 };
 
 (:NB: resolve target!:)
@@ -409,14 +405,14 @@ declare function tei-to-html:said($node as element(tei:said), $options) as eleme
 declare function tei-to-html:sp($node as element(tei:sp), $options) as element()+ {
     if ($node/tei:l) 
     then
-        <div xmlns="http://www.w3.org/1999/xhtml" class="sp" title="tei:sp" id="{$node/@xml:id}">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="sp" title="tei:sp">
         { 
             for $l in $node/tei:l
             return
                 tei-to-html:recurse($l, <options/>) }
         </div>
     else
-        <div xmlns="http://www.w3.org/1999/xhtml" class="sp" title="tei:sp" id="{$node/@xml:id}">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="sp" title="tei:sp">
             { for $speaker in $node/tei:speaker return tei-to-html:recurse($speaker, <options/>) }
             <p class="p-ab">{ tei-to-html:recurse($node/tei:ab, <options/>) }</p>
         </div>
@@ -431,7 +427,6 @@ declare function tei-to-html:lb($node as element(tei:lb), $options) as element()
 };
 
 declare function tei-to-html:seg($node as element(tei:seg), $options) as element() {
-    (:NB: This had <xsl:variable name="letter" select="substring(@xml:id,string-length(@xml:id))"/> What does this means?:)
     let $letter := 
         if ($node/@type eq 'pada' and local-name($node/..) eq 'l')
         then $node/@xml:id/string()
@@ -450,7 +445,7 @@ declare function tei-to-html:seg($node as element(tei:seg), $options) as element
 };
 
 declare function tei-to-html:figure($node as element(tei:figure), $options) as element()+ {
-    <div class="figure" title="tei:figure" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="figure" title="tei:figure">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:graphic($node as element(tei:graphic), $options) {
@@ -462,8 +457,9 @@ declare function tei-to-html:graphic($node as element(tei:graphic), $options) {
         <span title="tei:graphic"><img src="{if (starts-with($url, '/')) then $url else concat($relative-image-path, $url)}" alt="{normalize-space($head[1])}" width="{$width}"/></span>
 };
 
+(:search target:)
 declare function tei-to-html:table($node as element(tei:table), $options) as element()+ {
-    <table title="tei:table" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</table>
+    <table title="tei:table" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</table>
 };
 
 declare function tei-to-html:row($node as element(tei:row), $options) as element() {
@@ -491,32 +487,34 @@ declare function tei-to-html:pb($node as element(tei:pb), $options) {
     </span>
 };
 
+(:search target:)
 declare function tei-to-html:lg($node as element(tei:lg), $options) as element()+ {
    if ($node/@type eq 'base-text')
     then
-        <div xmlns="http://www.w3.org/1999/xhtml" class="lg base-text" title="tei:lg base-text"  id="{$node/@xml:id}">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="lg base-text" title="tei:lg base-text"  id="{tei-to-html:get-id($node)}">
             {tei-to-html:recurse($node, $options)}
         </div>
     else
         if ($node/../@type eq 'base-text')
         then
-            <div xmlns="http://www.w3.org/1999/xhtml" class="lg" title="tei:lg base-text"  id="{$node/@xml:id}">
+            <div xmlns="http://www.w3.org/1999/xhtml" class="lg" title="tei:lg base-text"  id="{tei-to-html:get-id($node)}">
                 {tei-to-html:recurse($node, $options)}
             </div>
         else
-            <div xmlns="http://www.w3.org/1999/xhtml" class="lg" title="tei:lg"  id="{$node/@xml:id}">
+            <div xmlns="http://www.w3.org/1999/xhtml" class="lg" title="tei:lg"  id="{tei-to-html:get-id($node)}">
                 {tei-to-html:recurse($node, $options)}
             </div>
 };
 
+(:search target:)
 declare function tei-to-html:l($node as element(tei:l), $options) as element()+ {
     let $class := if ($node[last()]) then "l final" else "l non-final" 
     return
      if ($node/parent::tei:lg/@type eq 'base-text')
      then
-        <div class="{$class}" title="tei:l base-text" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+        <div class="{$class}" title="tei:l base-text" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
      else
-        <div class="{$class}" title="tei:l" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+        <div class="{$class}" title="tei:l" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
 
 };
 
@@ -570,20 +568,22 @@ declare function tei-to-html:milestone($node as element(tei:milestone), $options
             <hr/>
 };
 
+(:search target:)
 declare function tei-to-html:quote($node as element(tei:quote), $options) {
     if ($node/@type eq 'base-text')
     then
-        <blockquote class="base-text" title="tei:quote base-text">{tei-to-html:recurse($node, $options)}</blockquote>
+        <blockquote class="base-text" title="tei:quote base-text" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</blockquote>
     else
-        <span class="inline-quote" title="tei:quote">{tei-to-html:recurse($node, $options)}</span>
+        <span class="inline-quote" title="tei:quote" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</span>
 };
 
 declare function tei-to-html:said($node as element(tei:said), $options) {
     <span class="said">{tei-to-html:recurse($node, $options)}</span>
 };
 
+(:search target:)
 declare function tei-to-html:teiHeader($node as element(tei:teiHeader), $options) as element()+ {
-        <div class="teiHeader" id="{$node/@xml:id}">
+        <div class="teiHeader" id="{tei-to-html:get-id($node)}">
             {tei-to-html:dispatch($node/tei:fileDesc/tei:titleStmt, $options)}
             
             <div class="extHeader">
@@ -600,24 +600,27 @@ declare function tei-to-html:teiHeader($node as element(tei:teiHeader), $options
         </div>
 };
 
+(:search target:)
 declare function tei-to-html:encodingDesc($node as element(tei:encodingDesc), $options) as element()+ {
-    <div class="encodingDesc" id="{$node/@xml:id}">
+    <div class="encodingDesc" id="{tei-to-html:get-id($node)}">
         <h3>Encoding Description</h3>
         {tei-to-html:recurse($node, $options)}</div>
 };
 
+(:search target:)
 declare function tei-to-html:fileDesc($node as element(tei:fileDesc), $options) as element()+ {
-    <div class="fileDesc" id="{$node/@xml:id}">
+    <div class="fileDesc" id="{tei-to-html:get-id($node)}">
         {tei-to-html:recurse($node, $options)}
     </div>
 };
 
+(:search target:)
 declare function tei-to-html:profileDesc($node as element(tei:profileDesc), $options) as element()+ {
     (:abstract calendarDesc creation  textClass:)
     let $textClass := $node/tei:textClass
     let $langUsage := $node/tei:langUsage
     return
-        <div id="{$node/@xml:id}">
+        <div id="{tei-to-html:get-id($node)}">
             {if ($textClass)
             then
                 <div class="textClass">
@@ -640,9 +643,10 @@ declare function tei-to-html:profileDesc($node as element(tei:profileDesc), $opt
         </div>
 };
 
+(:search target:)
 declare function tei-to-html:revisionDesc($node as element(tei:revisionDesc), $options) as element()+ {
     (:listChange:)
-    <div class="revisionDesc" id="{$node/@xml:id}">
+    <div class="revisionDesc" id="{tei-to-html:get-id($node)}">
     <h3>Revision Description</h3>
         <ul>
             {tei-to-html:recurse($node, $options)}
@@ -651,11 +655,11 @@ declare function tei-to-html:revisionDesc($node as element(tei:revisionDesc), $o
 };
 
 declare function tei-to-html:notesStmt($node as element(tei:notesStmt), $options) as element()+ {
-    <div class="notesStmt" id="{$node/@xml:id}">
+    <div class="notesStmt">
     <h4>Notes Statement</h4>
         {for $note in $node/tei:note
         return
-            <div class="note" title="tei:note" id="{tei-to-html:get-id($node)}">
+            <div class="note" title="tei:note">
                 <span class="note" title="tei:note">{tei-to-html:recurse($node/*, $options)}</span>
             </div>
         }
@@ -687,11 +691,12 @@ declare function tei-to-html:app($node as element()+, $options) as element()+ {
                         concat('&lt;span class="appentry"&gt;&lt;span class="siglum"&gt;',$siglum,'&lt;/span&gt;: ',$rdg,'&lt;/span&gt;')
                 else '')
     return
-    (<button type="button" class="btn btn-lg btn-primary popover-dismiss" data-toggle="popover" id="{tei-to-html:get-id($node)}" title="{$title}" data-content="{$content}">a</button>, 
+    (<button type="button" class="btn btn-lg btn-primary popover-dismiss" data-toggle="popover" title="{$title}" data-content="{$content}">a</button>, 
     <span style="style=display:none"></span>)
 };
 
 (:SR:)
+(:search target:)
 declare function tei-to-html:note($node as element()+, $options) as element()+ {
     let $resp := $node/@resp
     let $place := $node/@place
@@ -718,7 +723,7 @@ declare function tei-to-html:note($node as element()+, $options) as element()+ {
     (:    let $id := util:hash(util:random(), "md5")
     return
     <span class="note" title="tei:note">
-    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="{concat('#', $id)}">ⓝ</button>
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="{concat('#', $id)}" id="{tei-to-html:get-id($node)}">ⓝ</button>
     <div class="modal fade" id="{$id}" tabindex="-1" role="dialog" aria-labelledby="{concat($id, '-label')}" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
@@ -737,7 +742,7 @@ declare function tei-to-html:note($node as element()+, $options) as element()+ {
 };
 
 declare function tei-to-html:extent($node as element(tei:extent), $options) as element()+ {
-    <div class="extent" id="{tei-to-html:get-id($node)}">
+    <div class="extent">
         <h4>Extent</h4>
         {tei-to-html:recurse($node, $options)}
     </div>
@@ -837,23 +842,23 @@ declare function tei-to-html:bibl-element-only($node as element(tei:bibl), $opti
     return
         if ($node/../local-name() eq 'note')
         then
-            <div class="hanging-indent" id="{tei-to-html:get-id($node)}">{$result}</div>
+            <div class="hanging-indent">{$result}</div>
         else $result
 };
 
 declare function tei-to-html:bibl-loose($node as element(tei:bibl), $options) as element()+ {
-    <div class="bibl" title="bibl" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="bibl" title="bibl">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:sourceDesc($node as element(tei:sourceDesc), $options) as element()+ {
-    <div class="sourceDesc" id="{$node/@xml:id}">
+    <div class="sourceDesc">
         <h4>Source Description</h4>
         {tei-to-html:recurse($node, $options)}
     </div>
 };
 
 declare function tei-to-html:editorialDecl($node as element(tei:editorialDecl), $options) as element()+ {
-    <div class="editorialDesc" id="{$node/@xml:id}">
+    <div class="editorialDesc">
         <h4>Editorial Description</h4>
         {tei-to-html:recurse($node, $options)}
     </div>
@@ -862,14 +867,14 @@ declare function tei-to-html:editorialDecl($node as element(tei:editorialDecl), 
 declare function tei-to-html:classDecl($node as element(tei:classDecl), $options) as element()+ {
         let $taxonomy := $node/tei:taxonomy/@xml:id/string() (:a little strange that this attribute should be used here:)
         return
-            <div class="classDecl" id="{$node/@xml:id}">
+            <div class="classDecl">
                 <h4>Classification Declarations (Taxonomy: {$taxonomy})</h4>
                 <div class="classification">{$node//tei:bibl/text()}</div>
             </div>
 };
 
 declare function tei-to-html:refsDecl($node as element(tei:refsDecl), $options) as element()+ {
-        <div class="refsDecl" id="{$node/@xml:id}">
+        <div class="refsDecl">
             <h4>References Declarations</h4>
             <div class="classification">{tei-to-html:recurse($node, $options)}</div>
         </div>
@@ -892,18 +897,18 @@ declare function tei-to-html:publicationStmt($node as element(tei:publicationStm
                 (
                 <h5>Availability: {$availability-status}</h5>
                 , 
-                <div class="copyright-notice" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+                <div class="copyright-notice">{tei-to-html:recurse($node, $options)}</div>
                 )
             else ()
         
         let $idno := 
             if ($node/tei:idno) 
             then 
-                <div class="idno" title="tei:idno" id="{$node/@xml:id}"><h5>Identifier</h5>{$node/tei:idno}</div>
+                <div class="idno" title="tei:idno"><h5>Identifier</h5>{$node/tei:idno}</div>
             else ()
         
         return
-            <div class="publicationStmt" id="{$node/@xml:id}">
+            <div class="publicationStmt">
             <h4>Publication Statement</h4>
                 {$authority}
                 {$availability}
@@ -1035,7 +1040,7 @@ declare function tei-to-html:titleStmt($node as element(tei:titleStmt), $options
         let $respStmt := tei-to-html:respStmt($node/tei:respStmt, $options)
         
         return
-            <div class="titleStmt" title="tei:titleStmt" id="{$node/@xml:id}">
+            <div class="titleStmt" title="tei:titleStmt">
                 <h2>{$main-title}</h2>
                 {$authors}
                 {$commentary-subtitles}
@@ -1054,7 +1059,7 @@ declare function tei-to-html:titleStmt($node as element(tei:titleStmt), $options
 };
 
 declare function tei-to-html:editionStmt($node as element(tei:editionStmt), $options) as element()+ {
-            <div class="editionStmt" id="{$node/@xml:id}">
+            <div class="editionStmt">
                 <h4>Edition Statement</h4>
                 {tei-to-html:recurse($node, $options)}                
             </div>
@@ -1110,47 +1115,49 @@ declare function tei-to-html:addrLine($node as element(tei:addrLine), $options) 
 };
 
 declare function tei-to-html:author($node as element(tei:author), $options) as element()+ {
-    <div class="author" title="tei:author" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="author" title="tei:author">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:biblScope($node as element(tei:biblScope), $options) as element()+ {
-    <div class="biblScope" title="tei:biblScope" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="biblScope" title="tei:biblScope">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:byline($node as element(tei:byline), $options) as element()+ {
-    <div class="byline" title="tei:byline" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="byline" title="tei:byline">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:caesura($node as element(tei:caesura), $options) as element() {
     <span class="caesura" title="tei:caesura">{tei-to-html:recurse($node, $options)}</span>
 };
 
+(:search target:)
 declare function tei-to-html:cit($node as element(tei:cit), $options) as element() {
     <span class="cit" title="tei:cit">{tei-to-html:recurse($node, $options)}</span>
 };
 
+(:search target:)
 declare function tei-to-html:listBibl($node as element(tei:listBibl), $options) as element()+ {
-    <div class="listBibl" title="tei:listBibl" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="listBibl" title="tei:listBibl">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:seriesStmt($node as element(tei:seriesStmt), $options) as element()+ {
-    <div class="seriesStmt" title="tei:seriesStmt" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="seriesStmt" title="tei:seriesStmt">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:docAuthor($node as element(tei:docAuthor), $options) as element()+ {
-    <div class="docAuthor" title="tei:docAuthor" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="docAuthor" title="tei:docAuthor">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:docDate($node as element(tei:docDate), $options) as element()+ {
-    <div class="docDate" title="tei:docDate" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="docDate" title="tei:docDate">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:docImprint($node as element(tei:docImprint), $options) as element()+ {
-    <div class="docImprint" title="tei:docImprint" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="docImprint" title="tei:docImprint">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:docTitle($node as element(tei:docTitle), $options) as element()+ {
-    <div class="docTitle" title="tei:docTitle" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="docTitle" title="tei:docTitle">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:emp($node as element(tei:emp), $options) as element() {
@@ -1158,12 +1165,12 @@ declare function tei-to-html:emp($node as element(tei:emp), $options) as element
 };
 
 declare function tei-to-html:figDesc($node as element(tei:figDesc), $options) as element()+ {
-    <div class="figDesc" title="tei:figDesc" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="figDesc" title="tei:figDesc">{tei-to-html:recurse($node, $options)}</div>
 };
 
 (:can be both block and inline:)
 declare function tei-to-html:listTranspose($node as element(tei:listTranspose), $options) as element()+ {
-    <div class="listTranspose" title="tei:listTranspose" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="listTranspose" title="tei:listTranspose">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:locus($node as element(tei:locus), $options) as element() {
@@ -1171,25 +1178,25 @@ declare function tei-to-html:locus($node as element(tei:locus), $options) as ele
 };
 
 declare function tei-to-html:msContents($node as element(tei:msContents), $options) as element()+ {
-    <div class="msContents" title="tei:msContents" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="msContents" title="tei:msContents">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:msDesc($node as element(tei:msDesc), $options) as element()+ {
-    <div class="msDesc" id="{$node/@xml:id}">
+    <div class="msDesc">
         <h4>Manuscript Description</h4>
         {tei-to-html:recurse($node, $options)}
     </div>
 };
 
 declare function tei-to-html:msIdentifier($node as element(tei:msIdentifier), $options) as element()+ {
-    <div class="msIdentifier" id="{$node/@xml:id}">
+    <div class="msIdentifier">
         <h5>Manuscript Identifier</h5>
         {tei-to-html:recurse($node, $options)}
     </div>
 };
 
 declare function tei-to-html:msName($node as element(tei:msName), $options) as element()+ {
-    <div class="msName" title="tei:msName" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="msName" title="tei:msName">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:num($node as element(tei:num), $options) as element() {
@@ -1201,11 +1208,11 @@ declare function tei-to-html:ptr($node as element(tei:ptr), $options) as element
 };
 
 declare function tei-to-html:publisher($node as element(tei:publisher), $options) as element()+ {
-    <div class="publisher" title="tei:publisher" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="publisher" title="tei:publisher">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:pubPlace($node as element(tei:pubPlace), $options) as element()+ {
-    <div class="pubPlace" title="tei:pubPlace" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="pubPlace" title="tei:pubPlace">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:q($node as element(tei:q), $options) as element() {
@@ -1221,7 +1228,7 @@ declare function tei-to-html:rs($node as element(tei:rs), $options) as element()
 };
 
 declare function tei-to-html:series($node as element(tei:series), $options) as element()+ {
-    <div class="series" title="tei:series" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="series" title="tei:series">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:settlement($node as element(tei:settlement), $options) as element() {
@@ -1298,7 +1305,7 @@ declare function tei-to-html:titlePage($node as element(tei:titlePage), $options
     let $other-elements := $node/(tei:* except (tei:titlePart, tei:docTitle, tei:docImprint, tei:docDate, tei:docAuthor))
 
     return
-    <div class="titlePage" title="tei:titlePage" id="{$node/@xml:id}">
+    <div class="titlePage" title="tei:titlePage">
     <h7>Title Page</h7>
         <a href="{$id}.html">
         <div>
@@ -1313,11 +1320,12 @@ declare function tei-to-html:titlePage($node as element(tei:titlePage), $options
 };
 
 declare function tei-to-html:titlePart($node as element(tei:titlePart), $options) as element()+ {
-    <div class="titlePart" title="tei:titlePart" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="titlePart" title="tei:titlePart">{tei-to-html:recurse($node, $options)}</div>
 };
 
+(:search target:)
 declare function tei-to-html:trailer($node as element(tei:trailer), $options) as element()+ {
-    <div class="trailer" title="tei:trailer" id="{$node/@xml:id}">{tei-to-html:recurse($node, $options)}</div>
+    <div class="trailer" title="tei:trailer" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
 };
 
 declare function tei-to-html:witDetail($node as element(tei:witDetail), $options) as element() {
