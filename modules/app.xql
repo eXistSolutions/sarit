@@ -106,7 +106,7 @@ function app:list-works($node as node(), $model as map(*)) {
 declare
     %templates:wrap
 function app:work($node as node(), $model as map(*), $id as xs:string) {
-    console:log("sarit", "id: " || $id),
+(:    console:log("sarit", "id: " || $id),:)
     let $work := app:load(collection($config:remote-data-root), $id)
     return
         map { "work" := $work[1] }
@@ -124,7 +124,7 @@ declare %private function app:load($context as node()*, $id as xs:string) {
             let $docName := $analyzed//fn:group[@nr = 1]/text()
             let $doc := doc($config:remote-data-root || "/" || $docName)
             let $nodeId := $analyzed//fn:group[@nr = 2]/string()
-            let $log := console:log("sarit", "loading node '" || $nodeId || "' from document " || $config:remote-data-root || "/" || $docName)
+(:            let $log := console:log("sarit", "loading node '" || $nodeId || "' from document " || $config:remote-data-root || "/" || $docName):)
             return
                 if (starts-with($nodeId, "p")) then
                     let $page := number(substring-after($nodeId, "p"))
@@ -580,19 +580,19 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
             then session:get-attribute("apps.sarit.query")
             else ()
         let $scope := 
-            if ($query)
+            if (not(empty($query)))
             then session:get-attribute("apps.sarit.scope")
             else ()
         return
-            if ($query instance of xs:string)
-            then app:ngram-view($node, $model, $id, $query, $scope, $scripts)
-            else app:lucene-view($node, $model, $id, $query, $scope, $scripts)
+            if ($query instance of element())
+            then app:lucene-view($node, $model, $id, $query, $scope, $scripts)
+            else app:ngram-view($node, $model, $id, $query, $scope, $scripts)
 };
 
 (: LUCENE :)
 
 declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $scope as xs:string?, $scripts as xs:string) {    
-    console:log("sarit", "lucene-view: " || $id),
+(:    console:log("sarit", "lucene-view: " || $id),:)
     for $div in $model("work")
     let $div :=
         if ($query) then
@@ -658,62 +658,69 @@ declare function app:get-content($div as element()) {
 };
 
 (: NGRAM :)
-declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string?, $scope as xs:string?, $scripts as xs:string) {
-    console:log("sarit", "ngram-view: " || $id),
-    let $transQuery := app:expand-query($query, $scripts, false())
-    let $query := if ($transQuery[2] eq "keep") then $transQuery else ''
-    let $transQuery := $transQuery[1]
+declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string*, $scope as xs:string?, $scripts as xs:string) {
+(:    console:log("sarit", "ngram-view: " || $id),:)
     for $div in app:load($model("work"), $id)
     let $div :=
-        if ($query) then
+        if (not(empty($query))) then
             if ($scope eq 'narrow') then
                 util:expand((
-                $div[.//tei:p[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:head[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:lg[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:trailer[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:note[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:list[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query)]],
-                $div[.//tei:quote[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:table[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:listApp[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:listBibl[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:cit[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:label[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:encodingDesc[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:fileDesc[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:profileDesc[ngram:wildcard-contains(., $query)]],
-                $div[.//tei:revisionDesc[ngram:wildcard-contains(., $query)]],
-                
-                $div[.//tei:p[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:head[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:lg[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:trailer[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:note[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:list[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:quote[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:table[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:listApp[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:listBibl[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:cit[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:label[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:encodingDesc[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:fileDesc[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:profileDesc[ngram:wildcard-contains(., $transQuery)]],
-                $div[.//tei:revisionDesc[ngram:wildcard-contains(., $transQuery)]]
+                if ($query[1])
+                then
+                (
+                $div[.//tei:p[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:head[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:lg[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:trailer[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:note[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:list[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:quote[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:table[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:listApp[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:listBibl[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:cit[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:label[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:encodingDesc[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:fileDesc[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:profileDesc[ngram:wildcard-contains(., $query[1])]],
+                $div[.//tei:revisionDesc[ngram:wildcard-contains(., $query[1])]]
+                )
+                else ()
+                ,
+                if ($query[2])
+                then
+                (
+                $div[.//tei:p[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:head[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:lg[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:trailer[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:note[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:list[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:quote[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:table[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:listApp[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:listBibl[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:cit[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:label[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:encodingDesc[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:fileDesc[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:profileDesc[ngram:wildcard-contains(., $query[2])]],
+                $div[.//tei:revisionDesc[ngram:wildcard-contains(., $query[2])]]
+                )
+                else ()
                 ),
                 "add-exist-id=all")
             else (
                 util:expand((
-                    $div[ngram:wildcard-contains(., $query)],
-                    $div[ngram:wildcard-contains(., $transQuery)]),
+                    $div[ngram:wildcard-contains(., $query[1])],
+                    $div[ngram:wildcard-contains(., $query[2])]),
                 "add-exist-id=all")
                 )
         else
-            $div[1]
-    let $view := app:get-content($div[1])
+            $div
+    let $view := app:get-content($div)
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
         { tei-to-html:recurse($view, <options/>) }
@@ -732,15 +739,15 @@ declare
     %templates:default("work-authors", "all")
     %templates:default("scripts", "all")
     %templates:default("target-texts", "all")
-function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $mode as xs:string, $tei-target as xs:string+, $scope as xs:string, 
-    $work-authors as xs:string+, $scripts as xs:string, $target-texts as xs:string+) {
+    (:scope => search-scope; mode => search-mode:)
+function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $mode as xs:string, $tei-target as xs:string+, $scope as xs:string, $work-authors as xs:string+, $scripts as xs:string, $target-texts as xs:string+) {
     let $query := translate($query, "&#8204;", "") (:remove any ZERO WIDTH NON-JOINER from query:)
-    let $queryExpr := 
+    let $query := 
         if ($index eq 'ngram')
-        then $query
-        else app:create-query($query, $mode, $scripts)
+        then app:expand-query($query, $scripts, $index)
+        else app:create-lucene-query($query, $mode, $scripts)
     return
-        if (empty($queryExpr) or $queryExpr = "")
+        if (empty($query) or $query = "")
         then
             let $cached := session:get-attribute("apps.sarit")
             return
@@ -806,127 +813,125 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             if (count($tei-target) eq 2)
                             then 
                                 (
-                                $context//tei:p[ft:query(., $queryExpr)],
-                                $context//tei:head[ft:query(., $queryExpr)],
-                                $context//tei:lg[ft:query(., $queryExpr)],
-                                $context//tei:trailer[ft:query(., $queryExpr)],
-                                $context//tei:note[ft:query(., $queryExpr)],
-                                $context//tei:list[ft:query(., $queryExpr)],
-                                $context//tei:l[not(local-name(./..) eq 'lg')][ft:query(., $queryExpr)],
-                                $context//tei:quote[ft:query(., $queryExpr)],
-                                $context//tei:table[ft:query(., $queryExpr)],
-                                $context//tei:listApp[ft:query(., $queryExpr)],
-                                $context//tei:listBibl[ft:query(., $queryExpr)],
-                                $context//tei:cit[ft:query(., $queryExpr)],
-                                $context//tei:label[ft:query(., $queryExpr)],
-                                $context//tei:encodingDesc[ft:query(., $queryExpr)],
-                                $context//tei:fileDesc[ft:query(., $queryExpr)],
-                                $context//tei:profileDesc[ft:query(., $queryExpr)],
-                                $context//tei:revisionDesc[ft:query(., $queryExpr)]
+                                $context//tei:p[ft:query(., $query)],
+                                $context//tei:head[ft:query(., $query)],
+                                $context//tei:lg[ft:query(., $query)],
+                                $context//tei:trailer[ft:query(., $query)],
+                                $context//tei:note[ft:query(., $query)],
+                                $context//tei:list[ft:query(., $query)],
+                                $context//tei:l[not(local-name(./..) eq 'lg')][ft:query(., $query)],
+                                $context//tei:quote[ft:query(., $query)],
+                                $context//tei:table[ft:query(., $query)],
+                                $context//tei:listApp[ft:query(., $query)],
+                                $context//tei:listBibl[ft:query(., $query)],
+                                $context//tei:cit[ft:query(., $query)],
+                                $context//tei:label[ft:query(., $query)],
+                                $context//tei:encodingDesc[ft:query(., $query)],
+                                $context//tei:fileDesc[ft:query(., $query)],
+                                $context//tei:profileDesc[ft:query(., $query)],
+                                $context//tei:revisionDesc[ft:query(., $query)]
                                 )
                             else
                                 if ($tei-target = 'tei-text')
                                 then
                                     (
-                                    $context//tei:p[ft:query(., $queryExpr)],
-                                    $context//tei:head[ft:query(., $queryExpr)],
-                                    $context//tei:lg[ft:query(., $queryExpr)],
-                                    $context//tei:trailer[ft:query(., $queryExpr)],
-                                    $context//tei:note[ft:query(., $queryExpr)],
-                                    $context//tei:list[ft:query(., $queryExpr)],
-                                    $context//tei:l[not(local-name(./..) eq 'lg')][ft:query(., $queryExpr)],
-                                    $context//tei:quote[ft:query(., $queryExpr)],
-                                    $context//tei:table[ft:query(., $queryExpr)],
-                                    $context//tei:listApp[ft:query(., $queryExpr)],
-                                    $context//tei:listBibl[ft:query(., $queryExpr)],
-                                    $context//tei:cit[ft:query(., $queryExpr)],
-                                    $context//tei:label[ft:query(., $queryExpr)],
-                                    $context//tei:encodingDesc[ft:query(., $queryExpr)],
-                                    $context//tei:fileDesc[ft:query(., $queryExpr)],
-                                    $context//tei:profileDesc[ft:query(., $queryExpr)],
-                                    $context//tei:revisionDesc[ft:query(., $queryExpr)]
+                                    $context//tei:p[ft:query(., $query)],
+                                    $context//tei:head[ft:query(., $query)],
+                                    $context//tei:lg[ft:query(., $query)],
+                                    $context//tei:trailer[ft:query(., $query)],
+                                    $context//tei:note[ft:query(., $query)],
+                                    $context//tei:list[ft:query(., $query)],
+                                    $context//tei:l[not(local-name(./..) eq 'lg')][ft:query(., $query)],
+                                    $context//tei:quote[ft:query(., $query)],
+                                    $context//tei:table[ft:query(., $query)],
+                                    $context//tei:listApp[ft:query(., $query)],
+                                    $context//tei:listBibl[ft:query(., $query)],
+                                    $context//tei:cit[ft:query(., $query)],
+                                    $context//tei:label[ft:query(., $query)]
                                     )
                                 else 
                                     if ($tei-target = 'tei-header')
                                     then 
                                         (
-                                        $context//tei:encodingDesc[ft:query(., $queryExpr)],
-                                        $context//tei:fileDesc[ft:query(., $queryExpr)],
-                                        $context//tei:profileDesc[ft:query(., $queryExpr)],
-                                        $context//tei:revisionDesc[ft:query(., $queryExpr)]
+                                        $context//tei:encodingDesc[ft:query(., $query)],
+                                        $context//tei:fileDesc[ft:query(., $query)],
+                                        $context//tei:profileDesc[ft:query(., $query)],
+                                        $context//tei:revisionDesc[ft:query(., $query)]
                                         )
                                     else ()    
                         order by ft:score($hit) descending
                         return $hit
+                    (:broad search scope:)
                     else
                         for $hit in 
                             if (count($tei-target) eq 2)
                             then
                                 (
-                                $context//tei:div[not(tei:div)][ft:query(., $queryExpr)],
-                                $context/descendant-or-self::tei:teiHeader[ft:query(., $queryExpr)]
+                                $context//tei:div[not(tei:div)][ft:query(., $query)],
+                                $context/descendant-or-self::tei:teiHeader[ft:query(., $query)](:NB: Can divs occur in the header? If so, they have to be removed here5:)
                                 )
                             else
                                 if ($tei-target = 'tei-text')
                                 then
                                     (
-                                    $context//tei:div[not(tei:div)][ft:query(., $queryExpr)]
+                                    $context//tei:div[not(tei:div)][ft:query(., $query)]
                                     )
                                 else 
                                     if ($tei-target = 'tei-header')
                                     then 
-                                        $context/descendant-or-self::tei:teiHeader[ft:query(., $queryExpr)]
+                                        $context/descendant-or-self::tei:teiHeader[ft:query(., $query)]
                                     else ()
                         order by ft:score($hit) descending
                         return $hit
             (: NGRAM :)
             else
-                let $transExpr := app:expand-query($queryExpr, $scripts, false())
-                let $queryExpr := if ($transExpr[2] eq "keep") then $queryExpr else ''
-                let $transExpr := $transExpr[1]
-                return
                     if ($scope eq 'narrow' and count($tei-target) eq 2)
                     then
                         for $hit in 
                             (
-                            $context//tei:p[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:head[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:lg[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:trailer[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:note[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:list[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:quote[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:table[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:listApp[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:listBibl[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:cit[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:label[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:encodingDesc[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:fileDesc[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:profileDesc[ngram:wildcard-contains(., $queryExpr)],
-                            $context//tei:revisionDesc[ngram:wildcard-contains(., $queryExpr)],
-                            
-                            if ($transExpr) then (
-                                $context//tei:p[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:head[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:lg[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:trailer[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:note[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:list[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:quote[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:table[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:listApp[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:listBibl[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:cit[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:label[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:encodingDesc[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:fileDesc[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:profileDesc[ngram:wildcard-contains(., $transExpr)],
-                                $context//tei:revisionDesc[ngram:wildcard-contains(., $transExpr)]
-                            ) else
-                                ()
+                            if ($query[1]) 
+                            then (
+                                $context//tei:p[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:head[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:lg[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:trailer[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:note[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:list[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[1])],
+                                $context//tei:quote[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:table[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:listApp[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:listBibl[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:cit[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:label[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:encodingDesc[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:fileDesc[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:profileDesc[ngram:wildcard-contains(., $query[1])],
+                                $context//tei:revisionDesc[ngram:wildcard-contains(., $query[1])]
+                                )
+                            else ()
+                            ,
+                            if ($query[2]) 
+                            then (
+                                $context//tei:p[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:head[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:lg[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:trailer[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:note[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:list[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[2])],
+                                $context//tei:quote[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:table[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:listApp[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:listBibl[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:cit[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:label[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:encodingDesc[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:fileDesc[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:profileDesc[ngram:wildcard-contains(., $query[2])],
+                                $context//tei:revisionDesc[ngram:wildcard-contains(., $query[2])]
+                                ) 
+                            else ()
                             )
                         order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending 
                         return $hit
@@ -935,45 +940,50 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                         then
                             for $hit in 
                                 (
-                                $context//tei:p[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:head[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:lg[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:trailer[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:note[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:list[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:l[not(local-name(./..) eq 'lg')][not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:quote[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:table[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:listApp[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:listBibl[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:cit[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:label[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:encodingDesc[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:fileDesc[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:profileDesc[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:revisionDesc[ngram:wildcard-contains(., $queryExpr)],
-                                
-                                if ($transExpr) then (
-                                    $context//tei:p[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:head[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:lg[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:trailer[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:note[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:list[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:l[not(local-name(./..) eq 'lg')][not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:quote[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:table[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:listApp[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:listBibl[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:cit[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:label[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:encodingDesc[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:fileDesc[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:profileDesc[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:revisionDesc[ngram:wildcard-contains(., $transExpr)]
-                                ) else
-                                    ()
-                                )
+                                if ($query[1]) 
+                                then (
+                                    $context//tei:p[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:head[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:lg[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:trailer[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:note[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:list[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:l[not(local-name(./..) eq 'lg')][not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:quote[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:table[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:listApp[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:listBibl[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:cit[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:label[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:encodingDesc[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:fileDesc[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:profileDesc[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:revisionDesc[ngram:wildcard-contains(., $query[1])]
+                                    )
+                                else ()
+                                ,
+                                if ($query[2]) 
+                                then (
+                                    $context//tei:p[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:head[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:lg[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:trailer[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:note[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:list[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:l[not(local-name(./..) eq 'lg')][not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:quote[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:table[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:listApp[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:listBibl[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:cit[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:label[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:encodingDesc[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:fileDesc[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:profileDesc[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:revisionDesc[ngram:wildcard-contains(., $query[2])]
+                                ) 
+                        else ()
+                        )
                             order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending 
                             return $hit
                         else
@@ -981,18 +991,21 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             then
                             for $hit in 
                                 (
-                                $context//tei:encodingDesc[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:fileDesc[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:profileDesc[ngram:wildcard-contains(., $queryExpr)],
-                                $context//tei:revisionDesc[ngram:wildcard-contains(., $queryExpr)],
-                                
-                                if ($transExpr) then (
-                                    $context//tei:encodingDesc[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:fileDesc[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:profileDesc[ngram:wildcard-contains(., $transExpr)],
-                                    $context//tei:revisionDesc[ngram:wildcard-contains(., $transExpr)]
-                                ) else
-                                    ()
+                                if ($query[1]) 
+                                then (
+                                    $context//tei:encodingDesc[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:fileDesc[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:profileDesc[ngram:wildcard-contains(., $query[1])],
+                                    $context//tei:revisionDesc[ngram:wildcard-contains(., $query[1])]
+                                ) else ()
+                                ,
+                                if ($query[2]) 
+                                then (
+                                    $context//tei:encodingDesc[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:fileDesc[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:profileDesc[ngram:wildcard-contains(., $query[2])],
+                                    $context//tei:revisionDesc[ngram:wildcard-contains(., $query[2])]
+                                ) else ()
                                 )
                             order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending 
                             return $hit
@@ -1001,14 +1014,20 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                 then
                                     for $hit in
                                         (
-                                        $context//tei:div[not(tei:div)][ngram:wildcard-contains(., $queryExpr)],
-                                        $context/descendant-or-self::tei:teiHeader[ngram:wildcard-contains(., $queryExpr)],
-                                        
-                                        if ($transExpr) then (
-                                            $context//tei:div[not(tei:div)][ngram:wildcard-contains(., $transExpr)],
-                                            $context/descendant-or-self::tei:teiHeader[ngram:wildcard-contains(., $transExpr)]
-                                        ) else
-                                            ()
+                                        if ($query[1])
+                                        then
+                                            (
+                                            $context//tei:div[not(tei:div)][ngram:wildcard-contains(., $query[1])],
+                                            $context/descendant-or-self::tei:teiHeader[ngram:wildcard-contains(., $query[1])]
+                                            ) 
+                                        else ()
+                                        ,
+                                        if ($query[2]) 
+                                        then (
+                                            $context//tei:div[not(tei:div)][ngram:wildcard-contains(., $query[2])],
+                                            $context/descendant-or-self::tei:teiHeader[ngram:wildcard-contains(., $query[2])]
+                                            ) 
+                                        else ()
                                         )
                                     order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending
                                     return $hit
@@ -1016,11 +1035,15 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                     if ($scope eq 'broad' and $tei-target eq 'tei-text')
                                     then
                                         for $hit in (
-                                            $context//tei:div[not(tei:div)][ngram:wildcard-contains(., $queryExpr)],
-                                            if ($transExpr) then
-                                                $context//tei:div[not(tei:div)][ngram:wildcard-contains(., $transExpr)]
-                                            else
-                                                ()
+                                            if ($query[1])
+                                            then
+                                                $context//tei:div[not(tei:div)][ngram:wildcard-contains(., $query[1])]
+                                            else ()
+                                            ,
+                                            if ($query[2]) 
+                                            then
+                                                $context//tei:div[not(tei:div)][ngram:wildcard-contains(., $query[2])]
+                                            else ()
                                         )
                                         order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending
                                         return $hit
@@ -1028,9 +1051,9 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                         if ($scope eq 'broad' and $tei-target eq 'tei-header')
                                         then 
                                         for $hit in (
-                                            $context/descendant-or-self::tei:teiHeader[ngram:wildcard-contains(., $queryExpr)],
-                                            if ($transExpr) then
-                                                $context/descendant-or-self::tei:teiHeader[ngram:wildcard-contains(., $transExpr)]
+                                            $context/descendant-or-self::tei:teiHeader[ngram:wildcard-contains(., $query[1])],
+                                            if ($query[2]) then
+                                                $context/descendant-or-self::tei:teiHeader[ngram:wildcard-contains(., $query[2])]
                                             else
                                                 ()
                                             )
@@ -1039,14 +1062,14 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                         else ()
             let $store := (
                 session:set-attribute("apps.sarit", $hits),
-                session:set-attribute("apps.sarit.query", $queryExpr),
+                session:set-attribute("apps.sarit.query", $query),
                 session:set-attribute("apps.sarit.scope", $scope)
             )
             return
                 (: Process nested templates :)
                 map {
                     "hits" := $hits,
-                    "query" := $queryExpr
+                    "query" := $query
                 }
 };
 
@@ -1054,8 +1077,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
     app:expand-query transliterates the query string from Devanagari to IAST transcription and/or from IAST transcription to Devanagari, 
     if the user has indicated that this search is wanted. 
 :)
-(:something smarter than $lucene-index-used must be found :)
-declare %private function app:expand-query($query as xs:string?, $scripts as xs:string?, $lucene-index-used as xs:boolean) as item()+ {
+declare %private function app:expand-query($query as xs:string?, $scripts as xs:string?, $index as xs:string) as item()+ {
     if ($query) then (
         sarit:create("devnag2roman", $app:devnag2roman/string()),
         sarit:create("roman2devnag", $app:roman2devnag/string()),
@@ -1065,17 +1087,24 @@ declare %private function app:expand-query($query as xs:string?, $scripts as xs:
             (:if the user wants to search in Devanagri, then transliterate and discard the original query:)
             if ($scripts = "sa-Deva") 
             then
-                (translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""), if ($lucene-index-used) then () else "delete")
+                if ($index eq "ngram")
+                then ((), translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""))
+                else translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")
             else 
                 (:if the user wants to search in both romanization and Devanagri, then transliterate and keep the original query:)
                 if ($scripts = "all")
                 then
-                    (translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""), if ($lucene-index-used) then () else "keep")
+                    if ($index eq "ngram")
+                    then ($query, translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""))
+                    else translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")
                 else 
                     (:if the user wants to search in romanization, then do not transliterate but keep original query:)
                     (:this exhausts all options for romanized input strings:)
                     if ($scripts = "sa-Latn") 
-                    then ('', if ($lucene-index-used) then () else "keep")
+                    then 
+                        if ($index eq "ngram")
+                        then ($query, ())
+                        else ()
                     else ()
         else
             (:if there is Devanagri input:)
@@ -1084,21 +1113,32 @@ declare %private function app:expand-query($query as xs:string?, $scripts as xs:
                 (:if the user wants to search in romanization, then transliterate but delete the original query:)
                 if ($scripts = "sa-Latn") 
                 then
-                    (sarit:transliterate("devnag2roman", $query), if ($lucene-index-used) then () else "delete")
+                    if ($index eq "ngram")
+                    then ((), sarit:transliterate("devnag2roman", $query))
+                    else sarit:transliterate("devnag2roman", $query)
                 else
                     (:if the user wants to search in both Devanagri and romanization, then transliterate but keep the original query:)
                     if ($scripts = "all")
                     then
-                        (sarit:transliterate("devnag2roman", $query), if ($lucene-index-used) then () else "keep")
+                        if ($index eq "ngram")
+                        then ($query, sarit:transliterate("devnag2roman", $query))
+                        else sarit:transliterate("devnag2roman", $query)
                     else 
                         if ($scripts = "sa-Deva")
                         then
                             (:if the user wants to search in Devanagri, then do not transliterate but keep original query:)
-                            ('', if ($lucene-index-used) then () else "keep")
+                            if ($index eq "ngram")
+                            then ($query, ())
+                            else ()
                         else (:if the query string is not IAST and not Devanagari, do not transliterate but keep the original query.:)
-                            ('', if ($lucene-index-used) then () else "keep")
-            (:there are only the two options (for now): IAST and Devanagari input. If the query is not IAST and is not Devanagari, the do not transliterate and keep the original query.:)
-            else ('', if ($lucene-index-used) then () else "keep")
+                            if ($index eq "ngram")
+                            then ($query, ())
+                            else ()
+            (:there are only two options now: IAST and Devanagari input. If the query is not pure IAST and is not pure Devanagari, then do not transliterate and keep the original query.:)
+            else
+                if ($index eq "ngram")
+                then ($query, ())
+                else ()
     ) 
     else ()
 };
@@ -1106,7 +1146,7 @@ declare %private function app:expand-query($query as xs:string?, $scripts as xs:
 (:~
     Helper function: create a lucene query from the user input
 :)
-declare %private function app:create-query($query-string as xs:string?, $mode as xs:string, $scripts as xs:string) {
+declare %private function app:create-lucene-query($query-string as xs:string?, $mode as xs:string, $scripts as xs:string) {
     let $query-string := if ($query-string) then app:sanitize-lucene-query($query-string) else ''
     let $query-string := normalize-space($query-string)
     let $query:=
@@ -1163,46 +1203,46 @@ declare %private function app:create-query($query-string as xs:string?, $mode as
                 then
                     (:if the user wishes to search in Devanagari, transliterate the original query and delete it:)
                     if ($scripts eq "sa-Deva") 
-                    then app:transliterate-lucene-xml-query($query, $scripts)
+                    then ((), app:transliterate-lucene-query($query, $scripts))
                     else
                         (:if the user wishes to search in both IAST and  Devanagari, transliterate the original query and keep it:)
                         if ($scripts eq "all") 
-                        then ($query, app:transliterate-lucene-xml-query($query, $scripts))
+                        then ($query, app:transliterate-lucene-query($query, $scripts))
                         else
                             (:if the user wishes to search in IAST only, do not transliterate the original query but keep it:)
                             if ($scripts eq "sa-Latn") 
-                            then $query
-                            else ()
+                            then ($query, ())
+                            else ($query, ())
                 else
                     if (empty(string-to-codepoints($query/string())[not(. = (9-13, 32, 133, 160, 2304 to 2431, 43232 to 43259, 7376 to 7412))]))
                     (:if there is input exclusively of Devanagari characters:)
                     then
                         (:if the user wishes to search in IAST, transliterate the original query and delete it:)
                         if ($scripts eq "sa-Latn")
-                        then app:transliterate-lucene-xml-query($query, $scripts)
+                        then ((), app:transliterate-lucene-query($query, $scripts))
                         else
                             (:if the user wishes to search in Devanagari, do not transliterate the original query but keep it:)
                             if ($scripts eq "sa-Deva")
-                            then $query
+                            then ($query, ())
                             else
                                 (:if the user wishes to search in both IAST and  Devanagari, transliterate the original query and keep it:)
                                 if ($scripts eq "all")
-                                then ($query, app:transliterate-lucene-xml-query($query, $scripts))
-                                else ()
-                    else $query
+                                then ($query, app:transliterate-lucene-query($query, $scripts))
+                                else ($query, ())
+                    else ($query, ())
             return <query>{$query}</query>
     return $query
     
 };
 
-declare function app:transliterate-lucene-xml-query($element as element(), $scripts as xs:string) as element() {
+declare function app:transliterate-lucene-query($element as element(), $scripts as xs:string) as element() {
    element {node-name($element)}
       {$element/@*,
           for $child in $element/node()
               return
                if ($child instance of element())
-                 then app:transliterate-lucene-xml-query($child, $scripts)
-                 else app:expand-query($child, $scripts, true())
+                 then app:transliterate-lucene-query($child, $scripts)
+                 else app:expand-query($child, $scripts, "lucene")
       }
 };
 
