@@ -744,7 +744,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
     let $query := translate($query, "&#8204;", "") (:remove any ZERO WIDTH NON-JOINER from query:)
     let $query := 
         if ($index eq 'ngram')
-        then app:expand-query($query, $scripts, $index)
+        then app:expand-ngram-query($query, $scripts, $index)
         else app:create-lucene-query($query, $mode, $scripts)
     return
         if (empty($query) or $query = "")
@@ -1077,68 +1077,52 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
     app:expand-query transliterates the query string from Devanagari to IAST transcription and/or from IAST transcription to Devanagari, 
     if the user has indicated that this search is wanted. 
 :)
-declare %private function app:expand-query($query as xs:string?, $scripts as xs:string?, $index as xs:string) as item()+ {
-    if ($query) then (
+declare %private function app:expand-ngram-query($query as xs:string?, $scripts as xs:string?, $index as xs:string) as xs:string+ {
+    if ($query) 
+    then (
         sarit:create("devnag2roman", $app:devnag2roman/string()),
         sarit:create("roman2devnag", $app:roman2devnag/string()),
-        (:if there is input in IAST romanization:)
+        (:if there is input exclusively in IAST romanization:)
         if (not(matches($query, $app:iast-char-repertoire-negation))) 
         then
             (:if the user wants to search in Devanagri, then transliterate and discard the original query:)
-            if ($scripts = "sa-Deva") 
+            if ($scripts eq "sa-Deva") 
             then
-                if ($index eq "ngram")
-                then ((), translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""))
-                else translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")
+                ((), translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""))
             else 
-                (:if the user wants to search in both romanization and Devanagri, then transliterate and keep the original query:)
-                if ($scripts = "all")
+                (:if the user wants to search in both IAST and Devanagri, then transliterate the original query and keep it:)
+                if ($scripts eq "all")
                 then
-                    if ($index eq "ngram")
-                    then ($query, translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""))
-                    else translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")
+                    ($query, translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""))
                 else 
                     (:if the user wants to search in romanization, then do not transliterate but keep original query:)
-                    (:this exhausts all options for romanized input strings:)
-                    if ($scripts = "sa-Latn") 
+                    (:this exhausts all options for IAST input strings:)
+                    if ($scripts eq "sa-Latn") 
                     then 
-                        if ($index eq "ngram")
-                        then ($query, ())
-                        else ()
+                        ($query, ())
                     else ()
         else
-            (:if there is Devanagri input:)
+            (:if there is input exclusively in Devanagri:)
             if (empty(string-to-codepoints($query)[not(. = (9-13, 32, 133, 160, 2304 to 2431, 43232 to 43259, 7376 to 7412))])) 
             then
-                (:if the user wants to search in romanization, then transliterate but delete the original query:)
-                if ($scripts = "sa-Latn") 
+                (:if the user wants to search in IAST, then transliterate the original query but delete it:)
+                if ($scripts eq "sa-Latn") 
                 then
-                    if ($index eq "ngram")
-                    then ((), sarit:transliterate("devnag2roman", $query))
-                    else sarit:transliterate("devnag2roman", $query)
+                    ((), sarit:transliterate("devnag2roman", $query))
                 else
-                    (:if the user wants to search in both Devanagri and romanization, then transliterate but keep the original query:)
-                    if ($scripts = "all")
+                    (:if the user wants to search in both Devanagri and IAST, then transliterate the original query and keep it:)
+                    if ($scripts eq "all")
                     then
-                        if ($index eq "ngram")
-                        then ($query, sarit:transliterate("devnag2roman", $query))
-                        else sarit:transliterate("devnag2roman", $query)
+                        ($query, sarit:transliterate("devnag2roman", $query))
                     else 
-                        if ($scripts = "sa-Deva")
+                        (:if the user wants to search in Devanagri, then do not transliterate original query but keep it:)
+                        if ($scripts eq "sa-Deva")
                         then
-                            (:if the user wants to search in Devanagri, then do not transliterate but keep original query:)
-                            if ($index eq "ngram")
-                            then ($query, ())
-                            else ()
-                        else (:if the query string is not IAST and not Devanagari, do not transliterate but keep the original query.:)
-                            if ($index eq "ngram")
-                            then ($query, ())
-                            else ()
-            (:there are only two options now: IAST and Devanagari input. If the query is not pure IAST and is not pure Devanagari, then do not transliterate and keep the original query.:)
+                            ($query, ())
+                        else ()
+            (:there are only two options: IAST and Devanagari input. If the query is not pure IAST and is not pure Devanagari, then do not (try to) transliterate the original query but keep it.:)
             else
-                if ($index eq "ngram")
-                then ($query, ())
-                else ()
+                ($query, ())
     ) 
     else ()
 };
@@ -1167,59 +1151,62 @@ declare %private function app:create-lucene-query($query-string as xs:string?, $
                 then string-join(subsequence($query-string, 1, count($query-string) - 1), ' ') 
                 else string-join($query-string, ' ')
             let $query :=
-                    if ($mode eq 'any') then
+                    if ($mode eq 'any') 
+                    then
                         for $term in tokenize($query-string, '\s')
                         return <term occur="should">{$term}</term>
-                    else if ($mode eq 'all') then
+                    else 
+                        if ($mode eq 'all') 
+                        then
                         <bool>
                         {
                             for $term in tokenize($query-string, '\s')
                             return <term occur="must">{$term}</term>
                         }
                         </bool>
-                    else 
-                        if ($mode eq 'phrase') 
-                        then <phrase>{$query-string}</phrase>
-                        else
-                            if ($mode eq 'near-unordered')
-                            then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="no">{$query-string}</near>
-                            else 
-                                if ($mode eq 'near-ordered')
-                                then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="yes">{$query-string}</near>
+                        else 
+                            if ($mode eq 'phrase') 
+                            then <phrase>{$query-string}</phrase>
+                            else
+                                if ($mode eq 'near-unordered')
+                                then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="no">{$query-string}</near>
                                 else 
-                                    if ($mode eq 'fuzzy')
-                                    then <fuzzy max-edits="{if ($last-item castable as xs:integer and number($last-item) < 3) then $last-item else 2}">{tokenize($query-string, ' ')[1]}</fuzzy>
+                                    if ($mode eq 'near-ordered')
+                                    then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="yes">{$query-string}</near>
                                     else 
-                                        if ($mode eq 'wildcard')
-                                        then <wildcard>{$query-string}</wildcard>
+                                        if ($mode eq 'fuzzy')
+                                        then <fuzzy max-edits="{if ($last-item castable as xs:integer and number($last-item) < 3) then $last-item else 2}">{tokenize($query-string, ' ')[1]}</fuzzy>
                                         else 
-                                            if ($mode eq 'regex')
-                                            then <regex>{$query-string}</regex>
-                                            else ()
+                                            if ($mode eq 'wildcard')
+                                            then <wildcard>{$query-string}</wildcard>
+                                            else 
+                                                if ($mode eq 'regex')
+                                                then <regex>{$query-string}</regex>
+                                                else ()
             let $query := <bool>{$query}</bool>
             let $query :=
-                (:if there is input exclusively of IAST characters:)
+                (:if there is input exclusively in IAST characters:)
                 if (not(matches($query/string(), $app:iast-char-repertoire-negation)))
                 then
                     (:if the user wishes to search in Devanagari, transliterate the original query and delete it:)
                     if ($scripts eq "sa-Deva") 
-                    then ((), app:transliterate-lucene-query($query, $scripts))
+                    then ((), app:transliterate-lucene-query($query, "roman2devnag"))
                     else
                         (:if the user wishes to search in both IAST and  Devanagari, transliterate the original query and keep it:)
                         if ($scripts eq "all") 
-                        then ($query, app:transliterate-lucene-query($query, $scripts))
+                        then ($query, app:transliterate-lucene-query($query, "roman2devnag"))
                         else
                             (:if the user wishes to search in IAST only, do not transliterate the original query but keep it:)
                             if ($scripts eq "sa-Latn") 
                             then ($query, ())
-                            else ($query, ())
+                            else ()
                 else
                     if (empty(string-to-codepoints($query/string())[not(. = (9-13, 32, 133, 160, 2304 to 2431, 43232 to 43259, 7376 to 7412))]))
-                    (:if there is input exclusively of Devanagari characters:)
+                    (:if there is input consisting exclusively of Devanagari characters:)
                     then
                         (:if the user wishes to search in IAST, transliterate the original query and delete it:)
                         if ($scripts eq "sa-Latn")
-                        then ((), app:transliterate-lucene-query($query, $scripts))
+                        then ((), app:transliterate-lucene-query($query, "devnag2roman"))
                         else
                             (:if the user wishes to search in Devanagari, do not transliterate the original query but keep it:)
                             if ($scripts eq "sa-Deva")
@@ -1227,23 +1214,31 @@ declare %private function app:create-lucene-query($query-string as xs:string?, $
                             else
                                 (:if the user wishes to search in both IAST and  Devanagari, transliterate the original query and keep it:)
                                 if ($scripts eq "all")
-                                then ($query, app:transliterate-lucene-query($query, $scripts))
-                                else ($query, ())
+                                then ($query, app:transliterate-lucene-query($query, "devnag2roman"))
+                                else ()
                     else ($query, ())
             return <query>{$query}</query>
     return $query
     
 };
 
-declare function app:transliterate-lucene-query($element as element(), $scripts as xs:string) as element() {
-   element {node-name($element)}
-      {$element/@*,
-          for $child in $element/node()
-              return
-               if ($child instance of element())
-                 then app:transliterate-lucene-query($child, $scripts)
-                 else app:expand-query($child, $scripts, "lucene")
-      }
+declare function app:transliterate-lucene-query($element as element(), $direction as xs:string) as element() {
+   (
+    sarit:create("devnag2roman", $app:devnag2roman/string()),
+    sarit:create("roman2devnag", $app:roman2devnag/string()),element {node-name($element)}
+    {$element/@*,
+        for $child in $element/node()
+        return
+            if ($child instance of element())
+            then app:transliterate-lucene-query($child, $direction)
+            else
+                if ($direction eq "devnag2roman")
+                then
+                    sarit:transliterate("devnag2roman", $child)
+                else
+                    translate(sarit:transliterate("roman2devnag", $child), "&#8204;", "")
+    }
+    )
 };
 
 (:~
