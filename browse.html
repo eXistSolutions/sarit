@@ -26,7 +26,7 @@
                 </div>
                 <div id="mode-selection" class="form-group" data-toggle="tooltip" data-placement="left" title="Use Which Search Mode?" style="display: none;">
                     <div class="col-md-12 col-xs-12">
-                        <select name="mode" class="form-control" data-template="templates:form-control">
+                        <select name="lucene-query-mode" class="form-control" data-template="templates:form-control">
                             <option value="any">Any Search Term</option>
                             <option value="all">All Search Terms Together</option>
                             <option value="phrase">Phrase Search</option>
@@ -41,14 +41,14 @@
                 <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search Which Document Part?">
                     <div class="col-md-12 col-xs-12">
                         <select multiple="multiple" name="tei-target" class="form-control" data-template="templates:form-control">
-                            <option value="tei-text" selected="selected">In TEI Text</option>
-                            <option value="tei-header">In TEI Header</option>
+                            <option value="tei-text" selected="selected">Search TEI Text</option>
+                            <option value="tei-header">Search TEI Header</option>
                         </select>
                     </div>
                 </div>
-                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Perform Narrow Or Broad Search?">
+                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search Narrowly Or Broadly?">
                     <div class="col-md-12 col-xs-12">
-                        <select name="scope" class="form-control" data-template="templates:form-control">
+                        <select name="query-scope" class="form-control" data-template="templates:form-control">
                             <option value="narrow" selected="selected">Perform Narrow Search</option>
                             <option value="broad">Perform Broad Search</option>
                         </select>
@@ -61,10 +61,20 @@
                 </div>
                 <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search With Which Scripts?">
                     <div class="col-md-12 col-xs-12">
-                        <select name="scripts" class="form-control" data-template="templates:form-control">
-                            <option value="all" selected="selected">With Devanagari &amp; IAST</option>
-                            <option value="sa-Deva">With Devanagari</option>
-                            <option value="sa-Latn">With IAST</option>
+                        <select multiple="multiple" name="query-scripts" class="form-control" data-template="templates:form-control">
+                            <option value="all" selected="selected">Search With Devanagari and IAST</option>
+                            <option value="sa-Deva">Search With Devanagari</option>
+                            <option value="sa-Latn">Search With IAST</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Continue Last Search or Perform New Search?">
+                    <div class="col-md-12 col-xs-12">
+                        <select name="bool" class="form-control" data-template="templates:form-control">
+                            <option value="new" selected="selected">Perform New Search</option>
+                            <option value="and">AND Last Search</option>
+                            <option value="or">OR Last Search</option>
+                            <option value="not">NOT Last Search</option>
                         </select>
                     </div>
                 </div>

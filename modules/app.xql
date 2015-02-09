@@ -573,30 +573,28 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
 declare 
     %templates:default("index", "ngram")
     %templates:default("action", "browse")
-    %templates:default("scripts", "all")
-function app:view($node as node(), $model as map(*), $id as xs:string, $action as xs:string, $scripts as xs:string) {
+    %templates:default("query-scripts", "all")
+function app:view($node as node(), $model as map(*), $id as xs:string, $action as xs:string, $query-scripts as xs:string) {
         let $query := 
             if ($action eq 'search')
             then session:get-attribute("apps.sarit.query")
             else ()
-        let $scope := 
+        let $query-scope := 
             if (not(empty($query)))
             then session:get-attribute("apps.sarit.scope")
             else ()
         return
             if ($query instance of element())
-            then app:lucene-view($node, $model, $id, $query, $scope, $scripts)
-            else app:ngram-view($node, $model, $id, $query, $scope, $scripts)
+            then app:lucene-view($node, $model, $id, $query, $query-scope, $query-scripts)
+            else app:ngram-view($node, $model, $id, $query, $query-scope, $query-scripts)
 };
 
-(: LUCENE :)
-
-declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $scope as xs:string?, $scripts as xs:string) {    
+declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $query-scope as xs:string?, $query-scripts as xs:string) {    
 (:    console:log("sarit", "lucene-view: " || $id),:)
     for $div in $model("work")
     let $div :=
         if ($query) then
-            if ($scope eq 'narrow') then
+            if ($query-scope eq 'narrow') then
                 util:expand((
                 $div[.//tei:p[ft:query(., $query)]],
                 $div[.//tei:head[ft:query(., $query)]],
@@ -633,37 +631,12 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
         </div>
 };
 
-declare function app:get-content($div as element()) {
-    if ($div instance of element(tei:teiHeader)) then 
-        $div
-    else
-        if ($div instance of element(tei:div)) then
-            if ($div/tei:div) then
-                if (count(($div/tei:div[1])/preceding-sibling::*) < 5) then
-                    let $child := $div/tei:div[1]
-                    return
-                        element { node-name($div) } {
-                            $div/@*,
-                            $child/preceding-sibling::*,
-                            app:get-content($child)
-                        }
-                else
-                    element { node-name($div) } {
-                        $div/@*,
-                        $div/tei:div[1]/preceding-sibling::*
-                    }
-            else
-                $div
-        else ()
-};
-
-(: NGRAM :)
-declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string*, $scope as xs:string?, $scripts as xs:string) {
+declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string*, $query-scope as xs:string?, $query-scripts as xs:string) {
 (:    console:log("sarit", "ngram-view: " || $id),:)
     for $div in app:load($model("work"), $id)
     let $div :=
         if (not(empty($query))) then
-            if ($scope eq 'narrow') then
+            if ($query-scope eq 'narrow') then
                 util:expand((
                 if ($query[1])
                 then
@@ -727,25 +700,49 @@ declare function app:ngram-view($node as node(), $model as map(*), $id as xs:str
         </div>
 };
 
+declare function app:get-content($div as element()) {
+    if ($div instance of element(tei:teiHeader)) then 
+        $div
+    else
+        if ($div instance of element(tei:div)) then
+            if ($div/tei:div) then
+                if (count(($div/tei:div[1])/preceding-sibling::*) < 5) then
+                    let $child := $div/tei:div[1]
+                    return
+                        element { node-name($div) } {
+                            $div/@*,
+                            $child/preceding-sibling::*,
+                            app:get-content($child)
+                        }
+                else
+                    element { node-name($div) } {
+                        $div/@*,
+                        $div/tei:div[1]/preceding-sibling::*
+                    }
+            else
+                $div
+        else ()
+};
+
+
 (:~
     Execute the query. The search results are not output immediately. Instead they
     are passed to nested templates through the $model parameter.
 :)
 declare 
     %templates:default("index", "ngram")
-    %templates:default("mode", "any")
+    %templates:default("lucene-query-mode", "any")
     %templates:default("tei-target", "tei-text")
-    %templates:default("scope", "narrow")
+    %templates:default("search-scope", "narrow")
     %templates:default("work-authors", "all")
-    %templates:default("scripts", "all")
+    %templates:default("query-scripts", "all")
     %templates:default("target-texts", "all")
-    (:scope => search-scope; mode => search-mode:)
-function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $mode as xs:string, $tei-target as xs:string+, $scope as xs:string, $work-authors as xs:string+, $scripts as xs:string, $target-texts as xs:string+) {
+function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $lucene-query-mode as xs:string, $tei-target as xs:string+, $query-scope as xs:string, $work-authors as xs:string+, $query-scripts as xs:string, $target-texts as xs:string+) {
     let $query := translate($query, "&#8204;", "") (:remove any ZERO WIDTH NON-JOINER from query:)
     let $query := 
         if ($index eq 'ngram')
-        then app:expand-ngram-query($query, $scripts, $index)
-        else app:create-lucene-query($query, $mode, $scripts)
+        then app:expand-ngram-query($query, $query-scripts, $index)
+        else app:create-lucene-query($query, $lucene-query-mode, $query-scripts)
     return
         if (empty($query) or $query = "")
         then
@@ -754,28 +751,28 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                 map {
                     "hits" := $cached,
                     "query" := session:get-attribute("apps.sarit.query"),
-                    "scope" := $scope (:NB: what about the other arguments?:)
+                    "scope" := $query-scope (:NB: what about the other arguments?:)
                 }
         else
             (:$target-texts will either have the value 'all' or a sequence of text xml:ids.:)
             let $target-texts := 
                 (:("target-texts", "all")("work-authors", "all"):)
-                (:If no texts have been selected and no authors have been selected and no scripts have been selected, search in all texts:)
+                (:If no texts have been selected and no authors have been selected, search in all texts:)
                 if ($target-texts = 'all' and $work-authors = 'all')
                 then 'all' 
                 else
                     (:("target-texts", "sequence of text xml:ids")("work-authors", "all"):)
-                    (:If one or more texts have been selected, but no authors and no scripts have been selected, search in selected texts:)
+                    (:If one or more texts have been selected, but no authors, search in selected texts:)
                     if ($target-texts != 'all' and $work-authors = 'all')
                     then $target-texts
                     else 
                         (:("target-texts", "all")("work-authors", "sequence of text xml:ids"):)
-                        (:If no texts and no scripts have been selected, but one or more authors have been selected, search in texts selected by author:)
+                        (:If no texts, but one or more authors have been selected, search in texts selected by author:)
                         if ($target-texts = 'all' and $work-authors != 'all')
                         then distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id)
                         else
                             (:("target-texts", "sequence of text xml:ids")("work-authors", "sequence of text xml:ids"):)
-                            (:If one or more texts and more authors have been selected, but no scripts have been selected, search in the union of selected texts and texts selected by authors:)
+                            (:If one or more texts and more authors have been selected, search in the union of selected texts and texts selected by authors:)
                             if ($target-texts != 'all' and $work-authors != 'all')
                             then distinct-values(($target-texts, collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id))
                             else ()
@@ -807,7 +804,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
             let $hits :=
                 if ($index eq 'lucene')
                 then
-                    if ($scope eq 'narrow')
+                    if ($query-scope eq 'narrow')
                     then
                         for $hit in 
                             if (count($tei-target) eq 2)
@@ -883,9 +880,9 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                     else ()
                         order by ft:score($hit) descending
                         return $hit
-            (: NGRAM :)
-            else
-                    if ($scope eq 'narrow' and count($tei-target) eq 2)
+                (: NGRAM :)
+                else
+                    if ($query-scope eq 'narrow' and count($tei-target) eq 2)
                     then
                         for $hit in 
                             (
@@ -936,7 +933,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                         order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending 
                         return $hit
                     else
-                        if ($scope eq 'narrow' and $tei-target eq 'tei-text')
+                        if ($query-scope eq 'narrow' and $tei-target eq 'tei-text')
                         then
                             for $hit in 
                                 (
@@ -987,7 +984,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending 
                             return $hit
                         else
-                            if ($scope eq 'narrow' and $tei-target eq 'tei-header')
+                            if ($query-scope eq 'narrow' and $tei-target eq 'tei-header')
                             then
                             for $hit in 
                                 (
@@ -1010,7 +1007,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending 
                             return $hit
                             else
-                                if ($scope eq 'broad' and count($tei-target) eq 2)
+                                if ($query-scope eq 'broad' and count($tei-target) eq 2)
                                 then
                                     for $hit in
                                         (
@@ -1032,7 +1029,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                     order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending
                                     return $hit
                                 else
-                                    if ($scope eq 'broad' and $tei-target eq 'tei-text')
+                                    if ($query-scope eq 'broad' and $tei-target eq 'tei-text')
                                     then
                                         for $hit in (
                                             if ($query[1])
@@ -1048,7 +1045,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                         order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending
                                         return $hit
                                     else 
-                                        if ($scope eq 'broad' and $tei-target eq 'tei-header')
+                                        if ($query-scope eq 'broad' and $tei-target eq 'tei-header')
                                         then 
                                         for $hit in (
                                             $context/descendant-or-self::tei:teiHeader[ngram:wildcard-contains(., $query[1])],
@@ -1063,8 +1060,8 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
             let $store := (
                 session:set-attribute("apps.sarit", $hits),
                 session:set-attribute("apps.sarit.query", $query),
-                session:set-attribute("apps.sarit.scope", $scope)
-            )
+                session:set-attribute("apps.sarit.scope", $query-scope)
+                )
             return
                 (: Process nested templates :)
                 map {
@@ -1074,10 +1071,10 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
 };
 
 (:~
-    app:expand-query transliterates the query string from Devanagari to IAST transcription and/or from IAST transcription to Devanagari, 
+    app:expand-ngram-query transliterates the query string from Devanagari to IAST transcription and/or from IAST transcription to Devanagari, 
     if the user has indicated that this search is wanted. 
 :)
-declare %private function app:expand-ngram-query($query as xs:string?, $scripts as xs:string?, $index as xs:string) as xs:string+ {
+declare %private function app:expand-ngram-query($query as xs:string?, $query-scripts as xs:string?, $index as xs:string) as xs:string+ {
     if ($query) 
     then (
         sarit:create("devnag2roman", $app:devnag2roman/string()),
@@ -1086,18 +1083,18 @@ declare %private function app:expand-ngram-query($query as xs:string?, $scripts 
         if (not(matches($query, $app:iast-char-repertoire-negation))) 
         then
             (:if the user wants to search in Devanagri, then transliterate and discard the original query:)
-            if ($scripts eq "sa-Deva") 
+            if ($query-scripts eq "sa-Deva") 
             then
                 ((), translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""))
             else 
                 (:if the user wants to search in both IAST and Devanagri, then transliterate the original query and keep it:)
-                if ($scripts eq "all")
+                if ($query-scripts eq "all")
                 then
                     ($query, translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""))
                 else 
                     (:if the user wants to search in romanization, then do not transliterate but keep original query:)
                     (:this exhausts all options for IAST input strings:)
-                    if ($scripts eq "sa-Latn") 
+                    if ($query-scripts eq "sa-Latn") 
                     then 
                         ($query, ())
                     else ()
@@ -1106,17 +1103,17 @@ declare %private function app:expand-ngram-query($query as xs:string?, $scripts 
             if (empty(string-to-codepoints($query)[not(. = (9-13, 32, 133, 160, 2304 to 2431, 43232 to 43259, 7376 to 7412))])) 
             then
                 (:if the user wants to search in IAST, then transliterate the original query but delete it:)
-                if ($scripts eq "sa-Latn") 
+                if ($query-scripts eq "sa-Latn") 
                 then
                     ((), sarit:transliterate("devnag2roman", $query))
                 else
                     (:if the user wants to search in both Devanagri and IAST, then transliterate the original query and keep it:)
-                    if ($scripts eq "all")
+                    if ($query-scripts eq "all")
                     then
                         ($query, sarit:transliterate("devnag2roman", $query))
                     else 
                         (:if the user wants to search in Devanagri, then do not transliterate original query but keep it:)
-                        if ($scripts eq "sa-Deva")
+                        if ($query-scripts eq "sa-Deva")
                         then
                             ($query, ())
                         else ()
@@ -1128,19 +1125,58 @@ declare %private function app:expand-ngram-query($query as xs:string?, $scripts 
 };
 
 (:~
+    app:expand-lucene-query transliterates the lucene query element from Devanagari to IAST transcription and/or from IAST transcription to Devanagari, 
+    if the user has indicated that this search is wanted. 
+:)
+declare %private function app:expand-lucene-query($query as element(bool), $query-scripts as xs:string) as element(bool)+ {
+        (:if there is input exclusively in IAST characters:)
+        if (not(matches($query/string(), $app:iast-char-repertoire-negation)))
+        then
+            (:if the user wishes to search in Devanagari, transliterate the original query and delete it:)
+            if ($query-scripts eq "sa-Deva") 
+            then ((), app:transliterate-lucene-query($query, "roman2devnag"))
+            else
+                (:if the user wishes to search in both IAST and  Devanagari, transliterate the original query and keep it:)
+                if ($query-scripts eq "all") 
+                then ($query, app:transliterate-lucene-query($query, "roman2devnag"))
+                else
+                    (:if the user wishes to search in IAST only, do not transliterate the original query but keep it:)
+                    if ($query-scripts eq "sa-Latn") 
+                    then ($query, ())
+                    else ()
+        else
+            if (empty(string-to-codepoints($query/string())[not(. = (9-13, 32, 133, 160, 2304 to 2431, 43232 to 43259, 7376 to 7412))]))
+            (:if there is input consisting exclusively of Devanagari characters:)
+            then
+                (:if the user wishes to search in IAST, transliterate the original query and delete it:)
+                if ($query-scripts eq "sa-Latn")
+                then ((), app:transliterate-lucene-query($query, "devnag2roman"))
+                else
+                    (:if the user wishes to search in Devanagari, do not transliterate the original query but keep it:)
+                    if ($query-scripts eq "sa-Deva")
+                    then ($query, ())
+                    else
+                        (:if the user wishes to search in both IAST and  Devanagari, transliterate the original query and keep it:)
+                        if ($query-scripts eq "all")
+                        then ($query, app:transliterate-lucene-query($query, "devnag2roman"))
+                        else ()
+            else ($query, ())
+};
+
+(:~
     Helper function: create a lucene query from the user input
 :)
-declare %private function app:create-lucene-query($query-string as xs:string?, $mode as xs:string, $scripts as xs:string) {
+declare %private function app:create-lucene-query($query-string as xs:string?, $lucene-query-mode as xs:string, $query-scripts as xs:string) {
     let $query-string := if ($query-string) then app:sanitize-lucene-query($query-string) else ''
     let $query-string := normalize-space($query-string)
     let $query:=
         (:If the query is in "any" mode and contains any operator used in boolean searches, proximity searches, boosted searches, or regex searches, 
         pass it on to the query parser;:) 
-        if (functx:contains-any-of($query-string, ('AND', 'OR', 'NOT', '+', '-', '!', '~', '^', '.', '?', '*', '|', '{','[', '(', '<', '@', '#', '&amp;', '~')) and $mode eq 'any')
+        if (functx:contains-any-of($query-string, ('AND', 'OR', 'NOT', '+', '-', '!', '~', '^', '.', '?', '*', '|', '{','[', '(', '<', '@', '#', '&amp;', '~')) and $lucene-query-mode eq 'any')
         then 
             let $luceneParse := app:parse-lucene($query-string)
             let $luceneXML := util:parse($luceneParse)
-            let $lucene2xml := app:lucene2xml($luceneXML/node(), $mode)
+            let $lucene2xml := app:lucene2xml($luceneXML/node(), $lucene-query-mode)
             return $lucene2xml
         (:otherwise the query is an ordinary term query or one of the special options (phrase, near, fuzzy, wildcard or regex):)
         else
@@ -1151,12 +1187,12 @@ declare %private function app:create-lucene-query($query-string as xs:string?, $
                 then string-join(subsequence($query-string, 1, count($query-string) - 1), ' ') 
                 else string-join($query-string, ' ')
             let $query :=
-                    if ($mode eq 'any') 
+                    if ($lucene-query-mode eq 'any') 
                     then
                         for $term in tokenize($query-string, '\s')
                         return <term occur="should">{$term}</term>
                     else 
-                        if ($mode eq 'all') 
+                        if ($lucene-query-mode eq 'all') 
                         then
                         <bool>
                         {
@@ -1165,58 +1201,26 @@ declare %private function app:create-lucene-query($query-string as xs:string?, $
                         }
                         </bool>
                         else 
-                            if ($mode eq 'phrase') 
+                            if ($lucene-query-mode eq 'phrase') 
                             then <phrase>{$query-string}</phrase>
                             else
-                                if ($mode eq 'near-unordered')
+                                if ($lucene-query-mode eq 'near-unordered')
                                 then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="no">{$query-string}</near>
                                 else 
-                                    if ($mode eq 'near-ordered')
+                                    if ($lucene-query-mode eq 'near-ordered')
                                     then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="yes">{$query-string}</near>
                                     else 
-                                        if ($mode eq 'fuzzy')
+                                        if ($lucene-query-mode eq 'fuzzy')
                                         then <fuzzy max-edits="{if ($last-item castable as xs:integer and number($last-item) < 3) then $last-item else 2}">{tokenize($query-string, ' ')[1]}</fuzzy>
                                         else 
-                                            if ($mode eq 'wildcard')
+                                            if ($lucene-query-mode eq 'wildcard')
                                             then <wildcard>{$query-string}</wildcard>
                                             else 
-                                                if ($mode eq 'regex')
+                                                if ($lucene-query-mode eq 'regex')
                                                 then <regex>{$query-string}</regex>
                                                 else ()
             let $query := <bool>{$query}</bool>
-            let $query :=
-                (:if there is input exclusively in IAST characters:)
-                if (not(matches($query/string(), $app:iast-char-repertoire-negation)))
-                then
-                    (:if the user wishes to search in Devanagari, transliterate the original query and delete it:)
-                    if ($scripts eq "sa-Deva") 
-                    then ((), app:transliterate-lucene-query($query, "roman2devnag"))
-                    else
-                        (:if the user wishes to search in both IAST and  Devanagari, transliterate the original query and keep it:)
-                        if ($scripts eq "all") 
-                        then ($query, app:transliterate-lucene-query($query, "roman2devnag"))
-                        else
-                            (:if the user wishes to search in IAST only, do not transliterate the original query but keep it:)
-                            if ($scripts eq "sa-Latn") 
-                            then ($query, ())
-                            else ()
-                else
-                    if (empty(string-to-codepoints($query/string())[not(. = (9-13, 32, 133, 160, 2304 to 2431, 43232 to 43259, 7376 to 7412))]))
-                    (:if there is input consisting exclusively of Devanagari characters:)
-                    then
-                        (:if the user wishes to search in IAST, transliterate the original query and delete it:)
-                        if ($scripts eq "sa-Latn")
-                        then ((), app:transliterate-lucene-query($query, "devnag2roman"))
-                        else
-                            (:if the user wishes to search in Devanagari, do not transliterate the original query but keep it:)
-                            if ($scripts eq "sa-Deva")
-                            then ($query, ())
-                            else
-                                (:if the user wishes to search in both IAST and  Devanagari, transliterate the original query and keep it:)
-                                if ($scripts eq "all")
-                                then ($query, app:transliterate-lucene-query($query, "devnag2roman"))
-                                else ()
-                    else ($query, ())
+            let $query := app:expand-lucene-query($query, $query-scripts)
             return <query>{$query}</query>
     return $query
     
@@ -1479,12 +1483,12 @@ declare %private function app:parse-lucene($string as xs:string) {
 (: Function to transform the intermediary structures in the search query generated through app:parse-lucene() and util:parse() 
 to full-fledged boolean expressions employing XML query syntax. 
 Based on Ron Van den Branden, https://rvdb.wordpress.com/2010/08/04/exist-lucene-to-xml-syntax/:)
-declare %private function app:lucene2xml($node as item(), $mode as xs:string) {
+declare %private function app:lucene2xml($node as item(), $lucene-query-mode as xs:string) {
     typeswitch ($node)
         case element(query) return 
             element { node-name($node)} {
             element bool {
-            $node/node()/app:lucene2xml(., $mode)
+            $node/node()/app:lucene2xml(., $lucene-query-mode)
         }
     }
     case element(AND) return ()
@@ -1516,7 +1520,7 @@ declare %private function app:lucene2xml($node as item(), $mode as xs:string) {
                         }
                     else ()
                     ,
-                    $node/node()/app:lucene2xml(., $mode)
+                    $node/node()/app:lucene2xml(., $lucene-query-mode)
         }
     case text() return
         if ($node/parent::*[self::query or self::bool]) 
@@ -1526,7 +1530,7 @@ declare %private function app:lucene2xml($node as item(), $mode as xs:string) {
             (:It is not possible reliably to distinguish reliably between a wildcard search and a regex search, so switching into wildcard searches is ruled out here.:)
             (:One could also simply dispense with 'term' and use 'regex' instead - is there a speed penalty?:)
                 let $el-name := 
-                    if (matches($tok, '((^|[^\\])[.?*+()\[\]\\^|{}#@&amp;<>~]|\$$)') or $mode eq 'regex')
+                    if (matches($tok, '((^|[^\\])[.?*+()\[\]\\^|{}#@&amp;<>~]|\$$)') or $lucene-query-mode eq 'regex')
                     then 'regex'
                     else 'term'
                 return 
