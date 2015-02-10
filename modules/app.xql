@@ -726,9 +726,27 @@ declare function app:get-content($div as element()) {
 
 
 (:~
-    Execute the query. The search results are not output immediately. Instead they
-    are passed to nested templates through the $model parameter.
+    
 :)
+(:~
+: Execute the query. The search results are not output immediately. Instead they
+: are passed to nested templates through the $model parameter.
+:
+: @author Wolfgang M. Meier
+: @author Jens Østergaard Petersen
+: @param $node 
+: @param $model
+: @param $query The query string. This string is transformed into a <query> element containing one or two <bool> elements in a Lucene query and it is transformed into a sequence of one or two query strings in an ngram query. The first <bool> and the first string contain the query as input and the second the query as transliterated into Devanagari or IAST as determined by $query-scripts. One <bool> and one query string may be empty.
+: @param $index The index against which the query is to be performed, as the string "ngram" or "lucene".
+: @param $lucene-query-mode If a Lucene query is performed, which of the options "any", "all", "phrase", "near-ordered", "near-unordered", "fuzzy", or "regex" have been selected (note that wildcard is not implemented, due to its syntactic overlap with regex).
+: @param $tei-target A sequence of one or more targets within a TEI document, the tei:teiHeader or tei:text.
+: @param $work-authors A sequence of the string "all" or of the xml:ids of the documents associated with the selected authors.
+: @param $query-scripts A sequence of the string "all" or of the values "sa-Latn" or "sa-Deva", indicating whether or not the user wishes to transliterate the query string.
+: @param $target-texts A sequence of the string "all" or of the xml:ids of the documents selected.
+
+: @return The function returns a map containing the $hits, the $query, and the $query-scope. The search results are output through the nested templates, app:hit-count, app:paginate, and app:show-hits.
+:)
+
 declare 
     %templates:default("index", "ngram")
     %templates:default("lucene-query-mode", "any")
@@ -737,50 +755,54 @@ declare
     %templates:default("work-authors", "all")
     %templates:default("query-scripts", "all")
     %templates:default("target-texts", "all")
-function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $lucene-query-mode as xs:string, $tei-target as xs:string+, $query-scope as xs:string, $work-authors as xs:string+, $query-scripts as xs:string, $target-texts as xs:string+) {
-    let $query := translate($query, "&#8204;", "") (:remove any ZERO WIDTH NON-JOINER from query:)
+function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $lucene-query-mode as xs:string, $tei-target as xs:string+, $query-scope as xs:string, $work-authors as xs:string+, $query-scripts as xs:string, $target-texts as xs:string+) as map(*) {
+    (:remove any ZERO WIDTH NON-JOINER from the query string:)
+    let $query := translate(normalize-space($query), "&#8204;", "")
+    (:based on which index the user wants to query against, the query string is dispatchted to separate functions. Both return empty if there is no query string.:)
     let $query := 
         if ($index eq 'ngram')
         then app:expand-ngram-query($query, $query-scripts, $index)
         else app:create-lucene-query($query, $lucene-query-mode, $query-scripts)
     return
-        if (empty($query) or $query = "")
+        (:If there is no query string, fill up the map with existing values:)
+        if (empty($query))
         then
-            let $cached := session:get-attribute("apps.sarit")
-            return
-                map {
-                    "hits" := $cached,
-                    "query" := session:get-attribute("apps.sarit.query"),
-                    "scope" := $query-scope (:NB: what about the other arguments?:)
-                }
+            map {
+                "hits" := session:get-attribute("apps.sarit"),
+                "query" := session:get-attribute("apps.sarit.query"),
+                "scope" := $query-scope (:NB: what about the other arguments?:)
+            }
         else
-            (:$target-texts will either have the value 'all' or a sequence of text xml:ids.:)
+            (:Otherwise, perform the query.:)
+            (:First, which documents to query against has to be found out. Users can either make no selections in the list of documents, passing the value "all", or they can select individual document, passing a sequence of their xml:ids in $target-texts. Users can also select documents based on their authors. If no specific authors are selected, the value "all" is passed in $work-authors, but if selections have been made, a sequence of their xml:ids is passed. :)
+            (:$target-texts will either have the value 'all' or contain a sequence of document xml:ids.:)
             let $target-texts := 
                 (:("target-texts", "all")("work-authors", "all"):)
                 (:If no texts have been selected and no authors have been selected, search in all texts:)
                 if ($target-texts = 'all' and $work-authors = 'all')
                 then 'all' 
                 else
-                    (:("target-texts", "sequence of text xml:ids")("work-authors", "all"):)
+                    (:("target-texts", "sequence of document xml:ids")("work-authors", "all"):)
                     (:If one or more texts have been selected, but no authors, search in selected texts:)
                     if ($target-texts != 'all' and $work-authors = 'all')
                     then $target-texts
                     else 
-                        (:("target-texts", "all")("work-authors", "sequence of text xml:ids"):)
+                        (:("target-texts", "all")("work-authors", "sequence of document xml:ids"):)
                         (:If no texts, but one or more authors have been selected, search in texts selected by author:)
                         if ($target-texts = 'all' and $work-authors != 'all')
                         then distinct-values(collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id)
                         else
-                            (:("target-texts", "sequence of text xml:ids")("work-authors", "sequence of text xml:ids"):)
+                            (:("target-texts", "sequence of document xml:ids")("work-authors", "sequence of text xml:ids"):)
                             (:If one or more texts and more authors have been selected, search in the union of selected texts and texts selected by authors:)
                             if ($target-texts != 'all' and $work-authors != 'all')
                             then distinct-values(($target-texts, collection($config:remote-data-root)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author = $work-authors]/@xml:id))
                             else ()
-            (:the context can be "tei-text" or "tei:header" or "all" (that is, both "tei-text" or "tei:header":)
+            (:After it has been determined which documents to query, we have to find out which document parts are targeted, the query "context". There are two parts, the text element ("tei-text") and the TEI header ("tei-header"). It is possible to select multiple contexts:)
             let $context := 
+                (:If all documents have been selected for query, set the context as $config:remote-data-root:)
                 if ($target-texts = 'all')
                 then 
-                    (:if there is more than one target, we can assume "all":)
+                    (:if there are two tei-targets, set the context below $config:remote-data-root to the common parent of tei-text and tei-header, the document element TEI, otherwise set it to tei-text and tei-header, respectively.:)
                     if (count($tei-target) eq 2)
                     then collection($config:remote-data-root)/tei:TEI
                     else
@@ -791,7 +813,9 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             then collection($config:remote-data-root)/tei:TEI/tei:teiHeader
                             else ()
                 else
+                    (:If individual documents have been selected for query, use the sequence of xml:ids in $target-texts to filter the documents below $config:remote-data-root:)
                     if (count($tei-target) eq 2)
+                    (:if there are two tei-targets, set the context below $config:remote-data-root to the common parent of tei-text and tei-header, the document element TEI, otherwise set it to tei-text and tei-header, respectively.:)
                     then collection($config:remote-data-root)//tei:TEI[@xml:id = $target-texts]
                     else 
                         if ($tei-target = 'tei-text')
@@ -800,13 +824,16 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             if ($tei-target = 'tei-header')
                             then collection($config:remote-data-root)//tei:TEI[@xml:id = $target-texts]/tei:teiHeader
                             else ()
-            (: LUCENE :)
+            (: Here the actual query commences. This is split into two parts, the first for a Lucene query and the second for an ngram query. :)
+            (:The query passed to a Luecene query in ft:query is an XML element <query> containing one or two <bool>. The <bool> contain the original query and the transliterated query, as indicated by the user in $query-scripts.:)
             let $hits :=
                 if ($index eq 'lucene')
                 then
+                    (:If the $query-scope is narrow, query the elements immediately below the lowest div in tei:text and the four major element below tei:teiHeader.:)
                     if ($query-scope eq 'narrow')
                     then
                         for $hit in 
+                            (:If both tei-text and tei-header is queried.:)
                             if (count($tei-target) eq 2)
                             then 
                                 (
@@ -858,7 +885,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                     else ()    
                         order by ft:score($hit) descending
                         return $hit
-                    (:broad search scope:)
+                    (:If the $query-scope is broad, query the lowest div in tei:text and tei:teiHeader.:)
                     else
                         for $hit in 
                             if (count($tei-target) eq 2)
@@ -880,12 +907,13 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                     else ()
                         order by ft:score($hit) descending
                         return $hit
-                (: NGRAM :)
+                (: The part with the ngram query mirrors that for the Lucene query, but here $query contains a sequence of one or two non-empty strings containing the original query and the transliterated query, as indicated by the user in $query-scripts:)
                 else
                     if ($query-scope eq 'narrow' and count($tei-target) eq 2)
                     then
                         for $hit in 
                             (
+                            (:Only query if there is a value in the first item.:)
                             if ($query[1]) 
                             then (
                                 $context//tei:p[ngram:wildcard-contains(., $query[1])],
@@ -908,6 +936,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                 )
                             else ()
                             ,
+                            (:Only query if there is a value in the second item.:)
                             if ($query[2]) 
                             then (
                                 $context//tei:p[ngram:wildcard-contains(., $query[2])],
@@ -1057,13 +1086,14 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                             order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending
                                             return $hit
                                         else ()
+            (:Store the result in the session.:)
             let $store := (
                 session:set-attribute("apps.sarit", $hits),
                 session:set-attribute("apps.sarit.query", $query),
                 session:set-attribute("apps.sarit.scope", $query-scope)
                 )
             return
-                (: Process nested templates :)
+                (: The hits are not returned directly, but processed by the nested templates :)
                 map {
                     "hits" := $hits,
                     "query" := $query
@@ -1075,7 +1105,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
     if the user has indicated that this search is wanted. 
 :)
 declare %private function app:expand-ngram-query($query as xs:string?, $query-scripts as xs:string?, $index as xs:string) as xs:string+ {
-    if ($query) 
+    if ($query)
     then (
         sarit:create("devnag2roman", $app:devnag2roman/string()),
         sarit:create("roman2devnag", $app:roman2devnag/string()),
@@ -1167,63 +1197,66 @@ declare %private function app:expand-lucene-query($query as element(bool), $quer
     Helper function: create a lucene query from the user input
 :)
 declare %private function app:create-lucene-query($query-string as xs:string?, $lucene-query-mode as xs:string, $query-scripts as xs:string) {
-    let $query-string := if ($query-string) then app:sanitize-lucene-query($query-string) else ''
-    let $query-string := normalize-space($query-string)
-    let $query:=
-        (:If the query is in "any" mode and contains any operator used in boolean searches, proximity searches, boosted searches, or regex searches, 
-        pass it on to the query parser;:) 
-        if (functx:contains-any-of($query-string, ('AND', 'OR', 'NOT', '+', '-', '!', '~', '^', '.', '?', '*', '|', '{','[', '(', '<', '@', '#', '&amp;', '~')) and $lucene-query-mode eq 'any')
-        then 
-            let $luceneParse := app:parse-lucene($query-string)
-            let $luceneXML := util:parse($luceneParse)
-            let $lucene2xml := app:lucene2xml($luceneXML/node(), $lucene-query-mode)
-            return $lucene2xml
-        (:otherwise the query is an ordinary term query or one of the special options (phrase, near, fuzzy, wildcard or regex):)
-        else
-            let $query-string := tokenize($query-string, '\s')
-            let $last-item := $query-string[last()]
-            let $query-string := 
-                if ($last-item castable as xs:integer) 
-                then string-join(subsequence($query-string, 1, count($query-string) - 1), ' ') 
-                else string-join($query-string, ' ')
-            let $query :=
-                    if ($lucene-query-mode eq 'any') 
-                    then
-                        for $term in tokenize($query-string, '\s')
-                        return <term occur="should">{$term}</term>
-                    else 
-                        if ($lucene-query-mode eq 'all') 
+    if ($query-string)
+    then
+        let $query-string := if ($query-string) then app:sanitize-lucene-query($query-string) else ''
+        let $query-string := normalize-space($query-string)
+        let $query:=
+            (:If the query is in "any" mode and contains any operator used in boolean searches, proximity searches, boosted searches, or regex searches, 
+            pass it on to the query parser;:) 
+            if (functx:contains-any-of($query-string, ('AND', 'OR', 'NOT', '+', '-', '!', '~', '^', '.', '?', '*', '|', '{','[', '(', '<', '@', '#', '&amp;', '~')) and $lucene-query-mode eq 'any')
+            then 
+                let $luceneParse := app:parse-lucene($query-string)
+                let $luceneXML := util:parse($luceneParse)
+                let $lucene2xml := app:lucene2xml($luceneXML/node(), $lucene-query-mode)
+                return $lucene2xml
+            (:otherwise the query is an ordinary term query or one of the special options (phrase, near, fuzzy, wildcard or regex):)
+            else
+                let $query-string := tokenize($query-string, '\s')
+                let $last-item := $query-string[last()]
+                let $query-string := 
+                    if ($last-item castable as xs:integer) 
+                    then string-join(subsequence($query-string, 1, count($query-string) - 1), ' ') 
+                    else string-join($query-string, ' ')
+                let $query :=
+                        if ($lucene-query-mode eq 'any') 
                         then
-                        <bool>
-                        {
                             for $term in tokenize($query-string, '\s')
-                            return <term occur="must">{$term}</term>
-                        }
-                        </bool>
+                            return <term occur="should">{$term}</term>
                         else 
-                            if ($lucene-query-mode eq 'phrase') 
-                            then <phrase>{$query-string}</phrase>
-                            else
-                                if ($lucene-query-mode eq 'near-unordered')
-                                then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="no">{$query-string}</near>
-                                else 
-                                    if ($lucene-query-mode eq 'near-ordered')
-                                    then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="yes">{$query-string}</near>
+                            if ($lucene-query-mode eq 'all') 
+                            then
+                            <bool>
+                            {
+                                for $term in tokenize($query-string, '\s')
+                                return <term occur="must">{$term}</term>
+                            }
+                            </bool>
+                            else 
+                                if ($lucene-query-mode eq 'phrase') 
+                                then <phrase>{$query-string}</phrase>
+                                else
+                                    if ($lucene-query-mode eq 'near-unordered')
+                                    then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="no">{$query-string}</near>
                                     else 
-                                        if ($lucene-query-mode eq 'fuzzy')
-                                        then <fuzzy max-edits="{if ($last-item castable as xs:integer and number($last-item) < 3) then $last-item else 2}">{tokenize($query-string, ' ')[1]}</fuzzy>
+                                        if ($lucene-query-mode eq 'near-ordered')
+                                        then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="yes">{$query-string}</near>
                                         else 
-                                            if ($lucene-query-mode eq 'wildcard')
-                                            then <wildcard>{$query-string}</wildcard>
+                                            if ($lucene-query-mode eq 'fuzzy')
+                                            then <fuzzy max-edits="{if ($last-item castable as xs:integer and number($last-item) < 3) then $last-item else 2}">{tokenize($query-string, ' ')[1]}</fuzzy>
                                             else 
-                                                if ($lucene-query-mode eq 'regex')
-                                                then <regex>{$query-string}</regex>
-                                                else ()
-            let $query := <bool>{$query}</bool>
-            let $query := app:expand-lucene-query($query, $query-scripts)
-            return <query>{$query}</query>
-    return $query
-    
+                                                if ($lucene-query-mode eq 'wildcard')
+                                                then <wildcard>{$query-string}</wildcard>
+                                                else 
+                                                    if ($lucene-query-mode eq 'regex')
+                                                    then <regex>{$query-string}</regex>
+                                                    else ()
+                let $query := <bool>{$query}</bool>
+                let $query := app:expand-lucene-query($query, $query-scripts)
+                return <query>{$query}</query>
+        return $query
+    else ()
+
 };
 
 declare function app:transliterate-lucene-query($element as element(), $direction as xs:string) as element() {
