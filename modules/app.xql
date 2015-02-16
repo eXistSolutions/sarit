@@ -1360,10 +1360,8 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
     let $parent := $hit/ancestor-or-self::tei:div[1]
     let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:teiHeader  
     let $div := app:get-current($parent)
-    let $parent-id := $parent/@xml:id/string()
-    let $parent-id := if ($parent-id) then $parent-id else util:document-name($parent) || "_" || util:node-id($parent)
-    let $div-id := $div/@xml:id/string()
-    let $div-id := if ($div-id) then $div-id else util:document-name($div) || "_" || util:node-id($div)
+    let $parent-id := ($parent/@xml:id/string(), util:document-name($parent) || "_" || util:node-id($parent))[1]
+    let $div-id := ($div/@xml:id/string(), util:document-name($div) || "_" || util:node-id($div))[1]
     (:if the nearest div does not have an xml:id, find the nearest element with an xml:id and use it:)
     (:is this necessary - can't we just use the nearest ancestor?:) 
 (:    let $div-id := :)
@@ -1375,6 +1373,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
     (:TODO: what if the hit is in the header?:)
     let $work := $hit/ancestor::tei:TEI
     let $work-title := app:work-title($work)
+    (:the work always has xml:id.:)
     let $work-id := $work/@xml:id/string()
     (:pad hit with surrounding siblings:)
     let $hit-padded := <hit>{($hit/preceding-sibling::*[1], $hit, $hit/following-sibling::*[1])}</hit>
@@ -1388,19 +1387,36 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
     let $config := <config width="60" table="yes" link="{$div-id}.html?action=search#{$matchId}"/>
     let $kwic := kwic:summarize($hit-padded, $config)
+    let $kwic :=
+        if ($index eq "lucene")
+        then $kwic
+        else app:move-combining-marks($kwic)
     return
         ($loc, $kwic)        
 };
 
 (:~
-    Callback function called from the kwic module.
+    Draft function intended to move combining marks orphaned in the beginning of "following" to the end of "hit" and to move combining marks orphaned in the beginning of "hit" to the end of "previous"
 :)
-(:declare %private function app:filter($node as node(), $mode as xs:string) as item()? {
-  if ($mode eq 'before') then
-      concat($node, ' ')
-  else 
-      concat(' ', $node)
-};:)
+declare %private function app:move-combining-marks($kwic as element(tr)+) as element(tr) {
+    let $kwic := $kwic[1] (:NB: WHY?:)
+    let $previous := $kwic//td[1]/string()
+    let $hit := $kwic//td[2]/string()
+    let $href := $kwic//td[2]/a/@href/string()
+    let $following := $kwic//td[3]/string()
+    let $following-combining := replace($following, "(\p{M}*)(\P{M}\p{M}*)", "$1")
+    let $following := replace($following, "(\p{M}*)(\P{M}\p{M}*)", "$2")
+    let $hit := concat($hit, $following-combining)
+    let $hit := replace($hit, "(\p{M}*)(\P{M}\p{M}*)", "$2")
+    let $hit-combining := replace($hit, "(\p{M}*)(\P{M}\p{M}*)", "$1")
+    let $previous := concat($previous, $hit-combining)
+    return
+        <tr>
+            <td class="previous">{$previous}</td>
+            <td class="hi"><a href="{$href}">{$hit}</a></td>
+            <td class="following">{$following}</td>
+        </tr>
+};
 
 declare function app:base($node as node(), $model as map(*)) {
     let $context := request:get-context-path()
