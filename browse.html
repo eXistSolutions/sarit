@@ -16,6 +16,15 @@
                         <input type="hidden" name="field" value="text"/>
                     </div>
                 </div>
+                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search With Which Scripts?">
+                    <div class="col-md-12 col-xs-12">
+                        <select name="query-scripts" class="form-control" data-template="templates:form-control">
+                            <option value="all" selected="selected">With Devanagari and IAST</option>
+                            <option value="sa-Deva">With Devanagari</option>
+                            <option value="sa-Latn">With IAST</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="form-group" data-toggle="tooltip" data-placement="left" title="Use Which Index?">
                     <div class="col-md-12 col-xs-12">
                         <select name="index" class="form-control" data-template="templates:form-control">
@@ -26,7 +35,7 @@
                 </div>
                 <div id="mode-selection" class="form-group" data-toggle="tooltip" data-placement="left" title="Use Which Search Mode?" style="display: none;">
                     <div class="col-md-12 col-xs-12">
-                        <select name="mode" class="form-control" data-template="templates:form-control">
+                        <select name="lucene-query-mode" class="form-control" data-template="templates:form-control">
                             <option value="any">Any Search Term</option>
                             <option value="all">All Search Terms Together</option>
                             <option value="phrase">Phrase Search</option>
@@ -46,28 +55,29 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search Narrowly Or Broadly?">
-                    <div class="col-md-12 col-xs-12">
-                        <select name="scope" class="form-control" data-template="templates:form-control">
-                            <option value="narrow" selected="selected">Perform Narrow Search</option>
-                            <option value="broad">Perform Broad Search</option>
-                        </select>
-                    </div>
-                </div>
                 <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search In Texts By Which Authors?">
                     <div class="col-md-12 col-xs-12">
                         <span class="app:work-authors"/>
                     </div>
                 </div>
-                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search With Which Scripts?">
+                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Search Narrowly Or Broadly?">
                     <div class="col-md-12 col-xs-12">
-                        <select name="scripts" class="form-control" data-template="templates:form-control">
-                            <option value="all" selected="selected">Search With Devanagari &amp; IAST</option>
-                            <option value="sa-Deva">Search With Devanagari</option>
-                            <option value="sa-Latn">Search With IAST</option>
+                        <select name="query-scope" class="form-control" data-template="templates:form-control">
+                            <option value="narrow" selected="selected">Perform Narrow Search</option>
+                            <option value="broad">Perform Broad Search</option>
                         </select>
                     </div>
                 </div>
+<!--                <div class="form-group" data-toggle="tooltip" data-placement="left" title="Perform New Search or Continue Last Search?">-->
+<!--                    <div class="col-md-12 col-xs-12">-->
+<!--                        <select name="bool" class="form-control" data-template="templates:form-control">-->
+<!--                            <option value="new" selected="selected">Perform New Search</option>-->
+<!--                            <option value="and">AND Last Search</option>-->
+<!--                            <option value="or">OR Last Search</option>-->
+<!--                            <option value="not">NOT Last Search</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
         <div class="col-md-9 col-md-pull-3">
