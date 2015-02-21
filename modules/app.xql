@@ -132,8 +132,10 @@ declare %private function app:load($context as node()*, $id as xs:string) {
                         ($doc//tei:pb)[$page]
                 else
                     util:node-by-id($doc, $nodeId)
-        else
+        else (
+            console:log("sarit", "Loading " || $config:remote-data-root || "/" || $id),
             doc($config:remote-data-root || "/" || $id)/tei:TEI
+        )
 };
 
 declare function app:header($node as node(), $model as map(*)) {
@@ -350,8 +352,10 @@ declare function app:toc-div($div, $long as xs:string?, $current as element()?, 
 declare function app:work-title($node as node(), $model as map(*), $type as xs:string?) {
     let $suffix := if ($type) then "." || $type else ()
     let $work := $model("work")/ancestor-or-self::tei:TEI
+    let $id := $work/@xml:id
+    let $id := if ($id) then $id else util:document-name($work) || ".xml"
     return
-        <a xmlns="http://www.w3.org/1999/xhtml" href="{$node/@href}{$work/@xml:id}{$suffix}">{ app:work-title($work) }</a>
+        <a xmlns="http://www.w3.org/1999/xhtml" href="{$node/@href}{$id}{$suffix}">{ app:work-title($work) }</a>
 };
 
 declare %private function app:work-title($work as element(tei:TEI)?) {
@@ -393,7 +397,7 @@ declare function app:work-author($node as node(), $model as map(*)) {
 declare function app:work-lang($node as node(), $model as map(*)) {
     let $work := $model("work")/ancestor-or-self::tei:TEI
     let $script := $work//tei:text/@xml:lang
-    let $script := if ($script eq 'sa-Latn') then 'Roman (IAST)' else 'Devanagari'
+    let $script := if ($script = 'sa-Latn') then 'Roman (IAST)' else 'Devanagari'
     let $auto-conversion := $work//tei:revisionDesc/tei:change[@type eq 'conversion'][@subtype eq 'automatic'] 
     return 
         concat($script, if ($auto-conversion) then ' (automatically converted)' else '')  

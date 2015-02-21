@@ -217,7 +217,7 @@ declare function tei-to-html:dispatch($nodes as node()*, $options) as item()* {
 };
 
 (: Recurses through the child nodes and sends them tei-to-html:dispatch() :)
-declare function tei-to-html:recurse($node as node(), $options) as item()* {
+declare function tei-to-html:recurse($node as node()*, $options) as item()* {
     for $node in $node/node()
     return
         tei-to-html:dispatch($node, $options)
@@ -660,7 +660,7 @@ declare function tei-to-html:notesStmt($node as element(tei:notesStmt), $options
         {for $note in $node/tei:note
         return
             <div class="note" title="tei:note">
-                <span class="note" title="tei:note">{tei-to-html:recurse($node/*, $options)}</span>
+                <span class="note" title="tei:note">{tei-to-html:recurse($note, $options)}</span>
             </div>
         }
     </div>
