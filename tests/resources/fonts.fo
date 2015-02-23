@@ -9,59 +9,47 @@
         <fo:flow flow-name="xsl-region-body">
             <fo:block-container>
                 <fo:block font-size="14pt" font-family="Times">Aparajita</fo:block>
-                <fo:block font-size="14pt" font-family="Aparajita"
-                    >प्रथमः परिच्छे
-                </fo:block>
+                <fo:block font-size="14pt" font-family="Aparajita">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>
             <fo:block-container>
                 <fo:block font-size="14pt" font-family="Times">Chandas</fo:block>
-                <fo:block font-size="14pt" font-family="Chandas"
-                    >प्रथमः परिच्छे</fo:block>
+                <fo:block font-size="14pt" font-family="Chandas">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>
             <fo:block-container>
                 <fo:block font-size="14pt" font-family="Times">Kokila</fo:block>
-                <fo:block font-size="14pt" font-family="Kokila">
-                    प्रथमः परिच्छे </fo:block>
+                <fo:block font-size="14pt" font-family="Kokila">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>
             <fo:block-container>
                 <fo:block font-size="14pt" font-family="Times">Madan2</fo:block>
-                <fo:block font-size="14pt" font-family="Madan2">
-                    प्रथमः परिच्छे </fo:block>
+                <fo:block font-size="14pt" font-family="Madan2">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>
             <fo:block-container>
                 <fo:block font-size="14pt" font-family="Times">Nakula</fo:block>
-                <fo:block font-size="14pt" font-family="Nakula">
-                    प्रथमः परिच्छे </fo:block>
+                <fo:block font-size="14pt" font-family="Nakula">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>
             <fo:block-container>
                 <fo:block font-size="14pt" font-family="Times">Sahadeva</fo:block>
-                <fo:block font-size="14pt" font-family="Sahadeva">
-                    प्रथमः परिच्छे </fo:block>
+                <fo:block font-size="14pt" font-family="Sahadeva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>
             <fo:block-container>
                 <fo:block font-size="14pt" font-family="Times">Sanskrit 2003</fo:block>
-                <fo:block font-size="14pt" font-family="Sanskrit 2003">
-                    प्रथमः परिच्छे </fo:block>
+                <fo:block font-size="14pt" font-family="Sanskrit 2003">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>
             <fo:block-container>
                 <fo:block font-size="14pt" font-family="Times">Siddhanta</fo:block>
-                <fo:block font-size="14pt" font-family="Siddhanta">
-                    प्रथमः परिच्छे </fo:block>
+                <fo:block font-size="14pt" font-family="Siddhanta">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>
             <fo:block-container>
                 <fo:block font-size="14pt" font-family="Times">Utsaah</fo:block>
-                <fo:block font-size="14pt" font-family="Utsaah">
-                    प्रथमः परिच्छे </fo:block>
+                <fo:block font-size="14pt" font-family="Utsaah">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>
             <fo:block-container>
                 <fo:block font-size="14pt" font-family="Times">Uttara</fo:block>
-                <fo:block font-size="14pt" font-family="Uttara">
-                    प्रथमः परिच्छे </fo:block>
+                <fo:block font-size="14pt" font-family="Uttara">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>
             <fo:block-container>
                 <fo:block font-size="14pt" font-family="Times">Mangal</fo:block>
-                <fo:block font-size="14pt" font-family="Mangal">
-                    प्रथमः परिच्छे </fo:block>
+                <fo:block font-size="14pt" font-family="Mangal">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>            
         </fo:flow>
     </fo:page-sequence>
