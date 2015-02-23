@@ -1,5 +1,7 @@
 xquery version "3.0";
 
+
+import module namespace console="http://exist-db.org/xquery/console";
 import module namespace config="http://exist-db.org/apps/appblueprint/config" at "config.xqm";
 import module namespace epub="http://exist-db.org/xquery/epub" at "epub.xql";
 
@@ -19,8 +21,10 @@ declare function local:work2epub($id as xs:string, $work as element()) {
 };
 
 let $id := request:get-parameter("id", ())
+let $log := console:log("sarit", "Getting epub for " || $id)
 let $work := collection($config:remote-data-root)//id($id)
 let $entries := local:work2epub($id, $work)
+let $log := console:log("sarit", $entries)
 return
     (
         response:set-header("Content-Disposition", concat("attachment; filename=", concat($id, '.epub'))),

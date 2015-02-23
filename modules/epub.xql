@@ -111,7 +111,7 @@ declare function epub:content-opf-entry($title, $creator, $urn, $text) {
                 (: get all divs :)
                 for $div in $text//tei:body/tei:div
                 return 
-                    <item id="{$div/@xml:id}" href="{$div/@xml:id}.html" media-type="application/xhtml+xml"/>
+                    <item id="{generate-id($div)}" href="{generate-id($div)}.html" media-type="application/xhtml+xml"/>
                 }
                 <item id="css" href="stylesheet.css" media-type="text/css"/>
                 {
@@ -128,7 +128,7 @@ declare function epub:content-opf-entry($title, $creator, $urn, $text) {
                 (: get just divs for TOC :)
                 for $div in $text//tei:body/tei:div
                 return 
-                    <itemref idref="{$div/@xml:id}"/>
+                    <itemref idref="{generate-id($div)}"/>
                 }
             </spine>
             <guide>
@@ -136,7 +136,7 @@ declare function epub:content-opf-entry($title, $creator, $urn, $text) {
                 {
                 (: first text div :)
                 let $first-text-div := $text//tei:body/tei:div[1]
-                let $id := $first-text-div/@xml:id
+                let $id := generate-id($first-text-div)
                 let $title := $first-text-div/tei:head
                 return 
                     <reference href="{$id}.html" type="text" title="{$title}"/>
@@ -204,7 +204,7 @@ declare function epub:body-xhtml-entries($doc) {
     let $body := tei-to-html:render($div)
     let $body-xhtml:= epub:assemble-xhtml($title, epub:fix-namespaces($body))
     return
-        <entry name="{concat('OEBPS/', $div/@xml:id, '.html')}" type="xml">{$body-xhtml}</entry>
+        <entry name="{concat('OEBPS/', generate-id($div), '.html')}" type="xml">{$body-xhtml}</entry>
 };
 
 (:~ 
@@ -260,8 +260,8 @@ declare function epub:toc-ncx-entry($urn, $title, $text) {
 
 declare function epub:toc-ncx-div($root as element(), $start as xs:int) {
     for $div in $root/tei:div
-    let $id := $div/@xml:id
-    let $file := $div/ancestor-or-self::tei:div[last()]/@xml:id
+    let $id := generate-id($div)
+    let $file := generate-id($div/ancestor-or-self::tei:div[last()])
     let $index := count($div/preceding::tei:div[ancestor::tei:body]) + count($div/ancestor::tei:div) + 1
     return
         <navPoint id="navpoint-{$id}" playOrder="{$start + $index}" xmlns="http://www.daisy.org/z3986/2005/ncx/">
@@ -288,7 +288,7 @@ declare function epub:table-of-contents-xhtml-entry($title, $doc, $suppress-docu
                 for $div in $doc//tei:body/tei:div
                 return
                     <li>
-                        <a href="{$div/@xml:id}.html#{$div/@xml:id}">
+                        <a href="{generate-id($div)}.html#{generate-id($div)}">
                         {$div/tei:head/text()}
                         </a>
                     </li>

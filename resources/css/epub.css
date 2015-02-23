@@ -59,8 +59,14 @@ h2 {
 h3 {
   font-size: 1.2em;
 }
+p {
+  text-align: left;
+}
 ul {
   list-style: none;
+  text-align: left;
+}
+ul li {
   text-align: left;
 }
 .teiHeader li {
