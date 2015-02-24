@@ -81,7 +81,7 @@ declare function local:antenna-house($id as xs:string, $fo as element()) {
         console:log("sarit", "Calling AntennaHouse ..."),
         process:execute(
             (
-                "sh", "/usr/AHFormatterV6_64/run.sh", "-d", $file || ".fo", "-o", $file || ".pdf", "-x", "2",
+                "sh", "/usr/AHFormatterV6_64/run.sh", "-d", $file || ".fo", "-o", $file || ".pdf", "-x", "3",
                 "-peb", "1", "-pdfver", "PDF1.6", 
                 "-p", "@PDF",
                 "-tpdf"
