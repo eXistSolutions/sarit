@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <transliteration>
     <rules id="devnag2roman">
     <!-- :: [:Latin:] lower (); !-->
@@ -375,5 +374,243 @@
     'म् ' } ऐ &gt; मै;
     'म् ' } ओ &gt; मो;
     'म् ' } औ &gt; मै
+    </rules>
+    <rules id="roman2devnag-search">
+    OM &gt; ॐ;
+    
+    :: [:Latin:] lower ();
+    
+    $LTR = [{a}{ā}{i}{ī}{u}{ū}{ṛ}{ṝ}{ḷ}{ḹ}{e}{ai}{o}{au}{ḥ}{ṃ}{ṁ}{k}{kh}{g}{gh}{ṅ}{c}{ch}{j}{jh}{ñ}{ṭ}{ṭh}{ḍ}{ḍh}{ṇ}{t}{th}{d}{dh}{n}{p}{ph}{b}{bh}{m}{y}{r}{l}{v}{ś}{ṣ}{s}{h}];
+    $nonletter = [:^letter:];
+    $rMedVowel = [{a}{ā}{i}{ī}{u}{ū}{ṛ}{ṝ}{ḷ}{ḹ}{e}{ai}{o}{au}];
+    $dMedVowel = [अआइईउऊऋॠएऐओऔऌ];
+    $anyMedVowel = [[$rMedVowel][$dMedVowel]];
+    $rCons = [{k}{kh}{g}{gh}{ṅ}{c}{ch}{j}{jh}{ñ}{ṭ}{ṭh}{ḍ}{ḍh}{ṇ}{t}{th}{d}{dh}{n}{p}{ph}{b}{bh}{m}{y}{r}{l}{v}{ś}{ṣ}{s}{h}];
+    $rVoiced = [{g}{gh}{j}{jh}{ḍ}{ḍh}{ṇ}{d}{dh}{n}{b}{bh}{m}{y}{r}{l}{v}{h}];
+    $dCons = [कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह];
+    $anyCons = [[$rCons][$dCons]];
+    
+    'nn ' } $rMedVowel &gt; 'nn';
+    'm ' } $rMedVowel &gt; 'm';
+    'v ' } $rMedVowel &gt; 'v';
+    'y ' } $rMedVowel &gt; 'y';
+    'r ' } $rMedVowel &gt; 'r';
+    'r ' } $rVoiced &gt; 'r';
+    'ś c' &gt; 'śc';
+    's t' &gt; 'st';
+    'c c' &gt; 'cc';
+    ::Null;
+    
+    $nonletter { ā &gt; आ;
+    $nonletter { i &gt; इ;
+    $nonletter { ī &gt; ई;
+    $nonletter { u &gt; उ;
+    $nonletter { ū &gt; ऊ;
+    $nonletter { ṛ &gt; ऋ;
+    $nonletter { ṝ &gt; ॠ;
+    $nonletter { e &gt; ए;
+    $nonletter { ĕ &gt; ऎ;
+    $nonletter { ai &gt; ऐ;
+    $nonletter { o &gt; ओ;
+    $nonletter { ŏ &gt; ऒ;
+    $nonletter { au &gt; औ;
+    $nonletter { a &gt; अ;
+    
+    $anyMedVowel { ā &gt; आ;
+    $anyMedVowel { i &gt; इ;
+    $anyMedVowel { ī &gt; ई;
+    $anyMedVowel { u &gt; उ;
+    $anyMedVowel { ū &gt; ऊ;
+    $anyMedVowel { ṛ &gt; ऋ;
+    $anyMedVowel { ṝ &gt; ॠ;
+    $anyMedVowel { e &gt; ए;
+    $anyMedVowel { ĕ &gt; ऎ;
+    $anyMedVowel { o &gt; ओ;
+    $anyMedVowel { ŏ &gt; ऒ;
+    $anyMedVowel { ï &gt; इ;
+    $anyMedVowel { ü &gt; ऊ;
+    $anyMedVowel { a &gt; अ;
+    
+    k } $rMedVowel &gt; क;
+    kh } $rMedVowel &gt; ख;
+    g } $rMedVowel &gt; ग;
+    gh } $rMedVowel &gt; घ;
+    ṅ } $rMedVowel &gt; ङ;
+    c } $rMedVowel &gt; च;
+    ch } $rMedVowel &gt; छ;
+    j } $rMedVowel &gt; ज;
+    jh } $rMedVowel &gt; झ;
+    ñ } $rMedVowel &gt; ञ;
+    ṭ } $rMedVowel &gt; ट;
+    ṭh } $rMedVowel &gt; ठ;
+    ḍ } $rMedVowel &gt; ड;
+    ḍh } $rMedVowel &gt; ढ;
+    ṇ } $rMedVowel &gt; ण;
+    t } $rMedVowel &gt; त;
+    th } $rMedVowel &gt; थ;
+    d } $rMedVowel &gt; द;
+    dh } $rMedVowel &gt; ध;
+    n } $rMedVowel &gt; न;
+    p } $rMedVowel &gt; प;
+    ph } $rMedVowel &gt; फ;
+    b } $rMedVowel &gt; ब;
+    bh } $rMedVowel &gt; भ;
+    m } $rMedVowel &gt; म;
+    y } $rMedVowel &gt; य;
+    r } $rMedVowel &gt; र;
+    l } $rMedVowel &gt; ल;
+    v } $rMedVowel &gt; व;
+    ś } $rMedVowel &gt; श;
+    ṣ } $rMedVowel &gt; ष;
+    s } $rMedVowel &gt; स;
+    h } $rMedVowel &gt; ह;
+    
+    kh } $rCons &gt; ख्;
+    k } $rCons &gt; क्;
+    gh } $rCons &gt; घ्;
+    g } $rCons &gt; ग्;
+    ṅ } $rCons &gt; ङ्;
+    ch } $rCons &gt; छ्;
+    c } $rCons &gt; च्;
+    jh } $rCons &gt; झ्;
+    j } $rCons &gt; ज्;
+    ñ } $rCons &gt; ञ्;
+    ṭh } $rCons &gt; ठ्;
+    ṭ } $rCons &gt; ट्;
+    ḍh } $rCons &gt; ढ्;
+    ḍ } $rCons &gt; ड्;
+    ṇ } $rCons &gt; ण्;
+    th } $rCons &gt; थ्;
+    t } $rCons &gt; त्;
+    dh } $rCons &gt; ध्;
+    d } $rCons &gt; द्;
+    n } $rCons &gt; न्;
+    ph } $rCons &gt; फ्;
+    p } $rCons &gt; प्;
+    bh } $rCons &gt; भ्;
+    b } $rCons &gt; ब्;
+    m } $rCons &gt; म्;
+    y } $rCons &gt; य्;
+    r } $rCons &gt; र्;
+    l } $rCons &gt; ल्;
+    v } $rCons &gt; व्;
+    ś } $rCons &gt; श्;
+    ṣ } $rCons &gt; ष्;
+    s } $rCons &gt; स्;
+    h } $rCons &gt; ह्;
+    
+    ā &gt; 'ा' ;
+    i &gt; 'ि' ;
+    ī &gt; 'ी' ;
+    u &gt; 'ु' ;
+    ū &gt; 'ू' ;
+    ṛ &gt; 'ृ' ;
+    ṝ &gt; 'ॄ' ;
+    ḷ &gt; 'ॢ' ;
+    ḹ &gt; 'ॣ' ;
+    e &gt; 'े' ;
+    ĕ &gt; 'ॆ';
+    ai &gt; 'ै' ;
+    o &gt; 'ो' ;
+    ŏ &gt; 'ॊ';
+    au &gt; 'ौ' ;
+    ṃ &gt; 'ं' ;
+    ṁ &gt; 'ँ' ;
+    ḥ &gt; 'ः' ;
+    aḥ &gt; 'ः' ; 
+    aṃ &gt; 'ं' ;
+    aṁ &gt; 'ँ' ;
+    
+    $anyCons { a &gt; '‌';
+    
+    kh &gt; ख;
+    k &gt; क;
+    gh &gt; घ;
+    g &gt; ग;
+    ṅ &gt; ङ;
+    ch &gt; छ;
+    c &gt; च;
+    jh &gt; झ;
+    j &gt; ज;
+    ñ &gt; ञ;
+    ṭh &gt; ठ;
+    ṭ &gt; ट;
+    ḍh &gt; ढ;
+    ḍ &gt; ड;
+    ṇ &gt; ण;
+    th &gt; थ;
+    t &gt; त;
+    dh &gt; ध;
+    d &gt; द;
+    n &gt; न;
+    ph &gt; फ;
+    p &gt; प;
+    bh &gt; भ;
+    b &gt; ब;
+    m &gt; म;
+    y &gt; य;
+    r &gt; र;
+    l &gt; ल;
+    v &gt; व;
+    ś &gt; श;
+    ṣ &gt; ष;
+    s &gt; स;
+    h &gt; ह;
+    
+    ï &gt; इ;
+    ü &gt; उ; 
+    
+    0 &gt; ० ;
+    1 &gt; १ ;
+    2 &gt; २ ;
+    3 &gt; ३ ;
+    4 &gt; ४ ;
+    5 &gt; ५ ;  
+    6 &gt; ६ ;
+    7 &gt; ७ ;
+    8 &gt; ८ ;
+    9 &gt; ९ ; 
+    
+    $single = \' ;
+    $space = ' ' ;
+    
+    $space $single &gt; $single;
+    ::Null;
+    
+    $single &gt; ऽ;
+    
+    '||' &gt; ॥ ;
+    '|' &gt; ।;
+    '.' &gt; '॰';
+    
+    'म् ' }  अ &gt; 'म';
+    'म् ' } आ &gt; 'मा';
+    'म् ' } इ &gt; 'मि';
+    'म् ' } ई &gt; मी;
+    'म् ' } उ &gt; मु;
+    'म् ' } ऊ &gt; मू;
+    'म् ' } ऋ &gt; मृ;
+    'म् ' } ॠ &gt; मॄ;
+    'म् ' } ऌ &gt; मॢ;
+    'म् ' } ए &gt; मे;
+    'म् ' } ऐ &gt; मै;
+    'म् ' } ओ &gt; मो;
+    'म् ' } औ &gt; मै
+    </rules>
+    <rules id="expand">
+    अ &gt; '[कगखघङचछजझञटठडढणतथदधनपफबभमयवरलशषसहअ]';
+    उ &gt; '[ुउ]';
+    इ &gt; '[िइ]';
+    आ &gt; '[ाआ]';
+    ई &gt; '[ीई]';
+    ऊ &gt; '[ूऊ]';
+    ऋ &gt; '[ृऋ]'; 
+    ॠ &gt; '[ॄॠ]';
+    ऌ &gt; '[ॢऌ]';
+    ॡ &gt; '[ॣॡ]';
+    ए &gt; '[ेए]';
+    ओ &gt; '[ोओ]';
+    ऐ &gt; '[ैऐ]';
+    औ &gt; '[ौऔ]';
     </rules>
 </transliteration>

@@ -17,6 +17,8 @@ declare namespace functx="http://www.functx.com";
 
 declare variable $app:devnag2roman := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "devnag2roman"];
 declare variable $app:roman2devnag := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "roman2devnag"];
+declare variable $app:roman2devnag-search := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "roman2devnag-search"];
+declare variable $app:expand := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "expand"];
 declare variable $app:iast-char-repertoire-negation := '[^aābcdḍeĕghḥiïījklḷḹmṁṃnñṅṇoŏprṛṝsśṣtṭuüūvy0-9\s]';
 
 declare variable $app:EXIDE := 
@@ -755,7 +757,7 @@ declare
     %templates:default("index", "ngram")
     %templates:default("lucene-query-mode", "any")
     %templates:default("tei-target", "tei-text")
-    %templates:default("search-scope", "narrow")
+    %templates:default("query-scope", "narrow")
     %templates:default("work-authors", "all")
     %templates:default("query-scripts", "all")
     %templates:default("target-texts", "all")
@@ -1112,19 +1114,20 @@ declare %private function app:expand-ngram-query($query as xs:string?, $query-sc
     if ($query)
     then (
         sarit:create("devnag2roman", $app:devnag2roman/string()),
-        sarit:create("roman2devnag", $app:roman2devnag/string()),
+        sarit:create("roman2devnag", $app:roman2devnag-search/string()),
+        sarit:create("expand", $app:expand/string()),
         (:if there is input exclusively in IAST romanization:)
         if (not(matches($query, $app:iast-char-repertoire-negation))) 
         then
             (:if the user wants to search in Devanagri, then transliterate and discard the original query:)
             if ($query-scripts eq "sa-Deva") 
             then
-                ((), translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""))
+                ((), sarit:transliterate("expand",translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")) )
             else 
                 (:if the user wants to search in both IAST and Devanagri, then transliterate the original query and keep it:)
                 if ($query-scripts eq "all")
                 then
-                    ($query, translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""))
+                    ($query, sarit:transliterate("expand",translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")) )
                 else 
                     (:if the user wants to search in romanization, then do not transliterate but keep original query:)
                     (:this exhausts all options for IAST input strings:)
@@ -1139,17 +1142,17 @@ declare %private function app:expand-ngram-query($query as xs:string?, $query-sc
                 (:if the user wants to search in IAST, then transliterate the original query but delete it:)
                 if ($query-scripts eq "sa-Latn") 
                 then
-                    ((), sarit:transliterate("devnag2roman", $query))
+                    ((), sarit:transliterate("devnag2roman", $query) )
                 else
                     (:if the user wants to search in both Devanagri and IAST, then transliterate the original query and keep it:)
                     if ($query-scripts eq "all")
                     then
-                        ($query, sarit:transliterate("devnag2roman", $query))
+                        (sarit:transliterate("expand",$query), sarit:transliterate("devnag2roman",$query) )
                     else 
                         (:if the user wants to search in Devanagri, then do not transliterate original query but keep it:)
                         if ($query-scripts eq "sa-Deva")
                         then
-                            ($query, ())
+                            (sarit:transliterate("expand",$query), () )
                         else ()
             (:there are only two options: IAST and Devanagari input. If the query is not pure IAST and is not pure Devanagari, then do not (try to) transliterate the original query but keep it.:)
             else
@@ -1266,7 +1269,7 @@ declare %private function app:create-lucene-query($query-string as xs:string?, $
 declare function app:transliterate-lucene-query($element as element(), $direction as xs:string) as element() {
    (
     sarit:create("devnag2roman", $app:devnag2roman/string()),
-    sarit:create("roman2devnag", $app:roman2devnag/string()),element {node-name($element)}
+    sarit:create("roman2devnag", $app:roman2devnag-search/string()), element {node-name($element)}
     {$element/@*,
         for $child in $element/node()
         return

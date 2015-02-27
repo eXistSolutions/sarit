@@ -363,10 +363,7 @@ declare function tei-to-html:item($node as element(tei:item), $options) as eleme
 declare function tei-to-html:label($node as element(tei:label), $options) as element()* {
     if ($node/parent::tei:list) 
     then 
-        (
-        <dt title="tei:label" id="{tei-to-html:get-id($node)}">{$node/text()}</dt>,
-        <dd title="tei:label">{$node/following-sibling::tei:item[1]}</dd>
-        )
+        <dt title="tei:label" id="{tei-to-html:get-id($node)}">{$node/text()}</dt>
     else 
         <div class="label" title="tei:label" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</div>
 };
