@@ -126,7 +126,6 @@ declare %private function app:load($context as node()*, $id as xs:string) {
             let $docName := $analyzed//fn:group[@nr = 1]/text()
             let $doc := doc($config:remote-data-root || "/" || $docName)
             let $nodeId := $analyzed//fn:group[@nr = 2]/string()
-(:            let $log := console:log("sarit", "loading node '" || $nodeId || "' from document " || $config:remote-data-root || "/" || $docName):)
             return
                 if (starts-with($nodeId, "p")) then
                     let $page := number(substring-after($nodeId, "p"))
@@ -134,10 +133,7 @@ declare %private function app:load($context as node()*, $id as xs:string) {
                         ($doc//tei:pb)[$page]
                 else
                     util:node-by-id($doc, $nodeId)
-        else (
-            console:log("sarit", "Loading " || $config:remote-data-root || "/" || $id),
-            doc($config:remote-data-root || "/" || $id)/tei:TEI
-        )
+        else doc($config:remote-data-root || "/" || $id)/tei:TEI
 };
 
 declare function app:header($node as node(), $model as map(*)) {
@@ -354,10 +350,9 @@ declare function app:toc-div($div, $long as xs:string?, $current as element()?, 
 declare function app:work-title($node as node(), $model as map(*), $type as xs:string?) {
     let $suffix := if ($type) then "." || $type else ()
     let $work := $model("work")/ancestor-or-self::tei:TEI
-    let $id := $work/@xml:id
-    let $id := if ($id) then $id else util:document-name($work) || ".xml"
+	(:all works have an @xml:id:)
     return
-        <a xmlns="http://www.w3.org/1999/xhtml" href="{$node/@href}{$id}{$suffix}">{ app:work-title($work) }</a>
+        <a xmlns="http://www.w3.org/1999/xhtml" href="{$node/@href}{$work/@xml:id}{$suffix}">{ app:work-title($work) }</a>
 };
 
 declare %private function app:work-title($work as element(tei:TEI)?) {
@@ -399,7 +394,7 @@ declare function app:work-author($node as node(), $model as map(*)) {
 declare function app:work-lang($node as node(), $model as map(*)) {
     let $work := $model("work")/ancestor-or-self::tei:TEI
     let $script := $work//tei:text/@xml:lang
-    let $script := if ($script = 'sa-Latn') then 'Roman (IAST)' else 'Devanagari'
+    let $script := if ($script eq 'sa-Latn') then 'Roman (IAST)' else 'Devanagari'
     let $auto-conversion := $work//tei:revisionDesc/tei:change[@type eq 'conversion'][@subtype eq 'automatic'] 
     return 
         concat($script, if ($auto-conversion) then ' (automatically converted)' else '')  
@@ -598,7 +593,7 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
 declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $query-scope as xs:string?, $query-scripts as xs:string) {    
 (:    console:log("sarit", "lucene-view: " || $id),:)
     for $div in $model("work")
-    let $div :=
+    let $div-marked :=
         if ($query) then
             if ($query-scope eq 'narrow') then
                 util:expand((
@@ -630,6 +625,7 @@ declare function app:lucene-view($node as node(), $model as map(*), $id as xs:st
                 , "add-exist-id=all")
         else
             $div
+    let $div := if ($div-marked) then $div-marked else $div
     let $view := app:get-content($div[1])
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
@@ -1092,6 +1088,33 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                             order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending
                                             return $hit
                                         else ()
+                        (:Build upon the last search.:)
+            (:NB: Adding $bool as function parameter proved impossible: "template function not found". Are only 10 parameters possible in a template funtion?.:)
+            let $bool := request:get-parameter('bool', 'new')
+            let $query :=
+                if ($index eq 'lucene')
+                then
+                    if ($bool eq 'new')
+                    then $query
+                    else
+                        <query>
+                            <bool occur="should">{session:get-attribute("apps.sarit.query")}</bool>
+                            <bool occur="should">{$query}</bool>
+                        </query>
+            else $query
+            let $hits :=
+                if ($index eq 'lucene')
+                then
+                    if ($bool eq 'or')
+                    then session:get-attribute("apps.sarit") union $hits
+                    else 
+                        if ($bool eq 'and')
+                        then session:get-attribute("apps.sarit") intersect $hits
+                        else
+                            if ($bool eq 'not')
+                            then session:get-attribute("apps.sarit") except $hits
+                            else $hits
+                else $hits
             (:Store the result in the session.:)
             let $store := (
                 session:set-attribute("apps.sarit", $hits),

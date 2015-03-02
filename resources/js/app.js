@@ -35,7 +35,7 @@ $(document).ready(function() {
     var select = $("select[name='index']");
     
     // hide mode selection unless lucene index is chosen
-    function initIndexSelect() {
+    function initIndexSelectMode() {
         if (select.length == 0) {
             return;
         }
@@ -46,10 +46,24 @@ $(document).ready(function() {
         }
     }
     
+    // hide bool selection unless lucene index is chosen
+    function initIndexSelectBool() {
+        if (select.length == 0) {
+            return;
+        }
+        var index = select.val();
+        $("#bool-selection").hide();
+        if (index === "lucene") {
+            $("#bool-selection").show();
+        }
+    }
+
     select.change(function(ev) {
-        initIndexSelect();
+        initIndexSelectMode();
+        initIndexSelectBool();
     });
-    initIndexSelect();
+    initIndexSelectMode();
+    initIndexSelectBool();
     
     $('.popover-dismiss').popover({
         html:true,
