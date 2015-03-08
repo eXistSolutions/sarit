@@ -380,7 +380,7 @@ function app:checkbox($node as node(), $model as map(*), $target-texts as xs:str
     )
 };
 
-declare function app:work-author($node as node(), $model as map(*)) {
+declare function app:ngram-view(app:work-author($node as node(), $model as map(*)) {
     let $work := $model("work")/ancestor-or-self::tei:TEI
     let $work-commentators := $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[@role eq 'commentator']/text()
     let $work-authors := $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[@role eq 'base-author']/text()
@@ -586,113 +586,32 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
             else ()
         return
             if ($query instance of element())
-            then app:lucene-view($node, $model, $id, $query, $query-scope, $query-scripts)
-            else app:ngram-view($node, $model, $id, $query, $query-scope, $query-scripts)
+            then app:lucene-view($node, $model, $id, $query)
+            else app:ngram-view($node, $model, $id, $query)
 };
 
-declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $query-scope as xs:string?, $query-scripts as xs:string) {    
-(:    console:log("sarit", "lucene-view: " || $id),:)
+declare function app:lucene-view($node as node(), $model as map (*), $id as xs:string, $query as element()?)
+{
     for $div in $model("work")
-    let $div-marked :=
+    let $div :=
         if ($query) then
-            if ($query-scope eq 'narrow') then
-                util:expand((
-                $div[.//tei:p[ft:query(., $query)]],
-                $div[.//tei:head[ft:query(., $query)]],
-                $div[.//tei:lg[ft:query(., $query)]],
-                $div[.//tei:trailer[ft:query(., $query)]],
-                $div[.//tei:note[ft:query(., $query)]],
-                $div[.//tei:list[ft:query(., $query)]],
-                $div[.//tei:l[not(local-name(./..) eq 'lg')][ft:query(., $query)]],
-                $div[.//tei:quote[ft:query(., $query)]],
-                $div[.//tei:table[ft:query(., $query)]],
-                $div[.//tei:listApp[ft:query(., $query)]],
-                $div[.//tei:listBibl[ft:query(., $query)]],
-                $div[.//tei:cit[ft:query(., $query)]],
-                $div[.//tei:label[ft:query(., $query)]],
-                $div[.//tei:encodingDesc[ft:query(., $query)]],
-                $div[.//tei:fileDesc[ft:query(., $query)]],
-                $div[.//tei:profileDesc[ft:query(., $query)]],
-                $div[.//tei:revisionDesc[ft:query(., $query)]]
-                ),
-                "add-exist-id=all")
-            else
-                util:expand(
-                (
-                    $div[ft:query(., $query)], 
-                    $div[.//tei:teiHeader[ft:query(., $query)]]
-                )
-                , "add-exist-id=all")
+            util:expand($div[ft:query(., $query)], "add-exist-id=all")
         else
             $div
-    let $div := if ($div-marked) then $div-marked else $div
-    let $view := app:get-content($div[1])
+    let $view := app:get-content($div)
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
         { tei-to-html:recurse($view, <options/>) }
         </div>
 };
 
-declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string*, $query-scope as xs:string?, $query-scripts as xs:string) {
-(:    console:log("sarit", "ngram-view: " || $id),:)
+declare function app:ngram-view($node as node(), $model as map (*), $id as xs:string, $query as xs:string*)
+{
     for $div in app:load($model("work"), $id)
     let $div :=
         if (not(empty($query))) then
-            if ($query-scope eq 'narrow') then
-                util:expand((
-                if ($query[1])
-                then
-                (
-                $div[.//tei:p[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:head[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:lg[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:trailer[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:note[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:list[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:quote[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:table[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:listApp[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:listBibl[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:cit[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:label[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:encodingDesc[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:fileDesc[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:profileDesc[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:revisionDesc[ngram:wildcard-contains(., $query[1])]]
-                )
-                else ()
-                ,
-                if ($query[2])
-                then
-                (
-                $div[.//tei:p[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:head[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:lg[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:trailer[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:note[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:list[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:quote[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:table[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:listApp[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:listBibl[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:cit[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:label[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:encodingDesc[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:fileDesc[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:profileDesc[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:revisionDesc[ngram:wildcard-contains(., $query[2])]]
-                )
-                else ()
-                ),
-                "add-exist-id=all")
-            else (
-                util:expand((
-                    $div[ngram:wildcard-contains(., $query[1])],
-                    $div[ngram:wildcard-contains(., $query[2])]),
-                "add-exist-id=all")
-                )
+            util:expand(($div[ngram:wildcard-contains(., $query[1])], $div[ngram:wildcard-contains(., $query[2])]),
+                        "add-exist-id=all")
         else
             $div
     let $view := app:get-content($div)
@@ -723,7 +642,7 @@ declare function app:get-content($div as element()) {
                     }
             else
                 $div
-        else ()
+        else $div
 };
 
 
@@ -1388,6 +1307,8 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
         else 'lucene'
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
     let $parent := $hit/ancestor-or-self::tei:div[1]
+    let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:front
+    let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:back
     let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:teiHeader  
     let $div := app:get-current($parent)
     let $parent-id := ($parent/@xml:id/string(), util:document-name($parent) || "_" || util:node-id($parent))[1]
