@@ -489,7 +489,7 @@ function app:navigation($node as node(), $model as map(*)) {
     let $div := $model("work")
     let $parent := $div/ancestor::tei:div[not(*[1] instance of element(tei:div))][1]
     let $prevDiv := $div/preceding::tei:div[1]
-    let $prevDiv := app:get-previous(if ($div/.. >> $prevDiv) then $div/.. else $prevDiv)
+    let $prevDiv := app:get-previous(if ($parent and $div/.. >> $prevDiv) then $div/.. else $prevDiv)
     let $nextDiv := app:get-next($div)
 (:        ($div//tei:div[not(*[1] instance of element(tei:div))] | $div/following::tei:div)[1]:)
     let $work := $div/ancestor-or-self::tei:TEI
