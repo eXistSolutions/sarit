@@ -35,6 +35,7 @@ declare variable $app:EXIDE :=
 (:~
  : Process navbar links to cope with browsing.
  :)
+(:template function in template.html:)
 declare
     %templates:wrap
 function app:nav-set-active($node as node(), $model as map(*)) {
@@ -93,6 +94,7 @@ declare function functx:escape-for-regex
 (:~
  : List SARIT works
  :)
+(:template function in browse.html:)
 declare 
     %templates:wrap
 function app:list-works($node as node(), $model as map(*)) {
@@ -105,6 +107,7 @@ function app:list-works($node as node(), $model as map(*)) {
     }
 };
 
+(:template function in view-play.html:)
 declare
     %templates:wrap
 function app:work($node as node(), $model as map(*), $id as xs:string) {
@@ -136,6 +139,7 @@ declare %private function app:load($context as node()*, $id as xs:string) {
         else doc($config:remote-data-root || "/" || $id)/tei:TEI
 };
 
+(:template function in view-work.html:)
 declare function app:header($node as node(), $model as map(*)) {
     tei-to-html:render($model("work")/tei:teiHeader)
 };
@@ -143,6 +147,7 @@ declare function app:header($node as node(), $model as map(*)) {
 (:You can always see three levels: the current level, is siblings, its parent and its children. 
 This means that you can always go up and down (and sideways).
 One could leave out or elide the siblings. :)
+(:template function in view-work.html:)
 declare 
     %templates:default("full", "false")
 function app:outline($node as node(), $model as map(*), $full as xs:boolean) {
@@ -345,7 +350,7 @@ declare function app:toc-div($div, $long as xs:string?, $current as element()?, 
 };
 
 (:~
- : 
+(:template function in browse.html:)
  :)
 declare function app:work-title($node as node(), $model as map(*), $type as xs:string?) {
     let $suffix := if ($type) then "." || $type else ()
@@ -365,6 +370,7 @@ declare %private function app:work-title($work as element(tei:TEI)?) {
         else $main-title
 };
 
+(:template function in browse.html:)
 declare 
     %templates:wrap
 function app:checkbox($node as node(), $model as map(*), $target-texts as xs:string*) {
@@ -380,6 +386,7 @@ function app:checkbox($node as node(), $model as map(*), $target-texts as xs:str
     )
 };
 
+(:template function in browse.html:)
 declare function app:work-author($node as node(), $model as map(*)) {
     let $work := $model("work")/ancestor-or-self::tei:TEI
     let $work-commentators := $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[@role eq 'commentator']/text()
@@ -391,6 +398,7 @@ declare function app:work-author($node as node(), $model as map(*)) {
         $work-authors    
 };
 
+(:template function in browse.html:)
 declare function app:work-lang($node as node(), $model as map(*)) {
     let $work := $model("work")/ancestor-or-self::tei:TEI
     let $script := $work//tei:text/@xml:lang
@@ -400,12 +408,14 @@ declare function app:work-lang($node as node(), $model as map(*)) {
         concat($script, if ($auto-conversion) then ' (automatically converted)' else '')  
 };
 
+(:template function in browse.html:)
 declare function app:epub-link($node as node(), $model as map(*)) {
     let $id := $model("work")/@xml:id/string()
     return
         <a xmlns="http://www.w3.org/1999/xhtml" href="{$node/@href}{$id}.epub">{ $node/node() }</a>
 };
 
+(:template function in browse.html:)
 declare function app:pdf-link($node as node(), $model as map(*)) {
     let $id := $model("work")/@xml:id/string()
     let $uuid := util:uuid()
@@ -414,6 +424,7 @@ declare function app:pdf-link($node as node(), $model as map(*)) {
             data-token="{$uuid}" href="{$node/@href}{$id}.pdf?token={$uuid}">{ $node/node() }</a>
 };
 
+(:template function in browse.html:)
 declare function app:zip-link($node as node(), $model as map(*)) {
     let $file := util:document-name($model("work"))
     let $downloadPath := request:get-scheme() ||"://" || request:get-server-name() || ":" || request:get-server-port() || substring-before(request:get-effective-uri(),"/db/apps/sarit/modules/view.xql") || $config:remote-download-root || "/" || substring-before($file,".xml") || ".zip"
@@ -421,6 +432,7 @@ declare function app:zip-link($node as node(), $model as map(*)) {
         <a xmlns="http://www.w3.org/1999/xhtml" href="{$downloadPath}">{ $node/node() }</a>
 };
 
+(:template function in browse.html:)
 declare function app:xml-link($node as node(), $model as map(*)) {
     let $doc-path := document-uri(root($model("work")))
     let $eXide-link := $app:EXIDE || "?open=" || $doc-path
@@ -434,6 +446,7 @@ declare function app:xml-link($node as node(), $model as map(*)) {
             <a xmlns="http://www.w3.org/1999/xhtml" href="{$rest-link}" target="_blank">{ $node/node() }</a>
 };
 
+(:template function in view-work.html:)
 declare function app:copy-params($node as node(), $model as map(*)) {
     element { node-name($node) } {
         $node/@* except $node/@href,
@@ -454,6 +467,7 @@ declare function app:copy-params($node as node(), $model as map(*)) {
     }
 };
 
+(:template function in browse.html:)
 declare function app:work-authors($node as node(), $model as map(*)) {
     let $authors := distinct-values(collection($config:remote-data-root)//tei:fileDesc/tei:titleStmt/tei:author)
     let $authors := for $author in $authors order by translate($author, 'ĀŚ', 'AS') return $author 
@@ -468,6 +482,7 @@ declare function app:work-authors($node as node(), $model as map(*)) {
         templates:form-control($control, $model)
 };
 
+(:template function in view-play.html:)
 declare 
     %templates:wrap
 function app:navigation($node as node(), $model as map(*)) {
@@ -538,6 +553,7 @@ function app:breadcrumbs($node as node(), $model as map(*)) {
         <li><a href="{$id}.html">{app:derive-title($ancestor)}</a></li>
 };:)
 
+(:template function in view-play.html:)
 declare
     %templates:wrap
 function app:navigation-title($node as node(), $model as map(*)) {
@@ -554,6 +570,7 @@ function app:navigation-title($node as node(), $model as map(*)) {
         }
 };
 
+(:template function in view-play.html:)
 declare function app:navigation-link($node as node(), $model as map(*), $direction as xs:string) {
     if ($model($direction)) then
         element { node-name($node) } {
@@ -571,6 +588,7 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
         '&#xA0;' (:hack to keep "Next" from dropping into the hr when there is no "Previous":) 
 };
 
+(:template function in view-play.html:)
 declare 
     %templates:default("index", "ngram")
     %templates:default("action", "browse")
@@ -586,113 +604,16 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
             else ()
         return
             if ($query instance of element())
-            then app:lucene-view($node, $model, $id, $query, $query-scope, $query-scripts)
-            else app:ngram-view($node, $model, $id, $query, $query-scope, $query-scripts)
+            then app:lucene-view($node, $model, $id, $query)
+            else app:ngram-view($node, $model, $id, $query)
 };
 
-declare function app:lucene-view($node as node(), $model as map(*), $id as xs:string, $query as element()?, $query-scope as xs:string?, $query-scripts as xs:string) {    
-(:    console:log("sarit", "lucene-view: " || $id),:)
+declare function app:lucene-view($node as node(), $model as map (*), $id as xs:string, $query as element()?)
+{
     for $div in $model("work")
-    let $div-marked :=
-        if ($query) then
-            if ($query-scope eq 'narrow') then
-                util:expand((
-                $div[.//tei:p[ft:query(., $query)]],
-                $div[.//tei:head[ft:query(., $query)]],
-                $div[.//tei:lg[ft:query(., $query)]],
-                $div[.//tei:trailer[ft:query(., $query)]],
-                $div[.//tei:note[ft:query(., $query)]],
-                $div[.//tei:list[ft:query(., $query)]],
-                $div[.//tei:l[not(local-name(./..) eq 'lg')][ft:query(., $query)]],
-                $div[.//tei:quote[ft:query(., $query)]],
-                $div[.//tei:table[ft:query(., $query)]],
-                $div[.//tei:listApp[ft:query(., $query)]],
-                $div[.//tei:listBibl[ft:query(., $query)]],
-                $div[.//tei:cit[ft:query(., $query)]],
-                $div[.//tei:label[ft:query(., $query)]],
-                $div[.//tei:encodingDesc[ft:query(., $query)]],
-                $div[.//tei:fileDesc[ft:query(., $query)]],
-                $div[.//tei:profileDesc[ft:query(., $query)]],
-                $div[.//tei:revisionDesc[ft:query(., $query)]]
-                ),
-                "add-exist-id=all")
-            else
-                util:expand(
-                (
-                    $div[ft:query(., $query)], 
-                    $div[.//tei:teiHeader[ft:query(., $query)]]
-                )
-                , "add-exist-id=all")
-        else
-            $div
-    let $div := if ($div-marked) then $div-marked else $div
-    let $view := app:get-content($div[1])
-    return
-        <div xmlns="http://www.w3.org/1999/xhtml" class="play">
-        { tei-to-html:recurse($view, <options/>) }
-        </div>
-};
-
-declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string*, $query-scope as xs:string?, $query-scripts as xs:string) {
-(:    console:log("sarit", "ngram-view: " || $id),:)
-    for $div in app:load($model("work"), $id)
     let $div :=
-        if (not(empty($query))) then
-            if ($query-scope eq 'narrow') then
-                util:expand((
-                if ($query[1])
-                then
-                (
-                $div[.//tei:p[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:head[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:lg[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:trailer[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:note[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:list[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:quote[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:table[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:listApp[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:listBibl[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:cit[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:label[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:encodingDesc[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:fileDesc[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:profileDesc[ngram:wildcard-contains(., $query[1])]],
-                $div[.//tei:revisionDesc[ngram:wildcard-contains(., $query[1])]]
-                )
-                else ()
-                ,
-                if ($query[2])
-                then
-                (
-                $div[.//tei:p[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:head[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:lg[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:trailer[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:note[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:list[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:quote[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:table[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:listApp[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:listBibl[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:cit[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:label[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:encodingDesc[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:fileDesc[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:profileDesc[ngram:wildcard-contains(., $query[2])]],
-                $div[.//tei:revisionDesc[ngram:wildcard-contains(., $query[2])]]
-                )
-                else ()
-                ),
-                "add-exist-id=all")
-            else (
-                util:expand((
-                    $div[ngram:wildcard-contains(., $query[1])],
-                    $div[ngram:wildcard-contains(., $query[2])]),
-                "add-exist-id=all")
-                )
+        if ($query) then
+            util:expand($div[ft:query(., $query)], "add-exist-id=all")
         else
             $div
     let $view := app:get-content($div)
@@ -702,7 +623,23 @@ declare function app:ngram-view($node as node(), $model as map(*), $id as xs:str
         </div>
 };
 
-declare function app:get-content($div as element()) {
+declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string*) 
+{
+    for $div in app:load($model("work"), $id)
+    let $div :=
+        if (not(empty($query))) then
+            util:expand(($div[ngram:wildcard-contains(., $query[1])], $div[ngram:wildcard-contains(., $query[2])]),
+                        "add-exist-id=all")
+        else
+            $div
+    let $view := app:get-content($div)
+    return
+        <div xmlns="http://www.w3.org/1999/xhtml" class="play">
+        { tei-to-html:recurse($view, <options/>) }
+        </div>
+};
+
+declare %private function app:get-content($div as element()) {
     if ($div instance of element(tei:teiHeader)) then 
         $div
     else
@@ -723,9 +660,8 @@ declare function app:get-content($div as element()) {
                     }
             else
                 $div
-        else ()
+        else $div
 };
-
 
 (:~
     
@@ -748,7 +684,7 @@ declare function app:get-content($div as element()) {
 
 : @return The function returns a map containing the $hits, the $query, and the $query-scope. The search results are output through the nested templates, app:hit-count, app:paginate, and app:show-hits.
 :)
-
+(:template function in search.html:)
 declare 
     %templates:default("index", "ngram")
     %templates:default("lucene-query-mode", "any")
@@ -757,7 +693,8 @@ declare
     %templates:default("work-authors", "all")
     %templates:default("query-scripts", "all")
     %templates:default("target-texts", "all")
-function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $lucene-query-mode as xs:string, $tei-target as xs:string+, $query-scope as xs:string, $work-authors as xs:string+, $query-scripts as xs:string, $target-texts as xs:string+) as map(*) {
+    %templates:default("bool", "new")
+function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $lucene-query-mode as xs:string, $tei-target as xs:string+, $query-scope as xs:string, $work-authors as xs:string+, $query-scripts as xs:string, $target-texts as xs:string+, $bool as xs:string) as map(*) {
     (:remove any ZERO WIDTH NON-JOINER from the query string:)
     let $query := translate(normalize-space($query), "&#8204;", "")
     (:based on which index the user wants to query against, the query string is dispatchted to separate functions. Both return empty if there is no query string.:)
@@ -1089,8 +1026,6 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                             return $hit
                                         else ()
                         (:Build upon the last search.:)
-            (:NB: Adding $bool as function parameter proved impossible: "template function not found". Are only 10 parameters possible in a template funtion?.:)
-            let $bool := request:get-parameter('bool', 'new')
             let $query :=
                 if ($index eq 'lucene')
                 then
@@ -1101,7 +1036,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             <bool occur="should">{session:get-attribute("apps.sarit.query")}</bool>
                             <bool occur="should">{$query}</bool>
                         </query>
-            else $query
+                else $query
             let $hits :=
                 if ($index eq 'lucene')
                 then
@@ -1133,7 +1068,8 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
     app:expand-ngram-query transliterates the query string from Devanagari to IAST transcription and/or from IAST transcription to Devanagari, 
     if the user has indicated that this search is wanted. 
 :)
-declare %private function app:expand-ngram-query($query as xs:string?, $query-scripts as xs:string?, $index as xs:string) as xs:string+ {
+(: NB: How can this function return 0 or 1:)
+declare %private function app:expand-ngram-query($query as xs:string*, $query-scripts as xs:string?, $index as xs:string) as xs:string* {
     if ($query)
     then (
         sarit:create("devnag2roman", $app:devnag2roman/string()),
@@ -1145,7 +1081,7 @@ declare %private function app:expand-ngram-query($query as xs:string?, $query-sc
             (:if the user wants to search in Devanagri, then transliterate and discard the original query:)
             if ($query-scripts eq "sa-Deva") 
             then
-                ((), sarit:transliterate("expand",translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")) )
+                ('', sarit:transliterate("expand",translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")) )
             else 
                 (:if the user wants to search in both IAST and Devanagri, then transliterate the original query and keep it:)
                 if ($query-scripts eq "all")
@@ -1156,7 +1092,7 @@ declare %private function app:expand-ngram-query($query as xs:string?, $query-sc
                     (:this exhausts all options for IAST input strings:)
                     if ($query-scripts eq "sa-Latn") 
                     then 
-                        ($query, ())
+                        ($query, '')
                     else ()
         else
             (:if there is input exclusively in Devanagri:)
@@ -1165,7 +1101,7 @@ declare %private function app:expand-ngram-query($query as xs:string?, $query-sc
                 (:if the user wants to search in IAST, then transliterate the original query but delete it:)
                 if ($query-scripts eq "sa-Latn") 
                 then
-                    ((), sarit:transliterate("devnag2roman", $query) )
+                    ('', sarit:transliterate("devnag2roman", $query) )
                 else
                     (:if the user wants to search in both Devanagri and IAST, then transliterate the original query and keep it:)
                     if ($query-scripts eq "all")
@@ -1289,7 +1225,7 @@ declare %private function app:create-lucene-query($query-string as xs:string?, $
 
 };
 
-declare function app:transliterate-lucene-query($element as element(), $direction as xs:string) as element() {
+declare %private function app:transliterate-lucene-query($element as element(), $direction as xs:string) as element() {
    (
     sarit:create("devnag2roman", $app:devnag2roman/string()),
     sarit:create("roman2devnag", $app:roman2devnag-search/string()), element {node-name($element)}
@@ -1311,6 +1247,7 @@ declare function app:transliterate-lucene-query($element as element(), $directio
 (:~
  : Create a bootstrap pagination element to navigate through the hits.
  :)
+(:template function in search.html:)
 declare
     %templates:wrap
     %templates:default('start', 1)
@@ -1388,6 +1325,8 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
         else 'lucene'
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
     let $parent := $hit/ancestor-or-self::tei:div[1]
+    let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:front
+    let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:back
     let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:teiHeader  
     let $div := app:get-current($parent)
     let $parent-id := ($parent/@xml:id/string(), util:document-name($parent) || "_" || util:node-id($parent))[1]
@@ -1644,7 +1583,6 @@ declare %private function app:lucene2xml($node as item(), $lucene-query-mode as 
     default return
         $node
 };
-
 
 (:~
  : This is a function for supplying links to download the files in remote-download-root. 

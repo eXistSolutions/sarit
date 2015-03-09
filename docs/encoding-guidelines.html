@@ -1,13 +1,12 @@
 <div class="help" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
     <div class="wiki wiki-page">
-        <p>Encoding Guidelines</p>
+        <h3>Encoding Guidelines</h3>
         <p>This document presents guidelines for the creation of digital texts in Sanskrit, Prakrit,
             and other Indian languages.</p>
-        <p>These guidelines are maintained by SARIT (<a class="external"
-            href="http://sarit.indology.info">http://sarit.indology.info</a>). SARIT maintains a
+        <p>These guidelines are maintained by SARIT (<a class="external" href="http://sarit.indology.info">http://sarit.indology.info</a>). SARIT maintains a
         collection of digital texts that conform to the standards of the Text Encoding Initiative
         (TEI) and provides tools for browsing and seaching these texts. These guidelines have two
-        main purposes:</p> 
+        main purposes:</p>
         <ol>
             <li>to document the standards that the SARIT project has followed in the creation of its
                 own digital texts;</li>
@@ -30,20 +29,16 @@
                 references to other texts, or any kind of controlled vocabulary (persons, works,
                 places, etc.), then the <em>full</em> guidelines are for you.</li>
         </ul>
-        
         <p>Texts that are encoded according to the simple guidelines can always be “enhanced” at a
             later stage with the markup described in the full guidelines.</p>
-        
         <a name="Introduction"/>
-        <h1>Introduction<a href="#Introduction" class="wiki-anchor"/></h1>
-        
+        <h4>Introduction<a href="#Introduction" class="wiki-anchor"/>
+        </h4>
         <p>Digital texts come in a variety of formats, but the texts distributed by SARIT are XML
             files that conform to standards of the Text Encoding Initiative (TEI).</p>
-        
-        <a
-            name="What-is-XML"/>
-        <h1>What is XML?<a href="#What-is-XML" class="wiki-anchor"/></h1>
-        
+        <a name="What-is-XML"/>
+        <h4>What is XML?<a href="#What-is-XML" class="wiki-anchor"/>
+        </h4>
         <p>In the days of publishing before word-processing, copy editors used to "mark up" an
             author's typed or handwritten manuscript for the printer, using written abbreviations to
             indicate structural points in the text, like headings, indents or font changes. XML is
@@ -51,17 +46,19 @@
             or an XML-like form of markup. HTML is a special case of XML. The key feature of XML is
             its use of <strong>elements</strong>, which start and end with tags in angle-brackets,
             and signal some <em>editorial</em> intention relating to the text: <br/>
-            <pre>&lt;p&gt;This is a paragraph.&lt;/p&gt;</pre><br/>Elements can be nested within
+            <pre>&lt;p&gt;This is a paragraph.&lt;/p&gt;</pre>
+            <br/>Elements can be nested within
             each other:<br/>
-            <pre>&lt;p&gt;This is &lt;hi&gt;highlighted text&lt;/hi&gt;.&lt;/p&gt;</pre><br/>Elements
+            <pre>&lt;p&gt;This is &lt;hi&gt;highlighted text&lt;/hi&gt;.&lt;/p&gt;</pre>
+            <br/>Elements
             can also be given <strong>attributes</strong>:<br/>
-            <pre>&lt;p&gt;This is &lt;hi rend="bold"&gt;an element&lt;/hi&gt;.&lt;/p&gt;</pre><br/>In
+            <pre>&lt;p&gt;This is &lt;hi rend="bold"&gt;an element&lt;/hi&gt;.&lt;/p&gt;</pre>
+            <br/>In
             a <strong>well-formed</strong> XML document, every starting tag corresponds to an ending
             tag, and vice versa, and all of the elements are arranged hierarchically and without
             overlapping. But in order to be useful, the document must use elements in a well-defined
             and standardized way. A document that formally defines what elements may be used in an
             XML document, and how they may be used, is called a <strong>schema</strong>.</p>
-        
         <p>Once you have well-formed and valid XML, what can you do with it? There are many computer
             programs that can read an XML text and do all sorts of interesting things. One of the
             first things you may want to do is to check that the file you have painstakingly
@@ -73,33 +70,27 @@
             transform them into a format that human beings can read: HTML, RTF, or PDF. XML texts
             can be converted into almost any other format, or processed in many complicated ways
             using a super-strength version of search-and-replace called XSLT.</p>
-        <a
-            name="How-do-I-type-XML-texts"/>
-        <h2>How do I type XML texts?<a href="#How-do-I-type-XML-texts" class="wiki-anchor"/></h2>
-        
+        <a name="How-do-I-type-XML-texts"/>
+        <h5>How do I type XML texts?<a href="#How-do-I-type-XML-texts" class="wiki-anchor"/>
+        </h5>
         <p>An XML document has no hidden codes, and can be typed with <em>any</em> writing program
             from the simplest editor to the most feature-rich word processor. Many modern programs
             have XML "modes" that provide things like syntax-highlighting or online help; others
             have been created specifically for typing XML. Several of these programs have XML
             Parsers built in to them, so that they can check your input as you go along and perhaps
             even format it nicely on the screen.</p>
-        
-        <a
-            name="What-is-TEI"/>
-        <h2>What is TEI?<a href="#What-is-TEI" class="wiki-anchor"/></h2>
-        
+        <a name="What-is-TEI"/>
+        <h5>What is TEI?<a href="#What-is-TEI" class="wiki-anchor"/>
+        </h5>
         <p>The Text Encoding Initiative produces guidelines for encoding texts as XML documents and
             schemas for validating those documents. The TEI guidelines have been used, and continue
             to be used, in hundreds of text-encoding projects, and form the basis of many other
             subprojects (such as EpiDoc). They are actively maintained and well-supported by a
             growing number of applications, and hence they currently represent “The Right Way” to
             produce digital texts.</p>
-        
-        <a
-            name="Structure-not-presentation"/>
-        <h2>Structure, not presentation<a href="#Structure-not-presentation" class="wiki-anchor"
-            /></h2>
-        
+        <a name="Structure-not-presentation"/>
+        <h5>Structure, not presentation<a href="#Structure-not-presentation" class="wiki-anchor"/>
+        </h5>
         <p>We want to reflect the <em>structure</em> of text, and not the <em>presentation</em> of
             the text on the pages of a printed edition. This means that we typically do not encode
             formatting such as bold face, italics, centered text, and so on. Rather, we encode the
@@ -109,23 +100,25 @@
             it is rendered that way, and then encode the structural reasons for that presentational
             choice. Thus, if a text is centered on the page because it represents a colophon, use
                 <code>&lt;trailer&gt;</code> rather than <code>&lt;p rend="center"&gt;</code>.</p>
-        
-        <a
-            name="Getting-started"/>
-        <h2>Getting started<a href="#Getting-started" class="wiki-anchor"/></h2>
-        
+        <a name="Getting-started"/>
+        <h5>Getting started<a href="#Getting-started" class="wiki-anchor"/>
+        </h5>
         <p>All SARIT documents start the same way. The file begins with an <em>XML declaration</em>,
             a processing instruction that tells whatever program opens the document that it is
             written in XML. This XML declaration is always the
-            same:<br/><pre>
+            same:<br/>
+            <pre>
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
-</pre><br/>All valid XML
+</pre>
+            <br/>All valid XML
             files must have one, and only one, <em>top-level element</em>. Since SARIT documents are
             TEI documents, this top-level element is going to be &lt;TEI&gt;. This means that the
             second line of the file, after the XML declaration, will look something like the
-            following:<br/><pre>
+            following:<br/>
+            <pre>
 &lt;TEI xml:id="sarit__XML-ID_HERE" xmlns="http://www.tei-c.org/ns/1.0"&gt;
-</pre><br/>This
+</pre>
+            <br/>This
             element has two attributes. The <code>xml:id</code> is a unique identifier for the
             document. Your choice for this unique identifier will depend on your project. The
                 <code>xmlns</code> attribute tells whatever program opens the document that the
@@ -133,26 +126,19 @@
             example, that the element <code>&lt;p&gt;</code> is what the TEI defines as
                 <code>&lt;p&gt;</code>, and not what any other authority defines as
                 <code>&lt;p&gt;</code>.</p>
-        
         <p>The last line of the document will close the <code>&lt;TEI&gt;</code> element, and hence
             it will always be <code>&lt;/TEI&gt;</code>.</p>
-        
-        <a
-            name="Further-details"/>
-        <h2>Further details<a href="#Further-details" class="wiki-anchor"/></h2>
-        
-        <a
-            name="Comments"/>
-        <h3>Comments<a href="#Comments" class="wiki-anchor"/></h3>
-        
+        <a name="Further-details"/>
+        <h5>Further details<a href="#Further-details" class="wiki-anchor"/>
+        </h5>
+        <a name="Comments"/>
+        <h6>Comments<a href="#Comments" class="wiki-anchor"/>
+        </h6>
         <p>The XML processor will ignore anything that is contained between <code>&lt;!--</code> and
                 <code>--&gt;</code>.</p>
-        
-        <a
-            name="The-xmlid-and-xmllang-attributes"/>
-        <h3>The xml:id and xml:lang attributes<a href="#The-xmlid-and-xmllang-attributes"
-                class="wiki-anchor"/></h3>
-        
+        <a name="The-xmlid-and-xmllang-attributes"/>
+        <h6>The xml:id and xml:lang attributes<a href="#The-xmlid-and-xmllang-attributes" class="wiki-anchor"/>
+        </h6>
         <p>The <code>xml:id</code> attribute assigns a unique identifier to an element, so that the
             element can be referenced from anywhere else in the document, or even in a corpus of
             documents. But the functions that depend on unique identifiers—indexing and cataloguing,
@@ -169,20 +155,21 @@
          The <code>xml:lang</code> attribute, on the other hand, should be
         used systematically and carefully when preparing a SARIT document. This attribute tells us
         what language is represented by the text of the element to which it is attached. SARIT
-        follows the two-letter language codes defined by <a
-            href="/redmine/projects/encoding-guidelines/wiki/ISO_639?parent=Wiki"
-            class="wiki-page new">http://www.loc.gov/standards/iso639-2/</a>, and in most cases
+        follows the two-letter language codes defined by <a href="/redmine/projects/encoding-guidelines/wiki/ISO_639?parent=Wiki" class="wiki-page new">http://www.loc.gov/standards/iso639-2/</a>, and in most cases
         these language codes are followed by a code for the script, as follows: <ul>
-            <li><code>en</code>: English (in the Latin script by default);</li>
-            <li><code>sa-Latn</code>: Sanskrit in the Latin script (Roman transliteration);</li>
-            <li><code>sa-Deva</code>: Sanskrit in the Devanāgarī script.</li>
-            <li><code>pra-Latn</code>: Prakrit in the Latin script (Roman transliteration);</li>
-            <li><code>pra-Deva</code>: Prakrit in the Devanāgarī script.</li>
+            <li>
+                <code>en</code>: English (in the Latin script by default);</li>
+            <li>
+                <code>sa-Latn</code>: Sanskrit in the Latin script (Roman transliteration);</li>
+            <li>
+                <code>sa-Deva</code>: Sanskrit in the Devanāgarī script.</li>
+            <li>
+                <code>pra-Latn</code>: Prakrit in the Latin script (Roman transliteration);</li>
+            <li>
+                <code>pra-Deva</code>: Prakrit in the Devanāgarī script.</li>
         </ul>
-        
         <p>See SARIT’s <strong>character-encoding guidelines</strong> regarding issues of script and
             transliteration.</p>
-        
         <p>The <code>xml:lang</code> attribute is <em>heritable</em>: if you say that a certain
             element is in a certain language, then all of the children of that element are assumed
             to be in the language as well. Thus we need to specify a language at the highest level
@@ -193,52 +180,50 @@
             an element if it is different from the language of its parent element: for example, if
             you have an English note to a Sanskrit text, you will generally give the
                 <code>&lt;note&gt;</code> element the <code>xml:lang="en"</code> attribute.</p>
-        
-        <a
-            name="Dealing-with-whitespace"/>
-        <h3>Dealing with whitespace<a href="#Dealing-with-whitespace" class="wiki-anchor"/></h3>
-        
-        <p>Because XML uses tags rather whitespace elements (line-breaks and indentation) to mark
+        <a name="Dealing-with-whitespace"/>
+        <h6>Dealing with whitespace<a href="#Dealing-with-whitespace" class="wiki-anchor"/>
+        </h6>
+        <p>Because XML uses tags rather than whitespace elements (line-breaks and indentation) to mark
             the logical structure of the document, XML has no hard-and-fast rules for whitespace: a
-            single element,consisting of a starting-tag, content, and an ending-tag, might occur on
+            single element, consisting of a starting-tag, content, and an ending-tag, might occur on
             one, three, or forty lines. Different text editors also have different conventions for
             putting whitespace into XML documents.</p>
-        
         <p>XML processors usually trim the whitespace at the beginning and end of an element. (See
-                <a class="external" href="http://wiki.tei-c.org/index.php/XML_Whitespace#Trimming."
-                >http://wiki.tei-c.org/index.php/XML_Whitespace#Trimming.</a>) Usually this will not
+                <a class="external" href="http://wiki.tei-c.org/index.php/XML_Whitespace#Trimming.">http://wiki.tei-c.org/index.php/XML_Whitespace#Trimming.</a>) Usually this will not
             change the actual text that you wish to encode. Whitespace requires attention, however,
             when within an element text and XML elements occur side-by-side, that is, when using
             inline XML elements (elements which have text before or after them). In cases like this,
             it’s important to put meaningful spaces <em>outside</em> of the inline tags rather than
             inside the tags,
-            thus:<br/><pre>
+            thus:<br/>
+            <pre>
 &lt;element&gt;XYZ &lt;element&gt;ABC&lt;/element&gt; XYZ&lt;/element&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>Rather
-            than:<br/><pre>
+            than:<br/>
+            <pre>
 &lt;element&gt;XYZ&lt;element&gt; ABC &lt;/element&gt;XYZ&lt;/element&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>which will lose the spaces when it is processed.</p>
-        
-        <a
-            name="The-TEI-Header"/>
-        <h1>The TEI Header<a href="#The-TEI-Header" class="wiki-anchor"/></h1>
+        <a name="The-TEI-Header"/>
+        <h4>The TEI Header<a href="#The-TEI-Header" class="wiki-anchor"/>
+        </h4>
          One of the advantages to using TEI is the ability to include all
         kinds of structured metadata. When we create a SARIT document, we are not just transcribing
         the text, but also providing the following: <ul>
-            <li><em>cataloguing</em> information, for example the title and author of the text;</li>
+            <li>
+                <em>cataloguing</em> information, for example the title and author of the text;</li>
             <li>information about the document’s <em>source</em>, such as the edition that the
                 digital text is based upon;</li>
-            <li><em>legal</em> information, such as the license and authority under which the text
+            <li>
+                <em>legal</em> information, such as the license and authority under which the text
                 is made available;</li>
             <li>information about the <em>encoding</em> of the document; and</li>
             <li>information about the <em>revisions</em> that have been made to the document over
                 the course of its history.</li>
         </ul>
-        
         <p>All of this information is provided in a section of the document called the
                 <em>header</em>, which is contained in the element <code>&lt;teiHeader&gt;</code>.
                 <code>&lt;teiHeader&gt;</code> is a direct child of the top-level element
@@ -249,64 +234,60 @@
             the file’s encoding (<code>&lt;encodingDesc&gt;</code>), and one to record the file’s
             history (<code>&lt;revisionDesc&gt;</code>). We’ll talk about these three sections in
             order. But SARIT also provides a template document that shows how the header should be
-            structured (<a class="external"
-                href="https://github.com/sarit/SARIT-corpus/blob/master/00-sarit-tei-header-template.xml"
-                >https://github.com/sarit/SARIT-corpus/blob/master/00-sarit-tei-header-template.xml</a>).</p>
-        
+            structured (<a class="external" href="https://github.com/sarit/SARIT-corpus/blob/master/00-sarit-tei-header-template.xml">https://github.com/sarit/SARIT-corpus/blob/master/00-sarit-tei-header-template.xml</a>).</p>
         <p>It is important to distinguish between the <strong>work</strong> and a specific
                 <strong>representation</strong> of that work. A <strong>work</strong> is an abstract
             object, such as <em>Hamlet</em> or <em>Abhijñānaśakuntalā</em> considered as ideas in
             the mind. A printed edition of a work and a digital edition of a work are both
                 <strong>representations</strong>. In most cases a specific printed edition will be
             the <strong>source</strong> of the digital edition and must be acknowledged as such.
-            Since printed editions are protected by copyright laws—although not to the same degree
-            and for the same degree in all jurisdictions—you must ensure that you are legally
+            Since printed editions are protected by copyright laws—although not to the same degree 
+            in all jurisdictions—you must ensure that you are legally
             entitled to use the printed edition as the source of the digital edition.</p>
-        
-        <a
-            name="The-file-description"/>
-        <h2>The file description<a href="#The-file-description" class="wiki-anchor"/></h2>
-        
+        <a name="The-file-description"/>
+        <h5>The file description<a href="#The-file-description" class="wiki-anchor"/>
+        </h5>
         <p>The file description element (<code>&lt;fileDesc&gt;</code>) contains the most essential
             metadata: a statement of the title and author of the text, which is essential for
             cataloguing and indexing (<code>&lt;titleStmt&gt;</code>); a statement of how, under
             what authority, and under what license the digital text is published
                 (<code>&lt;publicationStmt&gt;</code>), and a description of the digital text’s
             sources (<code>&lt;sourceDesc&gt;</code>).</p>
-        
-        <a
-            name="The-title-statement"/>
-        <h3>The title statement<a href="#The-title-statement" class="wiki-anchor"/></h3>
-        
+        <a name="The-title-statement"/>
+        <h6>The title statement<a href="#The-title-statement" class="wiki-anchor"/>
+        </h6>
         <p>The title statement supplies the title and author <em>of the digital text</em>. In most
             cases this will be the same as the title and author <em>of the work</em>. For
-            example:<br/><pre>
+            example:<br/>
+            <pre>
 &lt;titleStmt&gt;
   &lt;title&gt;Sarasvatīkaṇṭhābharaṇa&lt;/title&gt;
   &lt;author&gt;Bhoja&lt;/author&gt;
 &lt;/titleStmt&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>Very often, however, the SARIT edition will present a work along with one or more
             commentaries (see “Base texts and commentaries” below). In this case, there are two (or
             more) titles, and two (or more) authors. To reflect the fact that the title of the base
             text will be the main title of the document, we use the attributes <code>type</code> and
                 <code>subtype</code>, and the authors are distinguished by their <code>role</code>
             attribute, as
-            follows:<br/><pre>
+            follows:<br/>
+            <pre>
 &lt;titleStmt&gt;
   &lt;title type="main" subtype="base-text"&gt;Tattvasaṅgraha&lt;/title&gt;
   &lt;title type="sub" subtype="commentary"&gt;Tattvasaṅgrahapañjikā&lt;/title&gt;
   &lt;author role="base-author"&gt;Śāntarakṣita&lt;/author&gt;
   &lt;author role="commentator"&gt;Kamalaśīla&lt;/author&gt;
 &lt;/titleStmt&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>In the following example we have a base text and two commentaries. When there is only one
             author for each <code>role</code>, it is easy to link authors with the titles of their
-            works. But when there are more than one authors for each role—as is the case with
+            works. But when there are more than one author for each role—as is the case with
             multiple commentaries—we need to supply extra an extra <code>n</code>
-            attribute.<br/><pre>
+            attribute.<br/>
+            <pre>
 &lt;titleStmt&gt;
   &lt;title type="main" subtype="base-text"&gt;Aṣṭāṅgahṛdayasaṃhitā&lt;/title&gt;
   &lt;title type="sub" subtype="commentary" n="1"&gt;Sarvāṅgasundarā&lt;/title&gt;
@@ -315,30 +296,32 @@
   &lt;author role="commentator" n="1"&gt;Aruṇadatta&lt;/author&gt;
   &lt;author role="commentator" n="2"&gt;Hemādri&lt;/author&gt;
 &lt;/titleStmt&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>In addition to providing information about <em>who</em> produced the work that forms the
             basis of the digital text, namely the author, the title statement also provides
             information about <em>who</em> helped to produce the digital text. This includes funding
             agencies, principal investigators, data enterers, and so on.</p>
-        
         <p>The funding agency and principal investigator have their own TEI elements
                 (<code>&lt;funder&gt;</code> and <code>&lt;principal&gt;</code>), but it is good
             practice to encode the names of persons with the general-purpose element
                 <code>&lt;persName&gt;</code> (further uses of <code>&lt;persName&gt;</code> will be
             discussed in the full version of the
-            guidelines):<br/><pre>
+            guidelines):<br/>
+            <pre>
   &lt;funder&gt;Deutsche Forschungsgemeinschaft&lt;/funder&gt;
   &lt;funder&gt;The National Endowment for the Humanities&lt;/funder&gt;
   &lt;principal&gt;
     &lt;persName&gt;Birgit Kellner&lt;/persName&gt;
   &lt;/principal&gt;
-</pre><br/>Other
+</pre>
+            <br/>Other
             responsible parties should be identified with the <code>&lt;respStmt&gt;</code>, a
             “responsibility statement” that includes two further elements:
             <code>&lt;resp&gt;</code>, which explains the nature of the responsibility, and an
             element, usually <code>&lt;persName&gt;</code>, that identifies the responsible
-            party:<br/><pre>
+            party:<br/>
+            <pre>
   &lt;respStmt&gt;
     &lt;resp&gt;data entry by&lt;/resp&gt;
     &lt;name&gt;SWIFT Information Technologies, Mumbai&lt;/name&gt;
@@ -347,28 +330,25 @@
     &lt;resp&gt;prepared for SARIT by&lt;/resp&gt;
     &lt;persName&gt;Liudmila Olalde&lt;/persName&gt;
   &lt;/respStmt&gt;
-</pre></p>
-        
-        <a
-            name="The-publication-statement"/>
-        <h3>The publication statement<a href="#The-publication-statement" class="wiki-anchor"/></h3>
+</pre>
+        </p>
+        <a name="The-publication-statement"/>
+        <h6>The publication statement<a href="#The-publication-statement" class="wiki-anchor"/>
+        </h6>
          The publication statement tells us how the digital text
             (<em>not</em> the sources of the digital text) is published. SARIT editions will have a
-        publication statement with the following structure, although the TEI P5 <a
-            href="/redmine/projects/encoding-guidelines/wiki/Guidelines?parent=Wiki"
-            class="wiki-page new"
-            >http://www.tei-c.org/release/doc/tei-p5-doc/en/html/HD.html#HD24</a> offer additional
+        publication statement with the following structure, although the TEI P5 <a href="/redmine/projects/encoding-guidelines/wiki/Guidelines?parent=Wiki" class="wiki-page new">http://www.tei-c.org/release/doc/tei-p5-doc/en/html/HD.html#HD24</a> offer additional
         possibilities: <ul>
             <li>the <em>publisher</em> of the digital text (typically SARIT);</li>
             <li>its <em>availability</em>;</li>
             <li>the <em>date</em> of its publication;</li>
         </ul>
-        
         <p>Texts that are made available through SARIT should
-            include:<br/><pre>
+            include:<br/>
+            <pre>
 &lt;publisher&gt;SARIT&lt;/publisher&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>The availability of a text can either be <em>free</em> or <em>restricted</em>, which are
             the two possible values of the attribute <code>status</code> in the element
                 <code>&lt;availability&gt;</code>. Unless there are special circumstances, SARIT
@@ -378,7 +358,8 @@
             SARIT texts are available free of cost.) SARIT texts will therefore usually include a
                 <code>&lt;licence&gt;</code> element that either links to or reproduces this
             licence. Here is an example of an element that links to the CC
-            license:<br/><pre>
+            license:<br/>
+            <pre>
 &lt;availability status="restricted"&gt;
   &lt;licence&gt;
     &lt;p&gt;Distributed under a 
@@ -387,17 +368,17 @@
     &lt;/p&gt;
   &lt;/licence&gt;
 &lt;/availability&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>The <em>date</em> of publication is simply contained in the <code>&lt;date&gt;</code>
-            element:<br/><pre>
+            element:<br/>
+            <pre>
 &lt;date&gt;2014&lt;/date&gt;
-</pre></p>
-        
-        <a
-            name="The-source-description"/>
-        <h3>The source description<a href="#The-source-description" class="wiki-anchor"/></h3>
-        
+</pre>
+        </p>
+        <a name="The-source-description"/>
+        <h6>The source description<a href="#The-source-description" class="wiki-anchor"/>
+        </h6>
         <p>The last obligatory portion of the file description is the source description, which
             tells us the sources on which the digital text is based. This will often be the most
             extensive and detailed part of the TEI Header. Usually, there will be one edition that
@@ -407,8 +388,7 @@
             source description is understood to be the main source. In order to be completely
             explicit, however, SARIT recommends that the role of each source in the constitution of
             the digital document should be briefly explained with a <code>&lt;note&gt;</code>.</p>
-        
-        <p>TEI provides a number of ways of tagging bibligraphic information, but SARIT recommends
+        <p>TEI provides a number of ways of tagging bibliographic information, but SARIT recommends
             the use of <code>&lt;bibl&gt;</code>. This is a relatively flexible element which should
             accommodate book, articles in journals, and articles in collections. The following are
             examples for different kinds of printed sources. The most common is a book, which has
@@ -420,7 +400,8 @@
             of modern-day authors and editors using the <code>&lt;name&gt;</code> element and its
             sub-elements, <code>&lt;surname&gt;</code> and <code>&lt;forename&gt;</code>, in order
             to make it easier to sort and reformat bibliographic
-            entries.<br/><pre>
+            entries.<br/>
+            <pre>
 &lt;bibl&gt;
   &lt;title type="main"&gt;Tattvasaṅgraha of Śāntarakṣita With the Commentary of Kamalaśīla.&lt;/title&gt;
   &lt;title type="sub"&gt;Edited with an Introduction in Sanskrit by Embar Krishnamacharya with a foreword by the general editor. In two volumes&lt;/title&gt;
@@ -435,14 +416,13 @@
   &lt;pubPlace&gt;Baroda&lt;/pubPlace&gt;
   &lt;date&gt;1926&lt;/date&gt;
 &lt;/bibl&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>Here is an example for journal articles, demonstrating the use of the <code>level</code>
             attribute to distinguish between the title of the article (<code>&lt;title
                 level="a"&gt;</code>) and the title of the journal (<code>&lt;title
                 level="j"&gt;</code>). Note also the use of the <code>&lt;biblScope&gt;</code>
             element to represent a page range.</p>
-        
         <pre>
 &lt;sourceDesc&gt;
 &lt;bibl type="article" subtype="journal_article"&gt;
@@ -457,12 +437,10 @@
   &lt;biblScope unit="pp" from="165" to="200"&gt;165-200&lt;/biblScope&gt;
 &lt;/bibl&gt;
 </pre>
-        
         <p>And this is an example of an article in a collection, again demonstrating the use of the
                 <code>level</code> attribute to distinguish between the title of the article
                 (<code>&lt;title level="a"&gt;</code>) and the title of the collection
                 (<code>&lt;title level="m"&gt;</code> for monograph):</p>
-        
         <pre>
 &lt;bibl type="article" subtype="book_chapter"&gt;
   &lt;author&gt;
@@ -479,14 +457,13 @@
   &lt;pubPlace&gt;Göttingen&lt;/pubPlace&gt;,
   &lt;publisher&gt;Vandenhoeck &amp;amp; Ruprecht&lt;/publisher&gt;
   &lt;date when="2003"&gt;2003&lt;/date&gt;
-  &lt;biblScope unit="pp" from="105" to="200"&gt;105-124&lt;/biblScope&gt;.
+  &lt;biblScope unit="pp" from="105" to="124"&gt;105-124&lt;/biblScope&gt;.
   &lt;series&gt;
     &lt;title level="s"&gt;&lt;/title&gt;
     &lt;biblScope unit="Beiheft"&gt;9&lt;/biblScope&gt;
   &lt;/series&gt;
 &lt;/bibl&gt;
 </pre>
-        
         <p>The sources for our printed editions are almost always manuscript sources. And when the
             printed editions refer to these manuscript sources, as responsible editions do, it is
             useful to provide a description of the manuscript that readers of the digital text will
@@ -494,12 +471,12 @@
                 <code>&lt;msDesc&gt;</code>, and it is contained directly within the
                 <code>&lt;sourceDesc&gt;</code> element, alongside any bibliographic sources
                 (<code>&lt;bibl&gt;</code>).</p>
-        
         <p>Here is one
-            example:<br/><pre>
+            example:<br/>
+            <pre>
 &lt;msDesc&gt;
   &lt;msIdentifier xml:id="msK"&gt;
-    &lt;idno&gt;Kun-de-ling-Manuscript.&lt;/idno&gt;
+    &lt;idno&gt;Kun-de-ling-Manuscript&lt;/idno&gt;
   &lt;/msIdentifier&gt;
   &lt;msContents&gt;
     &lt;msItem&gt;
@@ -516,19 +493,18 @@
     &lt;p&gt;In June 1934, Sāṅkṛtyāyana found this manuscript in the monastery of Kun-de-ling (Lhasa). &lt;/p&gt;
   &lt;/history&gt;
 &lt;/msDesc&gt;
-</pre></p>
-        
-        <a
-            name="The-encoding-description"/>
-        <h2>The encoding description<a href="#The-encoding-description" class="wiki-anchor"/></h2>
-        
+</pre>
+        </p>
+        <a name="The-encoding-description"/>
+        <h5>The encoding description<a href="#The-encoding-description" class="wiki-anchor"/>
+        </h5>
         <p>After the file description, TEI documents require an encoding description
                 (<code>&lt;encodingDesc&gt;</code>). The purpose of the encoding description is to
             document the choices that were made in encoding the text, especially if there may be
-            uncertainty or ambiguity, for instance regarding how the different layers of base-text
+            uncertainty or ambiguity, for instance regarding how the different layers of base text
             and commentary are represented in the TEI document.</p>
-        
-        <p><em>At the moment SARIT provides no specific guidelines for the encoding
+        <p>
+            <em>At the moment SARIT provides no specific guidelines for the encoding
                 description.</em> The <code>&lt;encodingDesc&gt;</code> element of SARIT texts
             generally consists of prose paragraphs (<code>&lt;p&gt;</code>) that explain the
             encoding choices specific to the text. There should be no need of noting encoding
@@ -536,27 +512,25 @@
             elements that are available in the encoding description:
                 <code>&lt;projectDesc&gt;</code>, <code>&lt;tagsDecl&gt;</code>, and
                 <code>&lt;refsDecl&gt;</code>.</p>
-        
         <p>The project description (<code>&lt;projectDesc&gt;</code>) is a paragraph or two that
             describes the project or projects which resulted in the creation of the digital
-            text:<br/><pre>
+            text:<br/>
+            <pre>
 &lt;projectDesc&gt;
   &lt;p&gt;Producing as part of the NEH-DFG project “Enriching Digital Texts Collections in Indology” from 2012 to 2015.&lt;/p&gt;
 &lt;/projectDesc&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>The tagging declaration (<code>&lt;tagsDecl&gt;</code>) may be used to document the usage
             of specific tags in the text and their rendition if applicable (see the TEI P5
-            guidelines: <a class="external"
-                href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/HD.html#HD57"
-                >http://www.tei-c.org/release/doc/tei-p5-doc/en/html/HD.html#HD57</a>). Most
+            guidelines: <a class="external" href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/HD.html#HD57">http://www.tei-c.org/release/doc/tei-p5-doc/en/html/HD.html#HD57</a>). Most
             projects will not use the tagging declaration.</p>
-        
         <p>The reference declaration (<code>&lt;refsDecl&gt;</code>), however, is important: it
             describes the reference system used in the text. It may be a pattern of canonical
             references (see the full guidelines for more details), or it may simply describe the
             structure of the text in English prose, as
-            follows:<br/><pre>
+            follows:<br/>
+            <pre>
 &lt;refsDecl&gt;
   &lt;p&gt;References in this text are either in the format w.x.z or w.x.y.z.&lt;/p&gt;
   &lt;p&gt;w represents the &lt;att&gt;n&lt;/att&gt; attribute of the highest-level 
@@ -570,18 +544,18 @@
     any portion of the commentary that specifically concerns that 
     sūtra.&lt;/p&gt;
 &lt;/refsDecl&gt;
-</pre></p>
-        
-        <a
-            name="The-revision-description"/>
-        <h2>The revision description<a href="#The-revision-description" class="wiki-anchor"/></h2>
-        
+</pre>
+        </p>
+        <a name="The-revision-description"/>
+        <h5>The revision description<a href="#The-revision-description" class="wiki-anchor"/>
+        </h5>
         <p>This is the last obligatory portion of the TEI header. It consists of a number of
                 <code>&lt;change&gt;</code> elements, each of which has a <code>who</code> and a
                 <code>when</code> attribute. The <code>&lt;change&gt;</code> elements will typically
             include a list of changes, as below (note that <code>&lt;list&gt;</code> should be a
             child of <code>&lt;change&gt;</code>, not
-            <code>&lt;revisionDesc&gt;</code>):<br/><pre>
+            <code>&lt;revisionDesc&gt;</code>):<br/>
+            <pre>
 &lt;revisionDesc&gt;
   &lt;change who="lo" when="2014-10-29"&gt;
     &lt;list&gt;
@@ -590,16 +564,13 @@
     &lt;/list&gt;
   &lt;/change&gt;
 &lt;/revisionDesc&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>Prose paragraphs (&lt;p&gt;) are also permitted in &lt;change&gt; elements, but lists are
             preferred.</p>
-        
-        <a
-            name="Base-texts-and-commentaries"/>
-        <h1>Base-texts and commentaries<a href="#Base-texts-and-commentaries" class="wiki-anchor"
-            /></h1>
-        
+        <a name="Base-texts-and-commentaries"/>
+        <h4>Base texts and commentaries<a href="#Base-texts-and-commentaries" class="wiki-anchor"/>
+        </h4>
         <p>The rest of these guidelines will concern the text’s data rather than its metadata. All
             of this data is contained in the element <code>&lt;text&gt;</code> that immediately
             follows the TEI Header. The <code>&lt;text&gt;</code> element must contain a
@@ -609,22 +580,25 @@
                 <code>&lt;text&gt;</code> element must also have an <code>xml:lang</code> attribute
             that tells us what language and what script the text contained therein is written in.
             Here is an example for a text encoded in Roman
-            transliteration:<br/><pre>
+            transliteration:<br/>
+            <pre>
 &lt;text xml:lang="sa-Latn"&gt;
   &lt;body&gt;
   ....
   &lt;/body&gt;
 &lt;/text&gt;
-</pre><br/>And
+</pre>
+            <br/>And
             an example for a text encoded in
-            Devanāgarī:<br/><pre>
+            Devanāgarī:<br/>
+            <pre>
 &lt;text xml:lang="sa-Deva"&gt;
   &lt;body&gt;
   ....
   &lt;/body&gt;
 &lt;/text&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>The <code>&lt;text&gt;</code> element is the last child element of
                 <code>&lt;TEI&gt;</code>.</p>
          A single document might contain more than one text. In
@@ -633,49 +607,45 @@
         the base text, or only in the commentary. But you may also want to encode <em>both</em>
         texts, and in that case you will also want to make the relationship between the texts
         explicit. There are, in general, two options for encoding a base text with its commentary: <ul>
-            <li><strong>Together</strong>. The base text and the commentary are encoded in a single
+            <li>
+                <strong>Together</strong>. The base text and the commentary are encoded in a single
                 document.</li>
-            <li><strong>Separate</strong>. The base text and the commentary are encoded in separate
+            <li>
+                <strong>Separate</strong>. The base text and the commentary are encoded in separate
                 documents. They are linked to each other (i.e., the commentary includes references
-                to the base-text) through the procedures described in the full version of the
+                to the base text) through the procedures described in the full version of the
                 guidelines.</li>
         </ul>
-        
         <p>For example, SARIT includes a text of the <em>Daśarūpaka</em> of Dhanañjaya, together
             with the <em>Avaloka</em> commentary by Dhanañjaya’s brother Dhanika. These two texts
             are encoded in a single document. A further commentary on the two texts, the
                 <em>Laghuṭīkā</em> of Bhaṭṭa Nṛsiṃha, is encoded in a separate document that refers
             back to the original document.</p>
-        
         <p>Generally speaking, if the base text and commentary are printed in the same register on
             the page (the base text being in a larger font or in bold, see below example 1), it
             makes sense to encode them together; if the base text and commentary are printed in
             separate registers (see below example 2), it is easier to encode them separately.</p>
-        
         <p>These guidelines will tell you how to encode the base text and the commentary
                 <strong>together</strong>. Please consult the full version for guidance on how to
             encode them <strong>separately</strong>.</p>
-        
-        <p><strong>Example 1</strong></p>
-        
-        <p><img src="resources/img/ex-embedded-base-pvv.jpg"
-                title="base text embedded in commentary" alt="base text embedded in commentary"
-            /></p>
-        
-        <p><strong>Example 2</strong><br/><img
-                src="resources/img/ex-base-text_commentary.jpg"
-                title="base text and commentary" alt="base text and commentary"/></p>
-        
-        <a
-            name="The-base-text-is-a-quotation"/>
-        <h2>The base text is a quotation<a href="#The-base-text-is-a-quotation" class="wiki-anchor"
-            /></h2>
-        
+        <p>
+            <strong>Example 1</strong>
+        </p>
+        <p>
+            <img src="resources/img/ex-embedded-base-pvv.jpg" title="base text embedded in commentary" alt="base text embedded in commentary"/>
+        </p>
+        <p>
+            <strong>Example 2</strong>
+            <br/>
+            <img src="resources/img/ex-base-text_commentary.jpg" title="base text and commentary" alt="base text and commentary"/>
+        </p>
+        <a name="The-base-text-is-a-quotation"/>
+        <h5>The base text is a quotation<a href="#The-base-text-is-a-quotation" class="wiki-anchor"/>
+        </h5>
         <p>SARIT recommends a model in which the base text is “embedded” in the commentary. In other
             words, we presume that everything in the &lt;text&gt; element represents the commentary
                 <em>unless specified otherwise</em>. The rest of this section will deal with how to
             specify otherwise.</p>
-        
         <p>When a base text is included or embedded within a commentary, SARIT treats it as a
             special kind of <em>quotation</em>. It should therefore be enclosed within the tag
                 <code>&lt;quote&gt;</code>, which TEI uses for quoted material, and this tag will
@@ -684,7 +654,8 @@
             type="base-text"&gt; elements. In the following example the verse आनन्दनिष्यन्दिषु etc.
             is marked as belonging to the base text, because it is contained within the &lt;quote
             type="base-text"&gt;
-            element:<br/><pre>
+            element:<br/>
+            <pre>
 &lt;p&gt;इदं प्रकरणं दशरूपज्ञानफलम् । दशरूपज्ञानं किंफलमित्याह—&lt;/p&gt;
 &lt;quote type="base-text"&gt;
   &lt;lg n="6"&gt;
@@ -692,53 +663,37 @@
     &lt;l&gt;योऽपीतिहासादिवदाह साधुस्तस्मै नमः स्वादपराङ्मुखाय ॥&lt;/l&gt;
   &lt;/lg&gt;
 &lt;/quote&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>As in the above example, we recommend making the <code>&lt;quote&gt;</code> element that
             contains the base text a <em>sibling</em> rather than a <em>child</em> of the elements
             of the commentary (<code>&lt;p&gt;</code> and so on). That is, the
                 <code>&lt;quote&gt;</code> element should be a child of the same structural division
             (see below) as the elements of the commentary.</p>
-        
-        <a
-            name="Enclose-the-base-text-and-commentary-in-a-division"/>
-        <h2>Enclose the base text and commentary in a division<a
-                href="#Enclose-the-base-text-and-commentary-in-a-division" class="wiki-anchor"
-            /></h2>
-        
+        <a name="Enclose-the-base-text-and-commentary-in-a-division"/>
+        <h5>Enclose the base text and commentary in a division<a href="#Enclose-the-base-text-and-commentary-in-a-division" class="wiki-anchor"/>
+        </h5>
         <p>In almost every case, the structure of the base text and commentary will be the same.
             This means that a given reference, such as 1.4.5, should be able to identify both the
             base text and the corresponding section of commentary. The easiest way to accomplish
             this is to <em>put the base text and the corresponding section of commentary within a
                 single structural division</em>. This enclosing division is meant to gather the two
             texts together for the purposes of display and reference.</p>
-        
         <p>The “section of a commentary” that corresponds to a section of the base text will often
             take the form of an optional <em>avataraṇikā</em>, the base text, and then a more
             extensive commentary. This should all be enclosed within a &lt;div&gt; element, as
-            follows:<br/><pre>
-&lt;div n="5"&gt;
-  &lt;p&gt;विषयैक्यप्रसक्तं पौनरुक्त्यं परिहरति—&lt;/p&gt;
-  &lt;quote type="base-text"&gt;
-    &lt;lg n="5"&gt;
-      &lt;l&gt;व्याकीर्णे मन्दबुद्धीनां जायते मतिविभ्रमः ।&lt;/l&gt;
-      &lt;l&gt;तस्यार्थस्तत्पदैस्तेन संक्षिप्य क्रियतेऽञ्जसा ॥ ५ ॥&lt;/l&gt;
-    &lt;/lg&gt;
-  &lt;/quote&gt;
-  &lt;p&gt;व्याकीर्णे विक्षिप्ते विस्तृते च शास्त्रे अल्पबुद्धीनां व्यामोहो भवति पुंसाम् । तेन तस्य नाट्यवेदस्यार्थस्तत्पदैरेव संक्षिप्य ऋजुवृत्त्या क्रियत इति ।&lt;/p&gt;
-&lt;/div&gt;
-</pre></p>
-        
-        <p><strong>Example 3</strong></p>
-        
-        <p><img src="resources/img/ex-base-text-commentary-div1.jpg"
-                title="div: base text and comentary" alt="div: base text and comentary"/></p>
-        
+            follows:</p>
+        <p>
+            <strong>Example 3</strong>
+        </p>
+        <p>
+            <img src="resources/img/ex-base-text-commentary-div3.jpg" title="div: base text and comentary" alt="div: base text and comentary"/>
+        </p>
         <pre>
-&lt;div n="2.249"&gt;
+&lt;div n="249"&gt;
 &lt;p&gt;स्वसम्वेदनमाख्यातुमाह (।)&lt;/p&gt;
 &lt;quote type="base-text"&gt;
- &lt;lg n="2.249"&gt;
+ &lt;lg n="249"&gt;
     &lt;l&gt;अशक्यसमयो ह्यात्मा रागादीनामनन्यभाक् ।&lt;/l&gt;
     &lt;l&gt;तेषामतः स्वसंवित्तिर्न्नाभिजल्पानुषङ्गिणी ॥ २४९ ॥&lt;/l&gt;
  &lt;/lg&gt;
@@ -747,7 +702,6 @@
 &lt;p&gt;तथा हि । ... न शब्दसंगतः । (२४९)&lt;/p&gt;
 &lt;/div&gt;
 </pre>
-        
         <p>Note that an <code>n</code> attribute is assigned to the enclosing division. This is
             optional, but it helps to identify the section of the commentary with the verse-number
             of the base text that it comments upon (which is identical with the <code>n</code>
@@ -755,9 +709,9 @@
             also have a <code>type</code> attribute, such as <code>type="sūtra"</code>, which tells
             us that it gathers the portion of the commentary that concerns a given sūtra. This
             attribute, too, is optional.</p>
-        
         <p>Here is an example without an
-            <em>avataraṇikā</em>:<br/><pre>
+            <em>avataraṇikā</em>:<br/>
+            <pre>
 &lt;div n="7"&gt;
   &lt;quote type="base-text"&gt;
     &lt;lg n="7"&gt;
@@ -767,21 +721,19 @@
   &lt;/quote&gt;
   &lt;p&gt;यदशेषाभिर्महदादिकार्यग्रामजनिकाभिरात्मभूताभिः शक्तिभिः, प्रचितम्—युक्तं सत्वरजस्तमसां साम्यावस्थालक्षणं प्रधानम्, तत एवैते महदादयः कार्यभेदाः प्रवर्त्तन्ते इति कापिलाः । ...&lt;/p&gt;
 &lt;/div&gt;
-</pre></p>
-        
-        <a
-            name="Several-sections-of-the-base-text-corresponding-to-one-section-of-commentary"/>
-        <h2>Several sections of the base text corresponding to one section of commentary<a
-                href="#Several-sections-of-the-base-text-corresponding-to-one-section-of-commentary"
-                class="wiki-anchor"/></h2>
-        
+</pre>
+        </p>
+        <a name="Several-sections-of-the-base-text-corresponding-to-one-section-of-commentary"/>
+        <h5>Several sections of the base text corresponding to one section of commentary<a href="#Several-sections-of-the-base-text-corresponding-to-one-section-of-commentary" class="wiki-anchor"/>
+        </h5>
         <p>It may be the case that a commentary will skip one section of the base text, or comment
             on several sections of the base text at the same time. In such cases, the enclosing
             division will simply include more than one section of the base text. The label
                 (<code>n</code>) for this division will include all of the sections of the base text
             that are comprised in the division. For example, a section of commentary that comments
             upon two sūtras of the base
-            text:<br/><pre>
+            text:<br/>
+            <pre>
 &lt;div n="10 11" type="sūtra"&gt;
 &lt;quote type="base-text"&gt;
   &lt;ab n="10" type="sūtra"&gt;प्रकृतिविकृत्योश्च ॥&lt;/ab&gt;
@@ -789,38 +741,34 @@
 &lt;/quote&gt;
 &lt;p&gt;प्रकृतिविकारभावञ्च शब्दज्ञाः स्मरन्ति ; न चायं नित्यस्योपपद्यते ; तस्मात् स्मृतिरपि पूर्वोक्तहेत्वनुगुणैव । सादृश्यमप्यनुगुणमुपलभामह इत्युपपन्नं कार्यत्वम् ॥&lt;/p&gt;
 &lt;/div&gt;
-</pre></p>
-        
-        <p><strong>Example 4</strong></p>
-        
-        <p><img src="resources/img/ex-embedded-base-text2.jpg"
-                title="&lt;quote&gt; for base text" alt="&lt;quote&gt; for base text"/></p>
-        
-        <a
-            name="Sections-of-commentary-that-don’t-correspond-to-any-section-of-the-base-text"/>
-        <h2>Sections of commentary that don’t correspond to any section of the base text<a
-                href="#Sections-of-commentary-that-don’t-correspond-to-any-section-of-the-base-text"
-                class="wiki-anchor"/></h2>
-        
+</pre>
+        </p>
+        <p>
+            <strong>Example 4</strong>
+        </p>
+        <p>
+            <img src="resources/img/ex-embedded-base-text2.jpg" title="&lt;quote&gt; for base text" alt="&lt;quote&gt; for base text"/>
+        </p>
+        <a name="Sections-of-commentary-that-don’t-correspond-to-any-section-of-the-base-text"/>
+        <h5>Sections of commentary that don’t correspond to any section of the base text<a href="#Sections-of-commentary-that-don’t-correspond-to-any-section-of-the-base-text" class="wiki-anchor"/>
+        </h5>
         <p>Commentaries sometimes have material that doesn’t correspond to a particular section of
             the base text: the most common example is introductory material. This material, too,
             must be put in an enclosing division; the only difference is that this division will not
             contain any base text
-            elements.<br/><pre>
+            elements.<br/>
+            <pre>
 &lt;div&gt;
   &lt;lg&gt;&lt;l&gt;सृष्टाविद्यानिशाध्वंसिनिबन्धमयवासरम् ।&lt;/l&gt;&lt;l&gt;उज्जासितजगज्जाड्यं नमस्यामः प्रभाकरम् ॥ १ ॥&lt;/l&gt;&lt;/lg&gt;
   &lt;lg&gt;&lt;l&gt;प्रभाकरमयीं दृष्टिं दक्षिणां दधतं सदा ।&lt;/l&gt;&lt;l&gt;वामदर्शनतापन्नचन्द्रं वन्देऽपराजितम् ॥ २ ॥&lt;/l&gt;&lt;/lg&gt;
   &lt;lg&gt;&lt;l&gt;प्रभाकरगुरोर्भावमतिगम्भीरभाषिणः ।&lt;/l&gt;&lt;l&gt;अञ्जसा व्यञ्जयिष्यन्ती पञ्चिका क्रियते मया ॥ ३ ॥&lt;/l&gt;&lt;/lg&gt;
   &lt;lg&gt;&lt;l&gt;उपन्यासनिरासाभ्यां व्यासेनैषा विदूषिता ।&lt;/l&gt;&lt;l&gt;व्याख्या प्राचां निबन्धॄणामिति नाहमदूदुषम् ॥ ४ ॥&lt;/l&gt;&lt;/lg&gt;
 &lt;/div&gt;
-</pre></p>
-        
-        <a
-            name="Sections-of-base-text-that-are-distributed-across-several-sections-of-commentary"/>
-        <h2>Sections of base text that are distributed across several sections of commentary<a
-                href="#Sections-of-base-text-that-are-distributed-across-several-sections-of-commentary"
-                class="wiki-anchor"/></h2>
-        
+</pre>
+        </p>
+        <a name="Sections-of-base-text-that-are-distributed-across-several-sections-of-commentary"/>
+        <h5>Sections of base text that are distributed across several sections of commentary<a href="#Sections-of-base-text-that-are-distributed-across-several-sections-of-commentary" class="wiki-anchor"/>
+        </h5>
         <p>Sometimes what we think of as a single section of the base text (a verse, paragraph,
             etc.) is split up between several sections of commentary: for example, the commentary
             might take individual words from the base text in turn. Although the underlying
@@ -829,13 +777,13 @@
             need to provide enough information to allow the structure of the base text to be
             reconstituted. Thus the elements of the base text should be labelled as specified below
             (in the “verse fragments” section).</p>
-        
-        <a
-            name="Sections-of-the-text"/>
-        <h1>Sections of the text<a href="#Sections-of-the-text" class="wiki-anchor"/></h1>
-         There are many Sanskrit words for sections of a text: sarga,
+        <a name="Sections-of-the-text"/>
+        <h4>Sections of the text<a href="#Sections-of-the-text" class="wiki-anchor"/>
+        </h4>
+        <p>There are many Sanskrit words for sections of a text: sarga,
         adhyāya, aṅka, pariccheda, ucchvāsa, etc. The encoding of these sections should meet several
-        requirements: <ol>
+        requirements: </p>
+        <ol>
             <li>the XML document itself should be valid;</li>
             <li>the structure of the XML document reflects the logical structure of the text;</li>
             <li>a standard reference system should be able to use the structure of the XML document
@@ -843,13 +791,11 @@
             <li>texts in the corpus are broadly consistent in the encoding strategy used for these
                 sections.</li>
         </ol>
-        
         <p>These considerations lead us to recommend the use of <code>&lt;div&gt;</code> for all
             "parts," "sections," and "divisions" in the text, whatever their Sanskrit name is, and
             at whatever depth they occur. Do <strong>not</strong> use the numbered divisions
             available in earlier versions of the TEI Guidelines (<code>&lt;div1&gt;</code>,
                 <code>&lt;div2&gt;</code>, etc.).</p>
-        
         <p>Before encoding a text, you should figure out a strategy for representing all of the
             relevant levels of the text as <code>&lt;div&gt;</code> elements. Some Mīmāṃsā texts,
             for example, are organized according to the hierarchical organization of the Mīmāṃsā
@@ -863,15 +809,12 @@
                 type="pāda"&gt;</code>, <code>&lt;div type="adhikaraṇa"&gt;</code>), but these
                 <code>type</code> attributes may be included in order to make the XML easier to
             read.</p>
-        
         <p>The strategy followed in the text can be, and should be, documented in the reference
             declaration (<code>&lt;refsDecl&gt;</code>), which is part of the encoding description
                 (<code>&lt;encodingDesc&gt;</code>) in the TEI Header (see above).</p>
-        
-        <a
-            name="Labelling-sections"/>
-        <h2>Labelling sections<a href="#Labelling-sections" class="wiki-anchor"/></h2>
-        
+        <a name="Labelling-sections"/>
+        <h5>Labelling sections<a href="#Labelling-sections" class="wiki-anchor"/>
+        </h5>
         <p>Sections of the text should be <em>identifiable</em>. In order to be identifiable to
             humans, sections generally carry a heading and/or a trailer (see below). In order to be
             identifiable to machines, sections carry a numeric <em>label</em> that is represented by
@@ -882,7 +825,6 @@
             element. For division that comprises more than one such section, we simply put all of
             the corresponding numbers in the <code>n</code> attribute: <code>&lt;div n="2 3
                 4"&gt;</code>.</p>
-        
         <p>Divisions (&lt;div&gt;s) are block-level elements, and they constitute the text
             hierarchy, together with other block-level elements like paragraphs
                 (<code>&lt;p&gt;</code>), verses (<code>&lt;lg&gt;</code>), and the “anonymous
@@ -890,11 +832,9 @@
             system of the text will therefore usually include the numbering of
                 <code>&lt;div&gt;</code> elements at the upper levels and the numbering of
                 <code>&lt;lg&gt;</code> or <code>&lt;ab&gt;</code> elements at the lower levels.</p>
-        
-        <a
-            name="Headings-and-trailers"/>
-        <h2>Headings and trailers<a href="#Headings-and-trailers" class="wiki-anchor"/></h2>
-        
+        <a name="Headings-and-trailers"/>
+        <h5>Headings and trailers<a href="#Headings-and-trailers" class="wiki-anchor"/>
+        </h5>
         <p>Headings and trailers are short “paratexts” that announce the beginning or end of a
             section. These may be original to the text, or added by scribes or even the editor: the
             general rule, however, is that if it is included in the printed text, it should be
@@ -902,16 +842,13 @@
             responsible for adding some or all of these “paratexts,” TEI allows you to hold him
             responsible and ultimately filter out such interventions if desired. See “holding people
             responsible” in the SARIT Full guidelines.</p>
-        
-        <a
-            name="Headings"/>
-        <h3>Headings<a href="#Headings" class="wiki-anchor"/></h3>
-        
+        <a name="Headings"/>
+        <h6>Headings<a href="#Headings" class="wiki-anchor"/>
+        </h6>
         <p>Some sections of the text will begin with a heading, most often a short introductory
             phrase (e.g., अथ भावाधिकरणम्). We encode these heading with the TEI element
                 <code>&lt;head&gt;</code>. There can be more than one <code>&lt;head&gt;</code>
             element at the beginning of a section:</p>
-        
         <pre>
 &lt;text xml:lang="sa-Deva"&gt;
   &lt;body&gt;
@@ -921,7 +858,6 @@
   &lt;/body&gt;
 &lt;/text&gt;
 </pre>
-        
         <p>In addition to the headings printed in the text, the heading element is a convenient
             place to put chapter or section titles for a table of contents, especially if there are
             no printed headings, or if they would be unsuitable for a table of contents. This is
@@ -930,32 +866,37 @@
             use the special element <code>&lt;head type="toc"&gt;</code>, which will supply the
             title of the section in question to the table of contents, but which is itself
             suppressed in the browsing display on the SARIT website. For
-            example:<br/><pre>
+            example:<br/>
+            <pre>
 &lt;div n="1"&gt;
   &lt;head&gt;अथ प्रथमपरिच्छेदः&lt;/head&gt;
   &lt;head type="toc" xml:lang="en"&gt;First chapter&lt;/head&gt;
   ...
 &lt;/div&gt;
-</pre></p>
-        
-        <a
-            name="Trailers"/>
-        <h3>Trailers<a href="#Trailers" class="wiki-anchor"/></h3>
-        
+</pre>
+        </p>
+        <a name="Trailers"/>
+        <h6>Trailers<a href="#Trailers" class="wiki-anchor"/>
+        </h6>
         <p>SARIT uses the TEI element <code>&lt;trailer&gt;</code> for those short pieces of text
             (often called colophons) that come at the end of a section. <code>&lt;trailer&gt;</code>
             should typically be the final element in the element that it
-            closes.<br/><pre>
+            closes.<br/>
+            <pre>
 &lt;trailer&gt;॥ इति बृहत्यां प्रथमाध्यायस्य प्रथमः पादः समाप्तः ॥&lt;/trailer&gt;
-</pre></p>
-        
-        <p><strong>Example 5</strong></p>
-        <blockquote> <p><img src="resources/img/ex-trailer.jpg" title="Trailers"
-                    alt="Trailers"/></p> </blockquote>
-        <a
-            name="Milestones"/>
-        <h1>Milestones<a href="#Milestones" class="wiki-anchor"/></h1>
-        
+</pre>
+        </p>
+        <p>
+            <strong>Example 5</strong>
+        </p>
+        <blockquote>
+            <p>
+                <img src="resources/img/ex-trailer.jpg" title="Trailers" alt="Trailers"/>
+            </p>
+        </blockquote>
+        <a name="Milestones"/>
+        <h4>Milestones<a href="#Milestones" class="wiki-anchor"/>
+        </h4>
         <p>SARIT recommends encoding the page and, where possible, line numbers of the source
             edition for purposes of reference. (The digital text will have its own lineation and
             pagination depending on the media in which it is viewed.) These are encoded as
@@ -963,47 +904,46 @@
             the text. Sometimes other kinds of milestones besides lines and pages are noted in
             source editions, for example manuscript folios. Specific guidelines for the use of these
             elements are provided below.</p>
-        
         <a name="Lines"/>
-        <h2>Lines<a href="#Lines" class="wiki-anchor"/></h2>
-        
-        <p><em>If you choose to encode line-breaks at all, every single line-break of the source
+        <h5>Lines<a href="#Lines" class="wiki-anchor"/>
+        </h5>
+        <p>
+            <em>If you choose to encode line-breaks at all, every single line-break of the source
                 edition must be explicitly represented in the digital texts.</em> Whenever a new
             line begins in the source edition, the element <code>&lt;lb/&gt;</code> must appear,
             whether it occurs within a prose paragraph, or at the end of a prose paragraph; within a
             metrical line of verse, or at the end of such a line. If line-breaks are encoded
             consistently, there is no need to assign them a numeric label, because the line-number
             can be automatically determined</p>
-        
         <p>The <code>&lt;lb/&gt;</code> element is assumed to refer to line-breaks in the principal
             source of the digital text. (If you wish to encode line-breaks of another edition, use
             the <code>ed</code> attribute to refer to it, and see the section on internal references
             in the full version of the guidelines.)</p>
-        
         <p>SARIT distinguishes two types of line breaks:</p>
-        
         <ol>
             <li>an <code>&lt;lb/&gt;</code> between words: e.g., उक्तं &lt;lb/&gt;च</li>
             <li>an <code>&lt;lb/&gt;</code> in the middle of a word, and thus after an end-of-line
                 hyphen. SARIT uses the <code>break</code> attribute to specify that the element "is
                 considered not to mark the end of any adjacent orthographic token"; the hyphen
                 itself is <em>not</em> encoded. For example: <code>शं&lt;lb
-                    break="no"/&gt;करः</code></li>
+                    break="no"/&gt;करः</code>
+            </li>
         </ol>
-        
-        <p><strong>Example 6</strong></p>
-        
-        <p><img src="resources/img/ex-lbs-and-pbs-1pvv.jpg" title="lb and pb"
-                alt="lb and pb"/></p>
-        
-        <p><strong>Example 7</strong></p>
-        
-        <p><img src="resources/img/ex-lbs-and-pbs-2vnt.jpg" title="lb and pb"
-                alt="lb and pb"/></p>
-        
+        <p>
+            <strong>Example 6</strong>
+        </p>
+        <p>
+            <img src="resources/img/ex-lbs-and-pbs-3pvv.jpg" title="lb and pb" alt="lb and pb"/>
+        </p>
+        <p>
+            <strong>Example 7</strong>
+        </p>
+        <p>
+            <img src="resources/img/ex-lbs-and-pbs-4vnt.jpg" title="lb and pb" alt="lb and pb"/>
+        </p>
         <a name="Pages"/>
-        <h2>Pages<a href="#Pages" class="wiki-anchor"/></h2>
-        
+        <h5>Pages<a href="#Pages" class="wiki-anchor"/>
+        </h5>
         <p>The pagination of the source edition is encoded by placing the element
                 <code>&lt;pb/&gt;</code> (for "page break") at the beginning of every new page. In
             contrast to line-breaks, SARIT requires the <code>&lt;pb/&gt;</code> element to have a
@@ -1014,31 +954,26 @@
                 break="no"/&gt;न्नम् । यदि च</code>). And also like line-breaks, we assume that the
             breaking element and the corresponding number refer by default to the principal source
             edition.</p>
-        
         <a name="Folios"/>
-        <h2>Folios<a href="#Folios" class="wiki-anchor"/></h2>
-        
+        <h5>Folios<a href="#Folios" class="wiki-anchor"/>
+        </h5>
         <p>Manuscript folios are treated as pages, so the beginning of a new manuscript folio (or a
             new side of a manuscript folio) is encoded with the <code>&lt;pb&gt;</code> element.
             These elements have an <code>@ed</code> attribute that refers to the manuscript (the
             manuscript itself should be mentioned in the source description of the TEI header).</p>
-        
         <pre>
 &lt;pb ed="msK" n="2a"/&gt;
 </pre>
-        
         <a name="Prose"/>
-        <h1>Prose<a href="#Prose" class="wiki-anchor"/></h1>
-        
+        <h4>Prose<a href="#Prose" class="wiki-anchor"/>
+        </h4>
         <p>Prose paragraphs should be encoded using TEI’s &lt;p&gt; element.</p>
-        
         <pre>
 &lt;p&gt;देवमुनिगुरुनृपपुत्रविषया तु भाव एव न पुना रसः ।&lt;/p&gt;
 </pre>
-        
         <a name="Verse"/>
-        <h1>Verse<a href="#Verse" class="wiki-anchor"/></h1>
-        
+        <h4>Verse<a href="#Verse" class="wiki-anchor"/>
+        </h4>
         <p>SARIT uses the <code>&lt;lg&gt;</code> element, a “line group,” for metrical verses. A
             verse contains a number of metrical <em>lines</em>, which are encoded with the
                 <code>&lt;l&gt;</code> element. You can think of a <em>line</em> in the context of
@@ -1049,20 +984,21 @@
             verse numbers in the printed text, however, should also be represented as text. That is,
             the number of the verse is included both in the <code>n</code> attribute of the verse
             element <code>&lt;lg&gt;</code>, and at the end of the second line, as
-            follows:<br/><pre>
+            follows:<br/>
+            <pre>
 &lt;lg n="1"&gt;
   &lt;l&gt;वागर्थाविव संपृक्तौ वागर्थप्रतिपत्तये ।&lt;/l&gt;
   &lt;l&gt;जगतः पितरौ वन्दे पार्वतीपरमेश्वरौ ॥ १ ॥&lt;/l&gt;
 &lt;/lg&gt;
-</pre></p>
-        
-        <p><em>Metrical lines are not typographic lines</em>. A typographic line break, encoded as
+</pre>
+        </p>
+        <p>
+            <em>Metrical lines are not typographic lines</em>. A typographic line break, encoded as
                 <code>&lt;lb/&gt;</code>, might occur in the middle of, or at the end of, a metrical
             line. A metrical line usually consists of two metrical quarters (pādas), and thus a
             verse usually consists of four quarters. The juncture between two quarters is a kind of
             break or pause, and therefore we encode it using the TEI element
                 <code>&lt;caesura/&gt;</code>.</p>
-        
         <p>Why do we use both <code>&lt;caesura/&gt;</code> and <code>&lt;lb/&gt;</code>? The
                 <code>&lt;caesura/&gt;</code> element encodes an element of metrical structure that
             often motivates or explains the way the verse has been set on the page in the source
@@ -1070,55 +1006,59 @@
                 <code>&lt;caesura/&gt;</code> element, but its primary purpose is to <em>count the
                 number of line breaks on a page</em>. For example, a digital text that does not
             render line-breaks at all might encode the following
-            verse:<br/><pre>
+            verse:<br/>
+            <pre>
   &lt;lg&gt;
     &lt;l&gt;स्वसुखनिरभिलाषः खिद्यसे लोकहेतोः&lt;caesura/&gt; प्रतिदिनमथवा ते वृत्तिरेवंविधैव ।&lt;/l&gt;
     &lt;l&gt;अनुभवति हि मूर्ध्ना पादपस्तीव्रमुष्णं&lt;caesura/&gt; शमयति परितापं छाययोपाश्रितानाम् ॥&lt;/l&gt;
   &lt;/lg&gt;
-</pre></p>
-        
-        <p>The lineation of the source edition often but does not always reflect this structure.
+</pre>
+        </p>
+        <p>The lineation of the source edition does not always reflect this structure.
             Here is one possible
-            representation:<br/><pre>
+            representation:<br/>
+            <pre>
   &lt;lg&gt;
     &lt;l&gt;स्वसुखनिरभिलाषः खिद्यसे &lt;lb/&gt;
       लोकहेतोः&lt;caesura/&gt; प्रतिदिनमथवा ते वृत्तिरेवंविधैव ।&lt;/l&gt;
     &lt;l&gt;अनुभवति हि मूर्ध्ना पादपस्तीव्रमुष्णं&lt;caesura/&gt;&lt;lb/&gt;
       शमयति परितापं छाययोपाश्रितानाम् ॥&lt;/l&gt;
   &lt;/lg&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>When the line is broken in the middle of a word, use the <code>break="no"</code>
             attribute rather than hard-coding a hyphen into the text, as noted in the section on
             milestones
-            above:<br/><pre>
+            above:<br/>
+            <pre>
   &lt;lg&gt;
     &lt;l&gt;तिष्ठन् भाति पितुः पुरो भुवि यथा सिंहासने किं तथा&lt;caesura/&gt;&lt;lb/&gt;यत् संवाहयतः सुखं हि चरणौ तातस्य किं राज्यतः ।&lt;/l&gt;
     &lt;l&gt;किं भुक्ते भुवनत्रये धृतिरसौ भुक्तोज्झिते या गुरो&lt;caesura/&gt;&lt;lb break="no"/&gt;रायासः खलु राज्यमुज्झितगुरोस्तत्रास्ति कश्चिद् गुणः ॥&lt;/l&gt;
   &lt;/lg&gt;
-</pre></p>
-        
+</pre>
+        </p>
         <p>The common <em>āryā</em> meter and its relatives call for some comment: they are
             sometimes thought of as having four quarters, and sometimes not. SARIT recommends the
             use of the <code>&lt;caesura/&gt;</code> element to represent the <em>yati</em> between
             the first and second half of the line, when it is present; when the <em>yati</em> is
             absent, the <code>&lt;caesura/&gt;</code> element may be omitted. For
-            example:<br/><pre>
+            example:<br/>
+            <pre>
 &lt;lg n="87"&gt;
   &lt;l&gt;हुअवह-पडित्त-णूमिअ-&lt;caesura/&gt;णिअ-णणुम्हा-विसंठुल-मह-ग्गाहं ।&lt;/l&gt;
   &lt;l&gt;परिवड्ढिएक्कमेक्काणुराअ-सर-पहर-णिव्वलिअ-सङ्ख-उलं ॥ ८७ ॥&lt;/l&gt;
 &lt;/lg&gt;
-</pre></p>
-        
-        <a
-            name="Groups-of-verses"/>
-        <h2>Groups of verses<a href="#Groups-of-verses" class="wiki-anchor"/></h2>
-        
+</pre>
+        </p>
+        <a name="Groups-of-verses"/>
+        <h5>Groups of verses<a href="#Groups-of-verses" class="wiki-anchor"/>
+        </h5>
         <p>Groups of verses should simply be put into another <code>&lt;lg&gt;</code> element that
             encloses the <code>&lt;lg&gt;</code> elements corresponding to individual verses. If
             there is a label for the group in the printed text (e.g., kulaka, yugalaka, etc.), it
             should be included with the <code>&lt;label&gt;</code> element, as
-            follows:<br/><pre>
+            follows:<br/>
+            <pre>
 &lt;lg&gt;
   &lt;label&gt;जुग्गं&lt;/label&gt;
   &lt;lg n="34"&gt;
@@ -1130,35 +1070,33 @@
     &lt;l&gt;रामस्स अईसन्ते &lt;caesura/&gt;आसा-बन्धे व्व चिर-गे हणुमन्ते ॥ ३५ ॥&lt;/l&gt;
   &lt;/lg&gt;
 &lt;/lg&gt;
-</pre></p>
-        
-        <a
-            name="Fragments-of-verses"/>
-        <h2>Fragments of verses<a href="#Fragments-of-verses" class="wiki-anchor"/></h2>
-        
+</pre>
+        </p>
+        <a name="Fragments-of-verses"/>
+        <h5>Fragments of verses<a href="#Fragments-of-verses" class="wiki-anchor"/>
+        </h5>
         <p>Sometimes the parts of a verse are broken up within a text, for example when a
             commentator breaks up a verse to discuss its components separately. In these cases,
             every verse-fragment should be contained in an <code>&lt;lg&gt;</code> element with the
             attributes <code>next</code>, <code>prev</code>, or both.</p>
-        
-        <p>All of the verse-fragments should have an identifying label (a, b, c etc.), e.g.
+        <p>All of the verse-fragments should have an identifying label (a, b, c, etc.), e.g.
                 <code>n="27c"</code>. The value of <code>next</code> and <code>prev</code> should
             refer to these identifying labels, e.g., <code>next="27d"</code>.</p>
-        
         <p>The labelling convention will allow applications to identify “verse 27” as the sum of its
-            partsin case there is no element <code>&lt;lg n="27"&gt;</code> to be found. However, it
+            parts in case there is no element <code>&lt;lg n="27"&gt;</code> to be found. However, it
             will not join fragmentary <code>&lt;l&gt;</code> elements into a single element.
             Therefore it is recommended to use the <code>part</code> attribute on any fragmentary
                 <code>&lt;l&gt;</code> attributes: <code>I</code> for an initial fragment (e.g.,
             pādas a or c) and <code>F</code> for a final fragment (e.g., pādas b or d), or
                 <code>M</code> for a medial fragment if such a case occurs.</p>
-        <blockquote> <p><em>NOTE (LO- 02-26): @part can't be used if a verse is fragmented in more
-                    than three parts. That's actually I couldn't use it in the Pramāṇavārttikavṛtti.
-                    Do you think we should mention that in the guidelines?</em></p> </blockquote>
-        <p><strong>Example 8</strong></p>
-        <blockquote> <p><img src="resources/img/part-img1.png" alt=""/></p>
-                    <p><img src="resources/img//part-img1-coloured.png" alt=""
-                /></p> </blockquote>
+        <p>
+            <strong>Example 8</strong>
+        </p>
+        <blockquote>
+            <p>
+                <img src="resources/img//part-img1-coloured.png" alt=""/>
+            </p>
+        </blockquote>
         <pre>
 &lt;div type="section" n="27c"&gt;
   &lt;p&gt;&lt;hi&gt;परिन्यास&lt;/hi&gt;माह—&lt;/p&gt;
@@ -1177,7 +1115,7 @@
   &lt;/lg&gt;
   इत्यनेन यौगन्धरायणः स्वव्यापारस्य दैवयोगात् निष्पत्तिमुक्तवानिति परिन्यासः ।
   &lt;/p&gt;
-&lt;/div&gt;&lt;!-- section !--&gt;
+&lt;/div&gt;&lt;!-- section --&gt;
 &lt;div type="section" n="27d"&gt;
   &lt;p&gt;&lt;term&gt;विलोभन&lt;/term&gt;माह—&lt;/p&gt;
   &lt;quote type="base-text"&gt;
@@ -1187,66 +1125,60 @@
       &lt;/l&gt;
     &lt;/lg&gt;
   &lt;/quote&gt;
-&lt;/div&gt;&lt;!-- section !--&gt;
+&lt;/div&gt;&lt;!-- section --&gt;
 </pre>
-        
-        <p><strong>Example 9</strong></p>
-        
-        <p><img src="resources/img/ex-base-text-commentary-div2.jpg"
-                title="fragments of verses" alt="fragments of verses"/></p>
-        
+        <p>
+            <strong>Example 9</strong>
+        </p>
+        <p>
+            <img src="resources/img/ex-base-text-commentary-div2.jpg" title="fragments of verses" alt="fragments of verses"/>
+        </p>
         <pre>
-&lt;div n="2.210"&gt;
+&lt;div n="210"&gt;
   &lt;quote type="base-text"&gt;
-     &lt;lg n="2.210a" next="2.210b"&gt;
+     &lt;lg n="210a" next="210b"&gt;
        &lt;l&gt;किं स्यात् सा चित्रतैकस्यां;&lt;/l&gt;
      &lt;/lg&gt;
   &lt;/quote&gt;
   &lt;p&gt;ननु यदि सा चित्रता बुद्धावेकस्यां स्यात् तया च चित्रमेकं द्रव्यं व्यवस्थाप्येत (।) तदा कि दूषणं स्यात् ।&lt;/p&gt;
   &lt;p&gt;आह (।)&lt;/p&gt;
   &lt;quote type="base-text"&gt;
-     &lt;lg n="2.210b" prev="2.210a" next="2.210c"&gt;
+     &lt;lg n="210b" prev="210a" next="210c"&gt;
         &lt;l&gt;न स्यात्तस्यां मतावपि ।&lt;/l&gt;
      &lt;/lg&gt;
   &lt;/quote&gt;
   &lt;p&gt;न केवलं द्रव्ये तस्यां मतावप्येकस्यां न स्या च्चित्रता । आकारनानात्वलक्षणत्वाद् भेदस्य । नानात्वेपि चित्रता कथम् (।) अनेकपुरुषप्रतीतिवत् ।&lt;/p&gt;
   &lt;p&gt;कथन्तर्हि प्रतीतिरित्याह (।)&lt;/p&gt;
   &lt;quote type="base-text"&gt;
-    &lt;lg n="2.210c" prev="2.210b"&gt;
+    &lt;lg n="210c" prev="210b"&gt;
         &lt;l&gt;यदीदं स्वयमर्थानां रोचते तत्र के वयम् ॥ २१० ॥&lt;/l&gt;
     &lt;/lg&gt;
    &lt;/quote&gt;
    &lt;p&gt;यदीद&lt;/q&gt;मताद्रूप्येपि ताद्रूप्यप्रथनमर्थानां भासमानानां नीलादीनां स्वयमपरप्रेरणया रोचते । तत्र तथाप्रतिभासे के वयमसहमानाऽ(? अ) पि निषेद्धुं । अवस्तु च प्रतिभासते चेति व्यक्तमालीक्यं । (२१०)&lt;/p&gt;
 &lt;/div&gt;
 </pre>
-        
-        <a
-            name="Verses-within-prose-paragraphs"/>
-        <h2>Verses within prose paragraphs<a href="#Verses-within-prose-paragraphs"
-                class="wiki-anchor"/></h2>
-        
+        <a name="Verses-within-prose-paragraphs"/>
+        <h5>Verses within prose paragraphs<a href="#Verses-within-prose-paragraphs" class="wiki-anchor"/>
+        </h5>
         <p>Often verses are “embedded” into paragraphs, and we reflect this fact by embedding the
                 <code>&lt;lg&gt;</code> element into the <code>&lt;p&gt;</code> element.</p>
-        
         <a name="Sūtras"/>
-        <h1>Sūtras<a href="#Sūtras" class="wiki-anchor"/></h1>
-        
+        <h4>Sūtras<a href="#Sūtras" class="wiki-anchor"/>
+        </h4>
         <p>Sūtras are like paragraphs, but they are often formatted differently (without
             indentation, for example) and they do not have the “semantic baggage” of a prose
             paragraph. SARIT recommends the use of the <code>&lt;ab&gt;</code> element (“anonymous
             block”) with the attribute <code>type="sutra"</code>.</p>
-        
         <p>In the following example, the <code>&lt;ab&gt;</code> element includes, in addition to
             the text of the sutra, two typed labels that provide, respectively, the serial number of
             the adhikaraṇa in which the sutra occurs, and the position (<em>pūrvapakṣa</em>,
                 <em>uttarapakṣa</em>, or <em>siddhānta</em>) that the sutra represents.</p>
-        
-        <p><strong>Example 10</strong></p>
-        
-        <p><img src="resources/img/sutra-img1.png" alt=""/></p>
-        
-        <p><img src="resources/img/sutra-img1-coloured.png" alt=""/></p>
-        
+        <p>
+            <strong>Example 10</strong>
+        </p>
+        <p>
+            <img src="resources/img/sutra-img1-coloured.png" alt=""/>
+        </p>
         <pre>
 &lt;ab type="sutra" n="2"&gt;
   &lt;label type="adhikarana"&gt;2&lt;/label&gt;
@@ -1255,12 +1187,10 @@
 &lt;/ab&gt;
 &lt;p&gt; समिधो यजति, तनूनपातं यजति इत्येवमादिः पञ्चकृत्वोऽभ्यस्तो ...
 </pre>
-        
-        <a
-            name="Dramatic-elements"/>
-        <h1>Dramatic elements<a href="#Dramatic-elements" class="wiki-anchor"/></h1>
-        
-        <p>SARIT uses the core elements of TEI’s drama module for Sanskrit plays. Plays usually
+        <a name="Dramatic-elements"/>
+        <h4>Dramatic elements<a href="#Dramatic-elements" class="wiki-anchor"/>
+        </h4>
+        <p>SARIT uses the core elements of the TEI’s drama module for Sanskrit plays. Plays usually
             consist of divisions, such as an aṅka, in which various characters speak lines in prose
             or verse. The standard element for a “line” in this sense is <code>&lt;sp&gt;</code>:
             this contains the lines spoken by the character, either as prose
@@ -1269,11 +1199,12 @@
             directions. The speaker is encoded in the element <code>&lt;speaker&gt;</code>, and
             stage directions in the element <code>&lt;stage&gt;</code>. You should omit any
             formatting the editor has used to distinguish these elements.</p>
-        
-        <p><strong>Example 11</strong></p>
-        
-        <p><img src="resources/img/stage-img1-coloured.png" alt=""/></p>
-        
+        <p>
+            <strong>Example 11</strong>
+        </p>
+        <p>
+            <img src="resources/img/stage-img1-coloured.png" alt=""/>
+        </p>
         <pre>
 &lt;sp&gt;
   &lt;speaker&gt;राजा&lt;/speaker&gt;
@@ -1288,19 +1219,16 @@
   &lt;stage&gt;अस्मृतिनिमित्तमुन्मनस्कत्वं रूपयति&lt;/stage&gt;
 &lt;/sp&gt;
 </pre>
-        
-        <a
-            name="Labels-and-notes"/>
-        <h1>Labels and notes<a href="#Labels-and-notes" class="wiki-anchor"/></h1>
-        
+        <a name="Labels-and-notes"/>
+        <h4>Labels and notes<a href="#Labels-and-notes" class="wiki-anchor"/>
+        </h4>
         <p>The source edition will sometimes have <strong>labels</strong> added by the editor, which
             help to identify sections (below the level of the sections explicitly encoded as
                 <code>&lt;div&gt;</code> elements), positions in an argument (<em>pūrvapakṣa</em>,
                 <em>uttarapakṣa</em>, <em>siddhānta</em>), or other features of the text. It will
-            also sometimes have <strong>notes</strong>, whether those are representes as footnotes,
+            also sometimes have <strong>notes</strong>, whether those are represented as footnotes,
             endnotes, or otherwise. It is possible to represent both labels and notes using TEI’s
                 <code>&lt;label&gt;</code> and <code>&lt;note&gt;</code> elements.</p>
-        
         <p>Because SARIT recommends encoding <em>structure</em> rather than <em>presentation</em>,
             it is important to have an encoding strategy for representing various types of notes and
             labels, and to document this strategy in the encoding declaration of the header. For
@@ -1310,40 +1238,38 @@
             consistent <code>type</code> attributes for <code>&lt;label&gt;</code> elements as well,
             and to avoid the use of formatting-specific attributes (like <code>place</code> and
                 <code>rend</code>).</p>
-        
         <p>In the example below the labels might be encoded as
-            follows:<br/><pre>
+            follows:<br/>
+            <pre>
 &lt;label type="position"&gt;2&lt;/label&gt;
 &lt;label type="position-person"&gt;भामहः&lt;/label&gt;
 &lt;lg&gt;
   &lt;l&gt;अगोनिवृत्तिः शब्दार्थो यदि गौः केन गम्यताम् ।&lt;/l&gt;
   &lt;l&gt;गोशब्दं शृण्वतः पूर्वमगौः स्फुरतु चेतसि ॥ ५ ॥&lt;/l&gt;
 &lt;/lg&gt;
-</pre></p>
-        
-        <p><strong>Example 12</strong></p>
-        
-        <p><img src="resources/img/ex-label-2tss.jpg"
-                title="label with @place and @type" alt="label with @place and @type"/></p>
-        
+</pre>
+        </p>
+        <p>
+            <strong>Example 12</strong>
+        </p>
+        <p>
+            <img src="resources/img/ex-label-tss.jpg" title="label with @place and @type" alt="label with @place and @type"/>
+        </p>
         <p>Notes are often represented in printed editions with a <em>note marker</em> in the main
             text, and the <em>note text</em> either at the bottom of the page (as footnotes) or at
             the end of the chapter or text (as endnotes). <em>SARIT embeds notes into the text in
                 their proper place.</em> That is, wherever you see a note marker in the text, that
             is where you should place the <code>&lt;note&gt;</code> element.</p>
-        
         <p>The content of the <code>&lt;note&gt;</code> element depends on the <code>type</code> of
             note that it represents. Typically, however, notes will contain a <code>&lt;p&gt;</code>
             element. For text-critical notes, the simple version of the guidelines recommends the
             use of prose paragraphs; more sophisticated methods are available in the full version of
             the guidelines.</p>
-        
         <p>Attention must also be paid to the <em>language</em> of the note, since in many cases it
             will differ from the language of the surrounding text. It is good practice to use the
                 <code>xml:lang</code> attribute to identify the language of any element that differs
             from its parent element. This also includes sections of Sanskrit text quoted in notes,
             for which you may use the <code>&lt;foreign&gt;</code> element. For example:</p>
-        
         <pre>
 &lt;p&gt;यं नाट्यवेदं वेदेभ्यः सारमादाय ब्रह्मा कृतवान्, 
 यत्संबद्धमभिनयं भरतश्चकार करणाङ्गहारानकरोत्&lt;note 
@@ -1351,23 +1277,22 @@
   xml:lang="sa-Latn"&gt;hārān anekān 
   akarot&lt;/foreign&gt;.&lt;/p&gt;&lt;/note&gt;
 </pre>
-        
         <p>Note, finally, that editors will often insert references <em>into the text itself</em>,
             and you are encouraged to use the <code>&lt;note&gt;</code> element for these additions,
             as in the following example. (See the full version of the guidelines for instructions
             regarding pointing references and canonical reference
-            schemes.)<br/><pre>
-&lt;p&gt;यथा तत्रैव (&lt;ref cRef="Ratnā.1.8"&gt;रत्ना॰ १।८&lt;/p&gt;&lt;/note&gt;—
+            schemes.)<br/>
+            <pre>
+&lt;p&gt;यथा तत्रैव (&lt;note type="reference"&gt;रत्ना॰ १।८&lt;/p&gt;&lt;/note&gt;—
 &lt;lg&gt;
   &lt;l&gt;‘प्रारम्भेऽस्मिन् स्वामिनो वृद्धिहेतौ दैवे चेत्थं दत्तहस्तावलभ्बे ।&lt;/l&gt;
   &lt;l&gt;सिद्धेर्भ्रान्तिर्नास्ति सत्यं तथापि स्वेच्छाकारी भीत एवास्मि भर्तुः ॥’&lt;/l&gt;
 &lt;/lg&gt;
-</pre></p>
-        
-        <a
-            name="Quotations"/>
-        <h1>Quotations<a href="#Quotations" class="wiki-anchor"/></h1>
-        
+</pre>
+        </p>
+        <a name="Quotations"/>
+        <h4>Quotations<a href="#Quotations" class="wiki-anchor"/>
+        </h4>
         <p>For the simple level of text encoding, we recommend encoding quotations “as-is.” That is,
             if the editor has used quotation marks or double quotation marks, put them into the
             digital text; if the editor has used bold-face text to represent quotations, use the
@@ -1377,50 +1302,49 @@
             are represented inconsistently in printed editions. Of course, if project resources
             allow, quotations can be encoded by following the suggestions in the full version of the
             guidelines.</p>
-        
-        <a
-            name="Where-do-I-put-इति"/>
-        <h2>Where do I put इति?<a href="#Where-do-I-put-इति" class="wiki-anchor"/></h2>
-        
+        <a name="Where-do-I-put-इति"/>
+        <h5>Where do I put इति?<a href="#Where-do-I-put-इति" class="wiki-anchor"/>
+        </h5>
         <p>The particle इति, which marks quotations in Sanskrit, can be tricky: it often combines
             with the previous or following word, which can often mean that there is no typographic
             separation between a “verse” and the prose it’s embedded in. While there are ways of
             marking the beginning and ending of quotations, discussed more extensively in the SARIT
             Full guidelines, we don’t worry about quotations in SARIT Simple, and we are free to
             adopt the following straightforward principle: <em>follow the typography of the printed
-                edition.</em></p>
-        
+                edition.</em>
+        </p>
         <p>If the edition prints इति on the same line as the verse, include it there, within the
                 <code>&lt;l&gt;</code> element; if it prints इति on a following line, then put it
             outside of the <code>&lt;lg&gt;</code> element.</p>
-        
-        <p><strong>Example 14: इति on the same line</strong><br/><img
-                src="resources/img/ex-iti-dp2.jpg" title="iti" alt="iti"/></p>
-        
+        <p>
+            <strong>Example 14: इति on the same line</strong>
+            <br/>
+            <img src="resources/img/ex-iti-dp2.jpg" title="iti" alt="iti"/>
+        </p>
         <pre>
 &lt;lg&gt;
   &lt;l&gt;"वस्तूपलक्षणं यत्र सर्वाम् प्रसज्यते ।&lt;/l&gt;
   &lt;l&gt;द्रव्यमित्युच्यते सोऽर्थो भेद्यत्वेन विवक्षितः ॥" इति ।&lt;/l&gt;
 &lt;/lg&gt;
 </pre>
-        
-        <p><strong>Example 15: इति merged with the last word in a verse</strong></p>
-        
-        <p><img src="resources/img/ex-iti-vnt3.jpg" title="iti same line"
-                alt="iti same line"/></p>
-        
+        <p>
+            <strong>Example 15: इति merged with the last word in a verse</strong>
+        </p>
+        <p>
+            <img src="resources/img/ex-iti-vnt3.jpg" title="iti same line" alt="iti same line"/>
+        </p>
         <pre>
 &lt;lg&gt;
    &lt;l&gt;एकप्रत्यवमर्षस्य हेतुत्वाद्धीरभेदिनी&lt;/l&gt;
    &lt;l&gt;एकधा हेतुभावेन व्यक्तीनामप्यभिन्नतेति ॥ (२५)&lt;/l&gt;
 &lt;/lg&gt;
 </pre>
-        
-        <p><strong>Example 16: इति on the following line</strong></p>
-        
-        <p><img src="resources/img/ex-iti-pvsvt.jpg"
-                title="iti on the next line" alt="iti on the next line"/></p>
-        
+        <p>
+            <strong>Example 16: इति on the following line</strong>
+        </p>
+        <p>
+            <img src="resources/img/ex-iti-pvsvt.jpg" title="iti on the next line" alt="iti on the next line"/>
+        </p>
         <pre>
 &lt;p&gt;तदयुक्तं ।
   &lt;lg&gt;&lt;l&gt;"तद्गतावेव शब्देभ्यो गम्यतेऽन्यनिवर्त्तनं ।&lt;/l&gt;
@@ -1428,346 +1352,145 @@
 इति ग्रन्थविरोधात् । नीरूपस्य चास्तित्वविरोधाच्छशविषाणवत् । नीरूपत्वा-
 देव च न तस्याः प्रत्यक्षं ग्राहकं नाप्यनुमानं । सम्बन्धाभावात् ।&lt;/p&gt;
 </pre>
-        
-        <pre>
-&lt;trailer&gt;This concludes the simple version&lt;lb/&gt;
-  of the SARIT encoding guidelines.&lt;/trailer&gt;
-</pre>
-        ==============================================================<br/>Full Guidelines (in
-        progress) <a
-            name="SARIT-Full"/>
-        <h1>SARIT Full<a href="#SARIT-Full" class="wiki-anchor"/></h1>
-        
-        <a
-            name="31-Critical-apparatus"/>
-        <h2>3.1 Critical apparatus<a href="#31-Critical-apparatus" class="wiki-anchor"/></h2>
-        <p>Assume we have /TEI/text/body/div/div/p:</p>
-        <p>गतिः। &lt;anchor xml:id="pva-crit__14313"/&gt;पररूपस्यैवासौ&lt;anchor
-            xml:id="pva-crit__14360"/&gt; गतिः।</p>
-        <p>To this is keyed, at /TEI/text/back/div/listApp:</p>
-        <p>&lt;app xml:id="pva-crit__59152" from="#pva-crit__14313" to="#pva-crit__14360"
-            type="var"&gt;<br/> &lt;lemma&gt;पररूपस्यैवासौ&lt;/lemma&gt;<br/> &lt;rdg
-            wit="#s"&gt;पररूपस्यैवासौ&lt;/rdg&gt;<br/> &lt;rdg
-            wit="#ms"&gt;पररूप&lt;unclear&gt;स्य&lt;/unclear&gt;वासौ&lt;/rdg&gt;<br/> &lt;rdg
-            wit="#msE"&gt;पररूप&lt;lb ed="msE"/&gt;स्यासौ&lt;/rdg&gt;<br/> &lt;rdg
-            wit="#t"&gt;དེ་ནི་གཞན་གྱི་ངོ་བོ་ཉིད་&lt;/rdg&gt;<br/> &lt;note xml:lang="en"&gt;The best
-            support for eva is the Tibetan. In &lt;ref target="ms"/&gt;, an original °syavā° seems
-            to have been corrected, and could be read as °syevā°; °syaiva° might have been what was
-            intended.&lt;/note&gt;<br/> &lt;/app&gt;</p>
-        
-        <a
-            name="32-Notes"/>
-        <h2>3.2 Notes<a href="#32-Notes" class="wiki-anchor"/></h2>
-        <blockquote> <p>I added some examples and some comments below (LO, 24-02):</p> </blockquote>
-        <a
-            name="Cross-references"/>
-        <h3>Cross-references<a href="#Cross-references" class="wiki-anchor"/></h3>
-        
-        <p><strong>Example A</strong></p>
-        
-        <p><img src="resources/img/ex-note-dp1.jpg" title="reference"
-                alt="reference"/></p>
-        
-        <p>I had been using <br/>&lt;ref cRef="..."&gt;<br/>But according to what we decided last
-            time, we could recommend/use something
-            like:<br/><pre>
-&lt;note type="ref"&gt;
-</pre></p>
-        
-        <a
-            name="Additions"/>
-        <h3>Additions<a href="#Additions" class="wiki-anchor"/></h3>
-        
-        <p><strong>Example B</strong></p>
-        
-        <p><img src="resources/img/ex-note-vnt2.jpg"
-                title="additions and references" alt="additions and references"/></p>
-        
-        <p>This is the markup used in Vādanyāyaṭīkā Vipañcitārthā:<br/>&lt;add resp="#rs"
-            rend="inline brackets"&gt;</p>
-        
-        <p>Maybe we can recommend/use something
-            like:<br/><pre>
-&lt;note type="addition"&gt;
-</pre></p>
-        
-        <p>The verse numbers are also editorial additions, but I haven't encoded them as &lt;add&gt;
-            and we can't encode them as &lt;note&gt; because they won't be displayed correctly.</p>
-        
-        <a
-            name="Emmendations"/>
-        <h3>Emmendations?<a href="#Emmendations" class="wiki-anchor"/></h3>
-        
-        <p><strong>Example C</strong></p>
-        
-        <p><img src="resources/img/ex-note-vnt3.jpg" title="emmendation"
-                alt="emmendation"/></p>
-        
-        <p>This is the markup used in Vādanyāyaṭīkā Vipañcitārthā:<br/>&lt;note rend="inline
-            squarebracket"&gt;<br/>We could
-            recommend/use:<br/><pre>
-&lt;note type="emmendation"&gt;
-</pre></p>
-        
-        <p><strong>Example D</strong></p>
-        
-        <p><img src="resources/img/ex-note-vnt1.jpg"
-                title="emmendations inline and in footnotes"
-                alt="emmendations inline and in footnotes"/></p>
-        
-        <p>The footnotes have been encoded as &lt;notes&gt;, but with this new system we will need a
-            @type for them. (LO 24-02)</p>
-        <a
-            name="33-Quoted-material"/>
-        <h2>3.3 Quoted material<a href="#33-Quoted-material" class="wiki-anchor"/></h2>
-        
-        <a
-            name="इति-and-ltquotegt"/>
-        <h3>इति and &lt;quote&gt;<a href="#इति-and-ltquotegt" class="wiki-anchor"/></h3>
-        <blockquote> <p><strong>Example A</strong></p> <p><img
-                    src="resources/img/ex-iti-1_pvvapp1.jpg" title="iti"
-                    alt="iti"/></p> </blockquote>
-        <pre>
-&lt;p&gt;...लक्षणं (।) ।
- &lt;quote&gt;
-   &lt;lg&gt;&lt;l&gt;धूमेन ज्ञायते वह्‍निः सलिलञ्‍च वलाकया ।&lt;/l&gt;
-       &lt;l&gt;निमित्तैर्ज्ञायते गोत्रं बोधिसत्त्वस्य धीमत इति ।।&lt;/l&gt;
-   &lt;/lg&gt;
- &lt;/quote&gt;
-&lt;/p&gt;
-&lt;p&gt;स्वभावहेतोर्लक्षणं (।)
- &lt;quote&gt;
-   &lt;lg&gt;&lt;l&gt;अनित्या वत संस्कारा उत्पादव्ययधर्मिणः ।&lt;/l&gt;
-       &lt;l&gt;उत्पद्य हि निरुध्यन्ते तेषां व्युपशमः सुखमिति ।&lt;/l&gt;
-   &lt;/lg&gt;
- &lt;/quote&gt;
-&lt;/p&gt;
-&lt;p&gt;अत्र हि ... नमस्कारश्‍लोकस्य ।
-&lt;quote&gt;
-   &lt;lg&gt;&lt;l&gt;प्रमाणभूताय जगद्धितैषिणे प्रणम्य शास्‍त्रे सुगताय तायिने ।&lt;/l&gt;
-       &lt;l&gt;प्रमाणसिद्ध‍यै स्वमतात्समुच्‍चयः करिष्यते विप्रसृतादिहैकत(ः) ।&lt;/l&gt;&lt;/lg&gt;
-&lt;/quote&gt;
-&lt;ref cRef="ps.1.1"&gt;(प्रमाणसमुच्‍चये १।१) &lt;/ref&gt;इत्यस्य ।।&lt;/p&gt;
-</pre>
-        
-        <p><strong>Example B</strong></p>
-        
-        <p><img src="resources/img/ex-iti-2_pvvapp1.jpg"
-                title="quotation marks and iti" alt="quotation marks and iti"/></p>
-        
-        <pre>
-&lt;p&gt;व्याख्येयार्हव्याख्यानात् ...&lt;/p&gt;
-&lt;quote&gt;
-   &lt;lg&gt;&lt;l&gt;स्तोत्रकर्त्तुर्यथा पुण्यं स्तुतेर्भुवि प्रवर्त्तते ।&lt;/l&gt;
-       &lt;l&gt;तद्व‍्‍याख्यातुस्तथा सर्वमिति व्याख्या प्रवर्त्तते ।&lt;/l&gt;
-   &lt;/lg&gt;
-&lt;/quote&gt;
-&lt;p&gt;ताञ्‍च शास्‍त्रकृदाह । &lt;quote&gt;प्रमाणमविसम्वादि ज्ञानमि&lt;/quote&gt;&lt;ref cRef="pv.1.3"&gt; (१।३) &lt;/ref&gt;त्यादि । वार्त्तिकरूपेण चेयं व्याख्या । तल्लक्षणत्वादित्यर्थाक्षिप्‍तं । वार्त्तिकस्य च लक्षणमुक्‍तं । ... &lt;/p&gt;
-</pre>
-        <a
-            name="Pratīkas"/>
-        <h3>Pratīkas<a href="#Pratīkas" class="wiki-anchor"/></h3>
-        
-        <p>QUESTION (LO): As we don't have all root-texts in the SARIT-corpus, I've been using &lt;q
-            type="lemma"&gt; instead of &lt;ref&gt;.</p>
-        
-        <p><strong>Example C: pratīkas</strong></p>
-        
-        <p><img src="resources/img/ex-q-lemma.jpg" title="q type=lemma"
-                alt="q type=lemma"/></p>
-        
-        <a
-            name="34-Semantic-annotation"/>
-        <h2>3.4 Semantic annotation<a href="#34-Semantic-annotation" class="wiki-anchor"/></h2>
-        
-        <a
-            name="341-Persons-and-titles"/>
-        <h3>3.4.1 Persons and titles<a href="#341-Persons-and-titles" class="wiki-anchor"/></h3>
-        
-        <a
-            name="342-Dates"/>
-        <h3>3.4.2 Dates<a href="#342-Dates" class="wiki-anchor"/></h3>
-        
-        <a
-            name="343-Technical-terms"/>
-        <h3>3.4.3 Technical terms<a href="#343-Technical-terms" class="wiki-anchor"/></h3>
-        
-        <a
-            name="Glossary"/>
-        <h1>Glossary<a href="#Glossary" class="wiki-anchor"/></h1>
-        
+        <a name="Glossary"/>
+        <h4>Glossary<a href="#Glossary" class="wiki-anchor"/>
+        </h4>
         <ul>
-            <li><strong>base text</strong>: The text on which the current text is a commentary.
+            <li>
+                <strong>base text</strong>: The text on which the current text is a commentary.
                 Since a <em>base text</em> only makes sense in relation to a commentary on it, this
                 term is only used within a commentary. Sections of the <em>base text</em> that are
                 quoted in the commentary (the current text) are enclosed in &lt;quote&gt; elements
                 with the @type="base-text".</li>
-            <li><strong>mūla</strong>: see <em>base text</em>.</li>
-            <li><strong>root text</strong>: see <em>base text</em>.</li>
-            <li><strong>pratīka</strong>: see <em>lemma</em>.</li>
-            <li><strong>lemma</strong>: <em>who wants to define this one? (LO)</em>.</li>
+            <li>
+                <strong>mūla</strong>: see <em>base text</em>.</li>
+            <li>
+                <strong>root text</strong>: see <em>base text</em>.</li>
         </ul>
     </div>
-
-
     <div class="attachments">
-        <p><a href="resources/img/ex-trailer.jpg" class="icon icon-attachment"
-                >ex-trailer.jpg</a> - Trailers <span class="size">(185 KB)</span>
-            
+        <p>
+            <a href="resources/img/ex-trailer.jpg" class="icon icon-attachment">ex-trailer.jpg</a> - Trailers <span class="size">(185 KB)</span>
             <span class="author">Liudmila Olalde, 01/22/2015 09:14 PM</span>
         </p>
-        <p><a href="resources/img/ex-q-lemma.jpg" class="icon icon-attachment"
-                >ex-q-lemma.jpg</a> - q type=&quot;lemma&quot; <span class="size">(315 KB)</span>
-            
+        <p>
+            <a href="resources/img/ex-q-lemma.jpg" class="icon icon-attachment">ex-q-lemma.jpg</a> - q type="lemma" <span class="size">(315 KB)</span>
             <span class="author">Liudmila Olalde, 01/22/2015 09:17 PM</span>
         </p>
-        <p><a href="resources/img/ex-label-2tss.jpg"
-                class="icon icon-attachment">ex-label-2tss.jpg</a> - label with @place and @type
+        <p>
+            <a href="resources/img/ex-label-2tss.jpg" class="icon icon-attachment">ex-label-2tss.jpg</a> - label with @place and @type
                 <span class="size">(305 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/03/2015 05:59 PM</span>
         </p>
-        <p><a href="resources/img/ex-label-1.jpg" class="icon icon-attachment"
-                >ex-label-1.jpg</a> - label <span class="size">(193 KB)</span>
-            
+        <p>
+            <a href="resources/img/ex-label-1.jpg" class="icon icon-attachment">ex-label-1.jpg</a> - label <span class="size">(193 KB)</span>
             <span class="author">Liudmila Olalde, 02/11/2015 05:57 PM</span>
         </p>
-        <p><a href="resources/img/ex-base-text_commentary.jpg"
-                class="icon icon-attachment">ex-base-text_commentary.jpg</a> - base text and
+        <p>
+            <a href="resources/img/ex-base-text_commentary.jpg" class="icon icon-attachment">ex-base-text_commentary.jpg</a> - base text and
             commentary <span class="size">(365 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/11/2015 07:03 PM</span>
         </p>
-        <p><a href="resources/img/ex-iti-2_pvvapp1.jpg"
-                class="icon icon-attachment">ex-iti-2_pvvapp1.jpg</a> - quotation marks and iti
+        <p>
+            <a href="resources/img/ex-iti-2_pvvapp1.jpg" class="icon icon-attachment">ex-iti-2_pvvapp1.jpg</a> - quotation marks and iti
                 <span class="size">(208 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/11/2015 08:32 PM</span>
         </p>
-        <p><a href="resources/img/ex-iti-1_pvvapp1.jpg"
-                class="icon icon-attachment">ex-iti-1_pvvapp1.jpg</a> - iti <span class="size">(309
+        <p>
+            <a href="resources/img/ex-iti-1_pvvapp1.jpg" class="icon icon-attachment">ex-iti-1_pvvapp1.jpg</a> - iti <span class="size">(309
                 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/11/2015 08:35 PM</span>
         </p>
-        <p><a href="resources/img/ex-lbs-and-pbs-1pvv.jpg"
-                class="icon icon-attachment">ex-lbs-and-pbs-1pvv.jpg</a> - lb and pb <span
-                class="size">(287 KB)</span>
-            
+        <p>
+            <a href="resources/img/ex-lbs-and-pbs-1pvv.jpg" class="icon icon-attachment">ex-lbs-and-pbs-1pvv.jpg</a> - lb and pb <span class="size">(287 KB)</span>
             <span class="author">Liudmila Olalde, 02/16/2015 05:22 PM</span>
         </p>
-        <p><a href="resources/img/ex-lbs-and-pbs-2vnt.jpg"
-                class="icon icon-attachment">ex-lbs-and-pbs-2vnt.jpg</a> - lb and pb <span
-                class="size">(354 KB)</span>
-            
+        <p>
+            <a href="resources/img/ex-lbs-and-pbs-2vnt.jpg" class="icon icon-attachment">ex-lbs-and-pbs-2vnt.jpg</a> - lb and pb <span class="size">(354 KB)</span>
             <span class="author">Liudmila Olalde, 02/16/2015 05:22 PM</span>
         </p>
-        <p><a href="resources/img/ex-iti-dp2.jpg" class="icon icon-attachment"
-                >ex-iti-dp2.jpg</a> - iti <span class="size">(12.4 KB)</span>
-            
+        <p>
+            <a href="resources/img/ex-iti-dp2.jpg" class="icon icon-attachment">ex-iti-dp2.jpg</a> - iti <span class="size">(12.4 KB)</span>
             <span class="author">Liudmila Olalde, 02/24/2015 04:08 PM</span>
         </p>
-        <p><a href="resources/img/ex-iti-pvsvt.jpg" class="icon icon-attachment"
-                >ex-iti-pvsvt.jpg</a> - iti on the next line <span class="size">(40.5 KB)</span>
-            
+        <p>
+            <a href="resources/img/ex-iti-pvsvt.jpg" class="icon icon-attachment">ex-iti-pvsvt.jpg</a> - iti on the next line <span class="size">(40.5 KB)</span>
             <span class="author">Liudmila Olalde, 02/24/2015 04:31 PM</span>
         </p>
-        <p><a href="resources/img/ex-embedded-base-text2.jpg"
-                class="icon icon-attachment">ex-embedded-base-text2.jpg</a> - &lt;quote&gt; for base
+        <p>
+            <a href="resources/img/ex-embedded-base-text2.jpg" class="icon icon-attachment">ex-embedded-base-text2.jpg</a> - &lt;quote&gt; for base
             text <span class="size">(240 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/24/2015 05:08 PM</span>
         </p>
-        <p><a href="resources/img/ex-embedded-base-text_tsp.jpg"
-                class="icon icon-attachment">ex-embedded-base-text_tsp.jpg</a> - embedded base text
+        <p>
+            <a href="resources/img/ex-embedded-base-text_tsp.jpg" class="icon icon-attachment">ex-embedded-base-text_tsp.jpg</a> - embedded base text
                 <span class="size">(315 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/24/2015 05:08 PM</span>
         </p>
-        <p><a href="resources/img/ex-iti-vnt3.jpg" class="icon icon-attachment"
-                >ex-iti-vnt3.jpg</a> - iti same line <span class="size">(13.3 KB)</span>
-            
+        <p>
+            <a href="resources/img/ex-iti-vnt3.jpg" class="icon icon-attachment">ex-iti-vnt3.jpg</a> - iti same line <span class="size">(13.3 KB)</span>
             <span class="author">Liudmila Olalde, 02/24/2015 05:23 PM</span>
         </p>
-        <p><a href="resources/img/ex-note-dp1.jpg" class="icon icon-attachment"
-                >ex-note-dp1.jpg</a> - reference <span class="size">(73.8 KB)</span>
-            
+        <p>
+            <a href="resources/img/ex-note-dp1.jpg" class="icon icon-attachment">ex-note-dp1.jpg</a> - reference <span class="size">(73.8 KB)</span>
             <span class="author">Liudmila Olalde, 02/24/2015 05:25 PM</span>
         </p>
-        <p><a href="resources/img/ex-note-vnt1.jpg" class="icon icon-attachment"
-                >ex-note-vnt1.jpg</a> - emmendations inline and in footnotes <span class="size">(155
+        <p>
+            <a href="resources/img/ex-note-vnt1.jpg" class="icon icon-attachment">ex-note-vnt1.jpg</a> - emmendations inline and in footnotes <span class="size">(155
                 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/24/2015 05:26 PM</span>
         </p>
-        <p><a href="resources/img/ex-note-vnt2.jpg" class="icon icon-attachment"
-                >ex-note-vnt2.jpg</a> - additions and references <span class="size">(37.9 KB)</span>
-            
+        <p>
+            <a href="resources/img/ex-note-vnt2.jpg" class="icon icon-attachment">ex-note-vnt2.jpg</a> - additions and references <span class="size">(37.9 KB)</span>
             <span class="author">Liudmila Olalde, 02/24/2015 05:26 PM</span>
         </p>
-        <p><a href="resources/img/ex-note-vnt3.jpg" class="icon icon-attachment"
-                >ex-note-vnt3.jpg</a> - emmendation <span class="size">(35.9 KB)</span>
-            
+        <p>
+            <a href="resources/img/ex-note-vnt3.jpg" class="icon icon-attachment">ex-note-vnt3.jpg</a> - emmendation <span class="size">(35.9 KB)</span>
             <span class="author">Liudmila Olalde, 02/24/2015 05:26 PM</span>
         </p>
-        <p><a href="resources/img/ex-embedded-base-pvv.jpg"
-                class="icon icon-attachment">ex-embedded-base-pvv.jpg</a> - base text embedded in
+        <p>
+            <a href="resources/img/ex-embedded-base-pvv.jpg" class="icon icon-attachment">ex-embedded-base-pvv.jpg</a> - base text embedded in
             commentary <span class="size">(168 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/25/2015 03:33 PM</span>
         </p>
         <p>
-            <a href="resources/img/sutra-img1.png" class="icon icon-attachment"
-                >sutra-img1.png</a>
+            <a href="resources/img/sutra-img1.png" class="icon icon-attachment">sutra-img1.png</a>
             <span class="size">(89.1 KB)</span>
-            
             <span class="author">andrew ollett, 02/25/2015 05:39 PM</span>
         </p>
         <p>
-            <a href="resources/img/part-img1.png" class="icon icon-attachment"
-                >part-img1.png</a>
+            <a href="resources/img/part-img1.png" class="icon icon-attachment">part-img1.png</a>
             <span class="size">(216 KB)</span>
-            
             <span class="author">andrew ollett, 02/25/2015 05:53 PM</span>
         </p>
         <p>
-            <a href="resources/img/stage-img1.png" class="icon icon-attachment"
-                >stage-img1.png</a>
+            <a href="resources/img/stage-img1.png" class="icon icon-attachment">stage-img1.png</a>
             <span class="size">(143 KB)</span>
-            
             <span class="author">andrew ollett, 02/25/2015 06:02 PM</span>
         </p>
-        <p><a href="resources/img/ex-base-text-commentary-div1.jpg"
-                class="icon icon-attachment">ex-base-text-commentary-div1.jpg</a> - div: base text
+        <p>
+            <a href="resources/img/ex-base-text-commentary-div1.jpg" class="icon icon-attachment">ex-base-text-commentary-div1.jpg</a> - div: base text
             and comentary <span class="size">(89.8 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/25/2015 07:14 PM</span>
         </p>
         <p>
-            <a href="resources/img/part-img1-coloured.png"
-                class="icon icon-attachment">part-img1-coloured.png</a>
+            <a href="resources/img/part-img1-coloured.png" class="icon icon-attachment">part-img1-coloured.png</a>
             <span class="size">(217 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/25/2015 07:50 PM</span>
         </p>
         <p>
-            <a href="resources/img/stage-img1-coloured.png"
-                class="icon icon-attachment">stage-img1-coloured.png</a>
+            <a href="resources/img/stage-img1-coloured.png" class="icon icon-attachment">stage-img1-coloured.png</a>
             <span class="size">(79.5 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/25/2015 07:50 PM</span>
         </p>
         <p>
-            <a href="resources/img/sutra-img1-coloured.png"
-                class="icon icon-attachment">sutra-img1-coloured.png</a>
+            <a href="resources/img/sutra-img1-coloured.png" class="icon icon-attachment">sutra-img1-coloured.png</a>
             <span class="size">(75.4 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/25/2015 07:50 PM</span>
         </p>
-        <p><a href="resources/img/ex-base-text-commentary-div2.jpg"
-                class="icon icon-attachment">ex-base-text-commentary-div2.jpg</a> - fragments of
+        <p>
+            <a href="resources/img/ex-base-text-commentary-div2.jpg" class="icon icon-attachment">ex-base-text-commentary-div2.jpg</a> - fragments of
             verses <span class="size">(78.6 KB)</span>
-            
             <span class="author">Liudmila Olalde, 02/25/2015 08:05 PM</span>
         </p>
     </div>
