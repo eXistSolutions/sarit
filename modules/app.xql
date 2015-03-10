@@ -68,7 +68,18 @@ function app:nav-set-active($node as node(), $model as map(*)) {
         }
 };
 
-declare function functx:contains-any-of
+declare %private function functx:substring-before-last
+  ( $arg as xs:string? ,
+    $delim as xs:string )  as xs:string {
+
+   if (matches($arg, functx:escape-for-regex($delim)))
+   then replace($arg,
+            concat('^(.*)', functx:escape-for-regex($delim),'.*'),
+            '$1')
+   else ''
+ } ;
+
+declare %private function functx:contains-any-of
   ( $arg as xs:string? ,
     $searchStrings as xs:string* )  as xs:boolean {
 
@@ -77,14 +88,14 @@ declare function functx:contains-any-of
  } ;
 
 (:modified by applying functx:escape-for-regex() :)
-declare function functx:number-of-matches 
+declare %private function functx:number-of-matches 
   ( $arg as xs:string? ,
     $pattern as xs:string )  as xs:integer {
        
    count(tokenize(functx:escape-for-regex(functx:escape-for-regex($arg)),functx:escape-for-regex($pattern))) - 1
  } ;
 
-declare function functx:escape-for-regex
+declare %private function functx:escape-for-regex
   ( $arg as xs:string? )  as xs:string {
 
    replace($arg,
@@ -212,7 +223,7 @@ function app:outline($node as node(), $model as map(*), $full as xs:boolean) {
         ) else ()
 };
 
-declare function app:generate-toc-from-div($root, $long, $position) {
+declare %private function app:generate-toc-from-div($root, $long, $position) {
 	(:if it has divs below itself:)
     <li>{
     if ($root/tei:div) then
@@ -265,7 +276,7 @@ declare function app:generate-toc-from-div($root, $long, $position) {
 };
 
 (:based on Joe Wicentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
-declare function app:generate-toc-from-divs($node, $current as element()?, $long as xs:string?) {
+declare %private function app:generate-toc-from-divs($node, $current as element()?, $long as xs:string?) {
     if ($node/tei:div) 
     then
         <ul style="display: none">{
@@ -325,7 +336,7 @@ declare %private function app:generate-title($nodes as text()*, $length as xs:in
 };
 
 (:based on Joe Wicentowski, http://digital.humanities.ox.ac.uk/dhoxss/2011/presentations/Wicentowski-XMLDatabases-materials.zip:)
-declare function app:toc-div($div, $long as xs:string?, $current as element()?, $list-item as xs:string?) {
+declare %private function app:toc-div($div, $long as xs:string?, $current as element()?, $list-item as xs:string?) {
     let $div-id := $div/@xml:id/string()
     let $div-id := 
         if ($div-id) then $div-id else util:document-name($div) || "_" || util:node-id($div)
@@ -543,6 +554,7 @@ declare %private function app:get-current($div as element()?) {
                 $div
 };
 
+(:template function in view-play.html, commented out:)
 (:declare
     %templates:wrap
 function app:breadcrumbs($node as node(), $model as map(*)) {
@@ -608,7 +620,7 @@ function app:view($node as node(), $model as map(*), $id as xs:string, $action a
             else app:ngram-view($node, $model, $id, $query)
 };
 
-declare function app:lucene-view($node as node(), $model as map (*), $id as xs:string, $query as element()?)
+declare %private function app:lucene-view($node as node(), $model as map (*), $id as xs:string, $query as element()?)
 {
     for $div in $model("work")
     let $div :=
@@ -623,7 +635,7 @@ declare function app:lucene-view($node as node(), $model as map (*), $id as xs:s
         </div>
 };
 
-declare function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string*) 
+declare %private function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string*) 
 {
     for $div in app:load($model("work"), $id)
     let $div :=
@@ -1089,13 +1101,13 @@ declare %private function app:expand-ngram-query($query as xs:string*, $query-sc
                     ($query, sarit:transliterate("expand",translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")) )
                 else 
                     (:if the user wants to search in romanization, then do not transliterate but keep original query:)
-                    (:this exhausts all options for IAST input strings:)
                     if ($query-scripts eq "sa-Latn") 
                     then 
                         ($query, '')
+                    (:this exhausts all options for IAST input strings:)
                     else ()
         else
-            (:if there is input exclusively in Devanagri:)
+            (:if there is input exclusively in Devanagari:)
             if (empty(string-to-codepoints($query)[not(. = (9-13, 32, 133, 160, 2304 to 2431, 43232 to 43259, 7376 to 7412))])) 
             then
                 (:if the user wants to search in IAST, then transliterate the original query but delete it:)
@@ -1307,6 +1319,7 @@ function app:paginate($node as node(), $model as map(*), $start as xs:int, $per-
 (:~
     Create a span with the number of items in the current search result.
 :)
+(:template function in search.html:)
 declare function app:hit-count($node as node()*, $model as map(*)) {
     <span xmlns="http://www.w3.org/1999/xhtml" id="hit-count">{ count($model("hits")) }</span>
 };
@@ -1314,13 +1327,14 @@ declare function app:hit-count($node as node()*, $model as map(*)) {
 (:~
     Output the actual search result as a div, using the kwic module to summarize full text matches.
 :)
+(:template function in search.html:)
 declare 
     %templates:wrap
     %templates:default("start", 1)
     %templates:default("per-page", 10)
 function app:show-hits($node as node()*, $model as map(*), $start as xs:integer, $per-page as xs:integer) {
     let $index :=
-        if ($model('query') instance of xs:string)
+        if ($model('query')[1] instance of xs:string)
         then 'ngram'
         else 'lucene'
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
@@ -1354,36 +1368,48 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
-    let $config := <config width="60" table="yes" link="{$div-id}.html?action=search#{$matchId}"/>
+    let $config := <config width="80" table="yes" link="{$div-id}.html?action=search#{$matchId}"/>
     let $kwic := kwic:summarize($hit-padded, $config)
     let $kwic :=
         if ($index eq "lucene")
         then $kwic
-        else app:move-combining-marks($kwic)
+        else app:clean-up-kwic($kwic)
     return
         ($loc, $kwic)        
 };
 
 (:~
-    Draft function intended to move combining marks orphaned in the beginning of "following" to the end of "hit" and to move combining marks orphaned in the beginning of "hit" to the end of "previous"
+    Draft function intended 1) to move combining marks orphaned in the beginning of "following" to the end of "hit" and to move combining marks orphaned in the beginning of "hit" to the end of "previous", 2) only display full "words" in the context
 :)
-declare %private function app:move-combining-marks($kwic as element(tr)+) as element(tr) {
+declare %private function app:clean-up-kwic($kwic as element(tr)+) as element(tr) {
     let $kwic := $kwic[1] (:NB: WHY?:)
-    let $previous := $kwic//td[1]/string()
+    let $left-context := $kwic//td[1]/string()
     let $hit := $kwic//td[2]/string()
     let $href := $kwic//td[2]/a/@href/string()
-    let $following := $kwic//td[3]/string()
-    let $following-combining := replace($following, "(\p{M}*)(\P{M}\p{M}*)", "$1")
-    let $following := replace($following, "(\p{M}*)(\P{M}\p{M}*)", "$2")
-    let $hit := concat($hit, $following-combining)
+    let $right-context := $kwic//td[3]/string()
+    let $right-context-initial-combining-chars := replace($right-context, "(\p{M}*)(\P{M}\p{M}*)", "$1")
+    let $right-context := replace($right-context, "(\p{M}*)(\P{M}\p{M}*)", "$2")
+    let $right-context := functx:substring-before-last($kwic//td[3]/string(), ' ...')
+    let $right-context := replace($right-context, "(.*?)(\p{M}*)", "$1")
+    let $right-context := 
+        if (string-length($right-context)) then
+        concat($right-context, ' …')
+        else ''
+    let $hit := concat($hit, $right-context-initial-combining-chars)
     let $hit := replace($hit, "(\p{M}*)(\P{M}\p{M}*)", "$2")
-    let $hit-combining := replace($hit, "(\p{M}*)(\P{M}\p{M}*)", "$1")
-    let $previous := concat($previous, $hit-combining)
+    let $hit-initial-combining-chars := replace($hit, "(\p{M}*)(\P{M}\p{M}*)", "$1")
+    let $left-context := concat($left-context, $hit-initial-combining-chars)
+    let $left-context := substring-after($left-context, "... ")
+    let $left-context := replace($left-context, "(\p{M}*)(.*?)", "$2")
+    let $left-context := 
+        if (string-length($left-context)) then
+        concat('… ', $left-context)
+        else ''
     return
         <tr>
-            <td class="previous">{$previous}</td>
+            <td class="previous">{$left-context}</td>
             <td class="hi"><a href="{$href}">{$hit}</a></td>
-            <td class="following">{$following}</td>
+            <td class="following">{$right-context}</td>
         </tr>
 };
 
