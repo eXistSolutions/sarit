@@ -605,22 +605,18 @@ declare
     %templates:default("index", "ngram")
     %templates:default("action", "browse")
     %templates:default("query-scripts", "all")
-function app:view($node as node(), $model as map(*), $id as xs:string, $action as xs:string, $query-scripts as xs:string) {
+function app:view($node as node(), $model as map(*), $id as xs:string, $action as xs:string) {
         let $query := 
             if ($action eq 'search')
             then session:get-attribute("apps.sarit.query")
             else ()
-        let $query-scope := 
-            if (not(empty($query)))
-            then session:get-attribute("apps.sarit.scope")
-            else ()
         return
             if ($query instance of element())
-            then app:lucene-view($node, $model, $id, $query)
-            else app:ngram-view($node, $model, $id, $query)
+            then app:lucene-view($node, $model, $query)
+            else app:ngram-view($node, $model, $query)
 };
 
-declare %private function app:lucene-view($node as node(), $model as map (*), $id as xs:string, $query as element()?)
+declare %private function app:lucene-view($node as node(), $model as map (*), $query as element()?)
 {
     for $div in $model("work")
     let $div :=
@@ -635,9 +631,9 @@ declare %private function app:lucene-view($node as node(), $model as map (*), $i
         </div>
 };
 
-declare %private function app:ngram-view($node as node(), $model as map(*), $id as xs:string, $query as xs:string*) 
+declare %private function app:ngram-view($node as node(), $model as map(*), $query as xs:string*) 
 {
-    for $div in app:load($model("work"), $id)
+    for $div in $model("work")
     let $div :=
         if (not(empty($query))) then
             util:expand(($div[ngram:wildcard-contains(., $query[1])], $div[ngram:wildcard-contains(., $query[2])]),
