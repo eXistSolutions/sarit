@@ -173,33 +173,6 @@
                         <li><pre class="literallayout">[^a-d]+ # no match</pre></li>
                     </ul>
                 </section>
-                <section>
-                    <h3>Character classes</h3>
-                    <p>Character classes are very important for Sanskrit, since they allow you to mask variation with more control that that offered by wildcards. 
-                        You can thus use them to find words even though they are written differently, e.g. have either "e" or "o" in a certain position or have "a" and "ā" in a certain position </p>
-                    <p>Ranges of potential characters may be represented as
-                        character classes by enclosing them in square brackets <code class="literal">"[]"</code>. A leading <code class="literal">^</code> negates the
-                        character class. The allowed forms are:</p>
-                        <ul>
-                        <li><pre class="literallayout">[abc] # 'a' or 'b' or 'c' </pre></li>
-                        <li><pre class="literallayout">[a-c] # 'a' or 'b' or 'c' </pre></li>
-                        <li><pre class="literallayout">[-abc] # '-' or 'a' or 'b' or 'c' </pre></li>
-                        <li><pre class="literallayout">[abc\-] # '-' or 'a' or 'b' or 'c' </pre></li>
-                        <li><pre class="literallayout">[^abc] # any character except 'a' or 'b' or 'c' </pre></li>
-                        <li><pre class="literallayout">[^a-c] # any character except 'a' or 'b' or 'c' </pre></li>
-                        <li><pre class="literallayout">[^-abc] # any character except '-' or 'a' or 'b' or 'c' </pre></li>
-                        <li><pre class="literallayout">[^abc\-] # any character except '-' or 'a' or 'b' or 'c'</pre></li>
-                        </ul>
-                    <p>Note that the dash <code class="literal">"-"</code> indicates
-                        a range of characeters, unless it is the first character or if it is escaped
-                        with a backslash.</p>
-                    <p>For string <code class="literal">"abcd"</code>:</p>
-                    <ul>
-                        <li><pre class="literallayout">ab[cd]+ # match</pre></li>
-                        <li><pre class="literallayout">[a-d]+ # match</pre></li>
-                        <li><pre class="literallayout">[^a-d]+ # no match</pre></li>
-                    </ul>
-                </section>
             </div>
         </div>
     </div>
