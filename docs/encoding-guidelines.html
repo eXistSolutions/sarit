@@ -15,8 +15,8 @@
             <li>to promote the production of TEI-conformant digital texts in the community of Indian
                 studies.</li>
         </ol>
-         The guidelines come in two varieties: <strong>simple</strong> and
-            <strong>full</strong>. <ul>
+         <p>The guidelines come in two varieties: <strong>simple</strong> and
+            <strong>full</strong>.</p> <ul>
             <li>The <em>simple</em> guidelines (this document) document the minimal level of
                 encoding that SARIT requires of texts in its collections. These guidelines provide a
                 straightforward path “from printed edition to digital text,” and should suffice for
@@ -45,15 +45,15 @@
             simply a collection of markup conventions for digital documents. Most web pages use XML
             or an XML-like form of markup. HTML is a special case of XML. The key feature of XML is
             its use of <strong>elements</strong>, which start and end with tags in angle-brackets,
-            and signal some <em>editorial</em> intention relating to the text: <br/>
+            and signal some <em>editorial</em> intention relating to the text: </p>
             <pre>&lt;p&gt;This is a paragraph.&lt;/p&gt;</pre>
-            <br/>Elements can be nested within
-            each other:<br/>
+            <p>Elements can be nested within
+            each other:</p>
             <pre>&lt;p&gt;This is &lt;hi&gt;highlighted text&lt;/hi&gt;.&lt;/p&gt;</pre>
-            <br/>Elements
-            can also be given <strong>attributes</strong>:<br/>
+            <p>Elements
+            can also be given <strong>attributes</strong>:</p>
             <pre>&lt;p&gt;This is &lt;hi rend="bold"&gt;an element&lt;/hi&gt;.&lt;/p&gt;</pre>
-            <br/>In
+            <p>In
             a <strong>well-formed</strong> XML document, every starting tag corresponds to an ending
             tag, and vice versa, and all of the elements are arranged hierarchically and without
             overlapping. But in order to be useful, the document must use elements in a well-defined
@@ -106,19 +106,19 @@
         <p>All SARIT documents start the same way. The file begins with an <em>XML declaration</em>,
             a processing instruction that tells whatever program opens the document that it is
             written in XML. This XML declaration is always the
-            same:<br/>
+            same:</p>
             <pre>
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
 </pre>
-            <br/>All valid XML
+            <p>All valid XML
             files must have one, and only one, <em>top-level element</em>. Since SARIT documents are
             TEI documents, this top-level element is going to be &lt;TEI&gt;. This means that the
             second line of the file, after the XML declaration, will look something like the
-            following:<br/>
+            following:</p>
             <pre>
 &lt;TEI xml:id="sarit__XML-ID_HERE" xmlns="http://www.tei-c.org/ns/1.0"&gt;
 </pre>
-            <br/>This
+            <p>This
             element has two attributes. The <code>xml:id</code> is a unique identifier for the
             document. Your choice for this unique identifier will depend on your project. The
                 <code>xmlns</code> attribute tells whatever program opens the document that the
@@ -152,11 +152,12 @@
             readings in a critical apparatus to the main text) where you might find @xml:id@s
             useful. But in general, nothing is lost by omitting @xml:id@s, and often compatability
             with certain programs (such as SARIT’s XML database) is gained by omitting them.</p>
-         The <code>xml:lang</code> attribute, on the other hand, should be
+         <p>The <code>xml:lang</code> attribute, on the other hand, should be
         used systematically and carefully when preparing a SARIT document. This attribute tells us
         what language is represented by the text of the element to which it is attached. SARIT
         follows the two-letter language codes defined by <a href="/redmine/projects/encoding-guidelines/wiki/ISO_639?parent=Wiki" class="wiki-page new">http://www.loc.gov/standards/iso639-2/</a>, and in most cases
-        these language codes are followed by a code for the script, as follows: <ul>
+        these language codes are followed by a code for the script, as follows: </p>
+        <ul>
             <li>
                 <code>en</code>: English (in the Latin script by default);</li>
             <li>
@@ -210,9 +211,9 @@
         <a name="The-TEI-Header"/>
         <h4>The TEI Header<a href="#The-TEI-Header" class="wiki-anchor"/>
         </h4>
-         One of the advantages to using TEI is the ability to include all
+         <p>One of the advantages of using TEI is the ability to include all
         kinds of structured metadata. When we create a SARIT document, we are not just transcribing
-        the text, but also providing the following: <ul>
+        the text, but also providing the following: </p><ul>
             <li>
                 <em>cataloguing</em> information, for example the title and author of the text;</li>
             <li>information about the document’s <em>source</em>, such as the edition that the
@@ -335,10 +336,10 @@
         <a name="The-publication-statement"/>
         <h6>The publication statement<a href="#The-publication-statement" class="wiki-anchor"/>
         </h6>
-         The publication statement tells us how the digital text
+         <p>The publication statement tells us how the digital text
             (<em>not</em> the sources of the digital text) is published. SARIT editions will have a
         publication statement with the following structure, although the TEI P5 <a href="/redmine/projects/encoding-guidelines/wiki/Guidelines?parent=Wiki" class="wiki-page new">http://www.tei-c.org/release/doc/tei-p5-doc/en/html/HD.html#HD24</a> offer additional
-        possibilities: <ul>
+        possibilities: </p><ul>
             <li>the <em>publisher</em> of the digital text (typically SARIT);</li>
             <li>its <em>availability</em>;</li>
             <li>the <em>date</em> of its publication;</li>
@@ -601,12 +602,12 @@
         </p>
         <p>The <code>&lt;text&gt;</code> element is the last child element of
                 <code>&lt;TEI&gt;</code>.</p>
-         A single document might contain more than one text. In
+        <p>A single document might contain more than one text. In
         particular, a single document will very often contain a commentary together with the text
         that it is a commentary on, hence known as the “base text.” You may only be interested in
         the base text, or only in the commentary. But you may also want to encode <em>both</em>
         texts, and in that case you will also want to make the relationship between the texts
-        explicit. There are, in general, two options for encoding a base text with its commentary: <ul>
+        explicit. There are, in general, two options for encoding a base text with its commentary: </p><ul>
             <li>
                 <strong>Together</strong>. The base text and the commentary are encoded in a single
                 document.</li>
