@@ -643,65 +643,65 @@ declare %private function app:ngram-view($node as node(), $model as map (*), $qu
         if (not(empty($query))) then
             if ($query-scope eq 'narrow') then
                 util:expand((if ($query[1]) then
-                                ($div[ngram:wildcard-contains(tei:p, $query[1])],
-                                $div[ngram:wildcard-contains(tei:head, $query[1])],
-                                $div[ngram:wildcard-contains(tei:lg, $query[1])],
-                                $div[ngram:wildcard-contains(tei:trailer, $query[1])],
-                                $div[ngram:wildcard-contains(tei:note, $query[1])],
-                                $div[ngram:wildcard-contains(tei:list, $query[1])],
-                                $div[ngram:wildcard-contains(tei:l[not(local-name(./..) eq 'lg')], $query[1])],
-                                $div[ngram:wildcard-contains(tei:quote, $query[1])],
-                                $div[ngram:wildcard-contains(tei:table, $query[1])],
-                                $div[ngram:wildcard-contains(tei:listApp, $query[1])],
-                                $div[ngram:wildcard-contains(tei:listBibl, $query[1])],
-                                $div[ngram:wildcard-contains(tei:cit, $query[1])],
-                                $div[ngram:wildcard-contains(tei:label, $query[1])],
-                                $div[ngram:wildcard-contains(tei:encodingDesc, $query[1])],
-                                $div[ngram:wildcard-contains(tei:fileDesc, $query[1])],
-                                $div[ngram:wildcard-contains(tei:profileDesc, $query[1])],
-                                $div[ngram:wildcard-contains(tei:revisionDesc, $query[1])])
+                                ($div//tei:p[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:head[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:lg[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:trailer[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:note[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:list[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[1])],
+                                $div//tei:quote[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:table[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:listApp[ngram:wildcard-contains(., $query[1])],
+                                $div/tei:listBibl[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:cit[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:label[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:encodingDesc[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:fileDesc[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:profileDesc[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:revisionDesc[ngram:wildcard-contains(., $query[1])])
                             else
                                 ()
                             ,
                             if ($query[2]) then
-                                ($div[ngram:wildcard-contains(tei:p, $query[2])],
-                                $div[ngram:wildcard-contains(tei:head, $query[2])],
-                                $div[ngram:wildcard-contains(tei:lg, $query[2])],
-                                $div[ngram:wildcard-contains(tei:trailer, $query[2])],
-                                $div[ngram:wildcard-contains(tei:note, $query[2])],
-                                $div[ngram:wildcard-contains(tei:list, $query[2])],
-                                $div[ngram:wildcard-contains(tei:l[not(local-name(./..) eq 'lg')], $query[2])],
-                                $div[ngram:wildcard-contains(tei:quote, $query[2])],
-                                $div[ngram:wildcard-contains(tei:table, $query[2])],
-                                $div[ngram:wildcard-contains(tei:listApp, $query[2])],
-                                $div[ngram:wildcard-contains(tei:listBibl, $query[2])],
-                                $div[ngram:wildcard-contains(tei:cit, $query[2])],
-                                $div[ngram:wildcard-contains(tei:label, $query[2])],
-                                $div[ngram:wildcard-contains(tei:encodingDesc, $query[2])],
-                                $div[ngram:wildcard-contains(tei:fileDesc, $query[2])],
-                                $div[ngram:wildcard-contains(tei:profileDesc, $query[2])],
-                                $div[ngram:wildcard-contains(tei:revisionDesc, $query[2])])
+                                ($div//tei:p[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:head[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:lg[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:trailer[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:note[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:list[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[2])],
+                                $div//tei:quote[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:table[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:listApp[ngram:wildcard-contains(., $query[2])],
+                                $div/tei:listBibl[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:cit[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:label[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:encodingDesc[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:fileDesc[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:profileDesc[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:revisionDesc[ngram:wildcard-contains(., $query[2])])
                             else
                                 ()
                             ),
                             "add-exist-id=all")
             else
                 util:expand((if ($query[1]) then
-                                ($div[ngram:wildcard-contains(tei:div, $query[1])],
-                                $div[ngram:wildcard-contains(tei:teiHeader, $query[1])])
+                                ($div//tei:div[ngram:wildcard-contains(., $query[1])],
+                                $div//tei:teiHeader[ngram:wildcard-contains(., $query[1])])
                             else
                                 ()
                             ,
                             if ($query[2]) then
-                                ($div[ngram:wildcard-contains(tei:div, $query[2])],
-                                $div[ngram:wildcard-contains(tei:teiHeader, $query[2])])
+                                ($div//tei:div[ngram:wildcard-contains(., $query[2])],
+                                $div//tei:teiHeader[ngram:wildcard-contains(., $query[2])])
                             else
                                 ()
                             ),
                             "add-exist-id=all")
         else
             $div
-    let $view := app:get-content($div)
+    let $view := app:get-content($div[1])
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
         { tei-to-html:recurse($view, <options/>) }
