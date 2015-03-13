@@ -45,18 +45,6 @@ $(document).ready(function() {
             $("#mode-selection").show();
         }
     }
-    
-    // hide bool selection unless lucene index is chosen
-    function initIndexSelectBool() {
-        if (select.length == 0) {
-            return;
-        }
-        var index = select.val();
-        $("#bool-selection").hide();
-        if (index === "lucene") {
-            $("#bool-selection").show();
-        }
-    }
 
     select.change(function(ev) {
         initIndexSelectMode();
