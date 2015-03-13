@@ -20,16 +20,16 @@
                         texts that are divided (more or less) into words and another kind suits
                         texts that (more or less) are written as one long string of characters. The
                         first of these, the word index, is the Lucene Full-Text index, and the
-                        second, the string index, is the Ngram index. Whereas the the Lucene
+                        second, the string index, is the NGram index. Whereas the the Lucene
                         Full-Text index contains words, the NGram Index consists of overlapping
                         chunks of text three characters long (tri-grams).</p>
                     <p>Different kinds of indexes mean different search options. With a Lucene
-                        Full-Text index index, you can, e.g., search for contexts in which a number
+                        Full-Text index, you can, e.g., search for contexts in which a number
                         of words are close to each other, regardless of their order, but with an
-                        Ngram index, this is not easily possible. With an Ngram index, you can use
+                        NGram index, this is not easily possible. With an NGram index, you can use
                         wildcards, but you basically search for what is there, that is, what you
                         input as your search term is what you will retrieve. The important thing to
-                        note here is that if you use the Ngram index, you will retrieve instances in
+                        note here is that if you use the NGram index, you will retrieve instances in
                         which your search string occurs inside a longer string in the text, whereas
                         if you use the Lucene Full-Text index (and do not use wildcards), you will
                         find only instances in the text that are identical to your search
@@ -48,8 +48,8 @@
                         as part of a larger string, use the defaults and search using the NGram
                         index, optionally with the regex methods described in <a href="search-help-ngram">NGram Search</a>. This is easiest and very
                         fast. If the text is divided into words, use the Lucene Full-Text index
-                        index and its many options. Now, to complicate matters, the Lucene Full-Text
-                        Index has quite advanced regex options, described in <a href="search-help-lucene-regex">Lucene Regex Search</a>, and one could,
+                        and its many options. Now, to complicate matters, the Lucene Full-Text
+                        index has quite advanced regex options, described in <a href="search-help-lucene-regex">Lucene Regex Search</a>, and one could,
                         if one wished to do so, use these options instead of the NGram Index, but
                         the drawback here is that this would make searches quite slow and
                         resource-demanding. Choose your index wisely!</p>
@@ -58,8 +58,8 @@
                             speaking, the word index is much more powerful, though precisely this,
                             it cannot do.)</p>-->
                     <p>Word division is a matter of degree. Among the SARIT texts, only the
-                        Arthaśāstra is can be said to be divided into words in a way which makes
-                        use of the Lucene Full-Text index immediately possible. For information
+                        Arthaśāstra can be said to be divided into words in a way which makes
+                        the use of the Lucene Full-Text index immediately possible. For information
                         about the remaining texts, see <a href="search-help-word-division.html">Word Division</a>. With these texts, you should as a rule use the
                         NGram Index.</p>
                 </div>
@@ -112,7 +112,7 @@
                         searches in the text-containing elements immediately below the structural
                         elements, that is, it searches in paragraphs and suchlike. If you choose,
                         you can search more broadly, in the divisions above these text-containing
-                        elements. Tis means that you search in the lowest "div"s. If you do so, the
+                        elements. This means that you search in the lowest "div"s. If you do so, the
                         co-occurrence of two words can span several paragraphs and you may search
                         for words which are within, say, 10 words of each other, though they belong
                         to different paragraphs. Both kind of search scopes are useful for certain
@@ -131,7 +131,7 @@
                         be or not to be" is all the same. </p>
                     <p>One may ask: if spaces cannot be searched for, what are phrase searches?
                         Don't phrases consist of words with spaces and punctuation in between? Yes,
-                        but when you search for a phrase with the Lucene Full-text index, this is
+                        but when you search for a phrase with the Lucene Full-Text index, this is
                         not the same as when you search for a phrase in a word processing document –
                         with Lucene, you actually search for a sequence of words which have no words
                         in between them, so everything is about words after all (and a phrase search
