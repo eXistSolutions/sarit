@@ -1489,7 +1489,7 @@ declare %private function app:clean-up-kwic($kwic as element(tr)+) as element(tr
     (:we remove the dots:)
     let $left-context := substring-after($left-context, "... ")
     (:we remove any initial combining marks:)
-    let $left-context := replace($left-context, "(\p{M}*)(.*?)", "$2")
+    let $left-context := replace($left-context, "(\p{M}*)(\P{M}\p{M}*)", "$2")
     (:we add dots if there is anything elided:)
     let $left-context := 
         if (string-length($left-context)) then
