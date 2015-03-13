@@ -19,7 +19,7 @@
                         choice, you will automatically search for any search term. What this means
                         is that you want a hit no matter if one or the other of the words you input
                         as search terms is present, or if both are, whereas if you search for all
-                        search terms, you only want hit if all of the words you input are
+                        search terms, you only want a hit if all of the words you input are
                         present.</p>
                     <p>Search is performed in a number of <em>fields</em> - to be more exact, in
                         indexes based on certain fields. This contrasts with searches in a word
@@ -154,15 +154,9 @@
                         "snake OR killed", this is the same as simply searching for "snake killed".
                         If you search for "snake NOT killed", this equals searching for "snake
                         -killed".</p>
-                    <p>If you use AND, OR and NOT, the logic is rather different. If you search for
-                        "snake AND killed" you get hits with both "snake" and "killed" and none with
-                        only one of them. This corresponds to "+snake +killed". If you search for
-                        "snake OR killed", this is the same as simply searching for "snake killed".
-                        If you search for "snake NOT killed", this equals searching for "snake
-                        -killed".</p>
                     <p>Searches can acquire higher complexity use of parentheses. Here the use of
                         AND, OR and NOT may come more naturally. Say you want to find passages where
-                        the word killed occurs but where also at least one of the words "snake",
+                        the word "killed" occurs but where also at least one of the words "snake",
                         "deer", "fly", "cat" or "bird" occurs. You can express this by "(snake OR
                         deer OR fly OR cat OR bird) AND killed". An AND enforces "must occur" on
                         both sides, so both one of the animals and the word "killed" have to occur
@@ -182,7 +176,7 @@
                         "snake"-only hits.</p>
                     <p>You can also nest parentheses, e.g. "(snake OR (deer AND killed)) NOT
                         pricket" will remove the hits with "pricket" from "snake OR (deer AND
-                        killed". </p>
+                        killed)". </p>
                     <p>As you can see, the options are many …. And as if this was not enough, there
                         is also regex – and regex syntax combined with standard syntax!</p>
                 </section>
@@ -307,7 +301,7 @@
                                 will succeed if the pattern on either the left-hand side OR the
                                 right-hand side matches. The alternation applies to the <span class="emphasis">
                                     <em>longest pattern</em>
-                                </span>, not the shortest <!--explain!-->.</p>
+                                </span>, not the shortest<!--explain!-->.</p>
                             <p>In order to retrieve the strings <code>"proportions"</code> and
                                     <code>"preparations"</code>, the following expression can be
                                 used:</p>
