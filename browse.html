@@ -78,15 +78,6 @@
                         </select>
                     </div>
                 </div>
-<!--                <div id="display-script-selection" class="form-group" data-toggle="tooltip" data-placement="left" title="Display Search Results in Which Script?">-->
-<!--                    <div class="col-md-12 col-xs-12">-->
-<!--                        <select name="display-script" class="form-control" data-template="templates:form-control">-->
-<!--                            <option value="original" selected="selected">As Encoded</option>-->
-<!--                            <option value="iast">IAST</option>-->
-<!--                            <option value="devanagari">Devanagari</option>-->
-<!--                        </select>-->
-<!--                    </div>-->
-<!--                </div>-->
             </div>
         </div>
         <div class="col-md-9 col-md-pull-3">
@@ -104,24 +95,24 @@
                 </thead>
                 <tbody data-template="app:list-works">
                     <tr data-template="templates:each" data-template-from="works" data-template-to="work">
-                        <td class="checkbox">
+                        <td>
                             <input type="checkbox" name="target-texts" data-template="app:checkbox"/>
                         </td>
-                        <td class="work-title">
+                        <td>
                             <a href="" data-template="app:work-title"/>
                         </td>
-                        <td class="work-author">
+                        <td>
                             <a href="" data-template="app:work-author"/>
                         </td>
-                        <td class="work-lang">
+                        <td class="work-type">
                             <a href="" data-template="app:work-lang"/>
                         </td>
-                        <td class="download-links">
+                        <td>
                             <a href="" data-template="app:epub-link">epub</a>, 
                             <a href="" data-template="app:pdf-link">pdf</a>,
                             <a href="" data-template="app:zip-link">xml</a>
                         </td>
-                        <td class="exide-link">
+                        <td>
                             <a href="" data-template="app:xml-link">xml</a>
                         </td>
                     </tr>
