@@ -422,7 +422,7 @@ declare function app:work-author($node as node(), $model as map(*)) {
 declare function app:work-lang($node as node(), $model as map(*)) {
     let $work := $model("work")/ancestor-or-self::tei:TEI
     let $script := $work//tei:text/@xml:lang
-    let $script := if ($script eq 'sa-Latn') then 'Roman (IAST)' else 'Devanagari'
+    let $script := if ($script eq 'sa-Latn') then 'IAST' else 'Devanagari'
     let $auto-conversion := $work//tei:revisionDesc/tei:change[@type eq 'conversion'][@subtype eq 'automatic'] 
     return 
         concat($script, if ($auto-conversion) then ' (automatically converted)' else '')  
