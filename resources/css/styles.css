@@ -887,3 +887,22 @@ body .play button {
 .lemma {
   font-weight: bold;
 }
+table .checkbox {
+  width: 5%;
+  margin-left: 1.5em;
+}
+table .work-title {
+  width: 35%;
+}
+table .work-author {
+  width: 25%;
+}
+table .work-lang {
+  width: 10%;
+}
+table .download-links {
+  width: 10%;
+}
+table .exide-link {
+  width: 10%;
+}

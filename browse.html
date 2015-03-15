@@ -68,7 +68,7 @@
                         </select>
                     </div>
                 </div>
-                <div  id="bool-selection" class="form-group" data-toggle="tooltip" data-placement="left" title="Perform New Search or Continue Last Search?">
+                <div id="bool-selection" class="form-group" data-toggle="tooltip" data-placement="left" title="Perform New Search or Continue Last Search?">
                     <div class="col-md-12 col-xs-12">
                         <select name="bool" class="form-control" data-template="templates:form-control">
                             <option value="new" selected="selected">Perform New Search</option>
@@ -78,6 +78,15 @@
                         </select>
                     </div>
                 </div>
+<!--                <div id="display-script-selection" class="form-group" data-toggle="tooltip" data-placement="left" title="Display Search Results in Which Script?">-->
+<!--                    <div class="col-md-12 col-xs-12">-->
+<!--                        <select name="display-script" class="form-control" data-template="templates:form-control">-->
+<!--                            <option value="original" selected="selected">As Encoded</option>-->
+<!--                            <option value="iast">IAST</option>-->
+<!--                            <option value="devanagari">Devanagari</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
         <div class="col-md-9 col-md-pull-3">
@@ -95,24 +104,24 @@
                 </thead>
                 <tbody data-template="app:list-works">
                     <tr data-template="templates:each" data-template-from="works" data-template-to="work">
-                        <td>
+                        <td class="checkbox">
                             <input type="checkbox" name="target-texts" data-template="app:checkbox"/>
                         </td>
-                        <td>
+                        <td class="work-title">
                             <a href="" data-template="app:work-title"/>
                         </td>
-                        <td>
+                        <td class="work-author">
                             <a href="" data-template="app:work-author"/>
                         </td>
-                        <td class="work-type">
+                        <td class="work-lang">
                             <a href="" data-template="app:work-lang"/>
                         </td>
-                        <td>
+                        <td class="download-links">
                             <a href="" data-template="app:epub-link">epub</a>, 
                             <a href="" data-template="app:pdf-link">pdf</a>,
                             <a href="" data-template="app:zip-link">xml</a>
                         </td>
-                        <td>
+                        <td class="exide-link">
                             <a href="" data-template="app:xml-link">xml</a>
                         </td>
                     </tr>

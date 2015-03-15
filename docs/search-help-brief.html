@@ -23,7 +23,8 @@
                 </li>
                 <li>If you input a IAST search term or Devanagari search term, your search term will
                     by default be automatically converted to make your search apply to texts both in
-                    IAST and in Devanagari. If you wish to choose whether to search using IAST or using Devanagari, see below.</li>
+                    IAST and in Devanagari. If you wish to choose whether to search using IAST or
+                    using Devanagari, see below.</li>
             </ul>
         </section>
         <section>
@@ -34,6 +35,32 @@
                 <li>Search For What? <ul>
                         <li>You can either enter the precise term to search for or use Regular
                             Expressions.</li>
+                    </ul>
+                </li>
+                <li>Search With Which Scripts? <ul>
+                        <li>If you enter a search term in IAST and choose "Search with Devanagari
+                            and IAST", your search term will be converted to Devanagari and your
+                            search will include both your original (IAST) search term and the search
+                            term converted into Devanagari.</li>
+                        <li>If you enter a search term in IAST and choose "Search with Devanagari",
+                            your search term will be converted to Devanagari and your search will
+                            not be performed with the original (IAST) search term, only with the
+                            search term converted into Devanagari.</li>
+                        <li>If you enter a search term in IAST and choose "Search with IAST", the
+                            search term will not be converted and your search will only be performed
+                            with your original (IAST) search term.</li>
+                        <li>This applies the other way 'round as well, so:</li>
+                        <li>If you enter a search term in Devanagari and choose "Search with
+                            Devanagari and IAST", your search term will be converted to IAST and
+                            your search will include both your original (Devanagari) search term and
+                            the search term converted into IAST.</li>
+                        <li>If you enter a search term in Devanagari and choose "Search with IAST",
+                            your search term will be converted to IAST and your search will not be
+                            performed with the original (Devanagari) search term, only with the
+                            search term converted into IAST.</li>
+                        <li>If you enter a search term in Devanagari and choose "Search with
+                            Devanagari", the search term will not be converted and your search will
+                            only be performed with your original (Devanagari) search term.</li>
                     </ul>
                 </li>
                 <li>Use Which Index? <ul>
@@ -107,6 +134,14 @@
                         <li>You can choose to search the TEI Header or the TEI Text or both.</li>
                     </ul>
                 </li>
+                <li>Search In Texts By Which Authors? <ul>
+                        <li>You can choose Search In Texts By Any Author to search throughout the
+                            corpus or you can select one or more authors to search in the texts
+                            attributed to them.</li>
+                        <li>Note that you can also select individual texts to search by clicking on
+                            the check-boxes to the left of the titles.</li>
+                    </ul>
+                </li>
                 <li>Search Narrowly Or Broadly? <ul>
                         <li>This option is mainly relevant you are interested in finding the
                             cooccurrence of more than one search term within a certain part of the
@@ -116,38 +151,25 @@
                             in a larger part, but not in a smaller part.</li>
                     </ul>
                 </li>
-                <li>Search In Texts By Which Authors? <ul>
-                        <li>You can choose Search In Texts By Any Author to search throughout the
-                            corpus or you can select one or more authors to search in the texts
-                            attributed to them.</li>
-                        <li>Note that you can also select individual texts to search by clicking on
-                            the check-boxes to the left of the titles.</li>
-                    </ul>
-                </li>
-                <li>Search With Which Scripts? <ul>
-                        <li>If you enter a search term in IAST and choose "Search with Devanagari
-                            and IAST", you search term will be converted to Devanagari and your
-                            search will include both your original (IAST) search term and the search
-                            term converted into Devanagari.</li>
-                        <li>If you enter a search term in IAST and choose "Search with Devanagari",
-                            you search term will be converted to Devanagari and your search will not
-                            be performed with the original (IAST) search term, only with the search
-                            term converted into Devanagari.</li>
-                        <li>If you enter a search term in IAST and choose "Search with IAST", the
-                            search term will not be converted and your search will only be performed
-                            with your original (IAST) search term.</li>
-                    <li>This applies the other way 'round as well, so:</li>
-                        <li>If you enter a search term in Devanagari and choose "Search with
-                            Devanagari and IAST", you search term will be converted to IAST
-                            and your search will include both your original (Devanagari) search term
-                            and the search term converted into IAST.</li>
-                        <li>If you enter a search term in Devanagari and choose "Search with IAST",
-                            you search term will be converted to IAST and your search will not be
-                            performed with the original (Devanagari) search term, only with the
-                            search term converted into IAST.</li>
-                        <li>If you enter a search term in Devanagari and choose "Search with
-                            Devanagari", the search term will not be converted and your search will
-                            only be performed with your original (Devanagari) search term.</li>
+                <li>Perform New Search or Continue Last Search? <ul>
+                        <li>This gives you the option to refine your previous search, by restricting
+                            or broadening the search result.</li>
+                        <li>If you choose Perform New Search, your search will not relate to your
+                            previous search.</li>
+                        <li>If you choose "AND Last Search", your search will restrict your last
+                            search by requiring that the search criteria for both the last and the
+                            present search are satisfied. You typically use this to search for the
+                            co-occurence of two words. </li>
+                        <li>If you choose "OR Last Search", your search will broaden your last
+                            search by including both the results from the last and the present
+                            search in the search results. You typically use this to search for
+                            alternative forms of a word. </li>
+                        <li>If you choose "NOT Last Search", your search will restrict your last
+                            search by excluding the results from the present search. You use this to
+                            remove specific hits from the search results. </li>
+                        <li>Note that if you search using the Lucene Full-Text Index, you can perform
+                            these operations in one search. If you search using the Ngram Index,
+                            this is the only way at present to use Boolean operators.</li>
                     </ul>
                 </li>
             </ul>
