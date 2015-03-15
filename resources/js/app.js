@@ -48,10 +48,8 @@ $(document).ready(function() {
 
     select.change(function(ev) {
         initIndexSelectMode();
-        initIndexSelectBool();
     });
     initIndexSelectMode();
-    initIndexSelectBool();
     
     $('.popover-dismiss').popover({
         html:true,
