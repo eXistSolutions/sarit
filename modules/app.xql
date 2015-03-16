@@ -1467,14 +1467,15 @@ as element(tr)
     (: the right context may have 1) initial combining marks and 2) a body following any such marks, and it has 3) traling dots :)
     (: we isolate any initial combing marks :)
     let $right-context-initial-combining-chars :=
-        replace($right-context, "(\p{M}*)(\P{M}\p{M}*)", "$1")
+        replace($right-context, "(\p{M}*)(.*)", "$1")
     (: we get the body plus dots :)
-    let $right-context := replace($right-context, "(\p{M}*)(\P{M}\p{M}*)", "$2")
+    let $right-context := replace($right-context, "(\p{M}*)(.*)", "$2")
     (: we remove the dots :)
     let $right-context := functx:substring-before-last($right-context, ' ...')
     (: we remove any combining marks at the beginning :)
+    (: NB: why can't "substring-after($right-context, $right-context-initial-combining-chars)" be used?):)
     let $right-context :=
-        functx:substring-after-if-contains($right-context, $right-context-initial-combining-chars)
+        replace($right-context, concat("(^", $right-context-initial-combining-chars, ")", "(.*)"), "$2")
     (: we append dots if there is anything elided :)
     let $right-context :=
         if ($right-context) then
@@ -1485,34 +1486,31 @@ as element(tr)
     let $hit := concat($hit, $right-context-initial-combining-chars)
     (: we see if there are any initial combining marks in the hit :)
     let $hit-initial-combining-chars :=
-        replace($hit, "(\p{M}*)(\P{M}\p{M}*)", "$1")
+        replace($hit, "(\p{M}*)(.*)", "$1")
     (: we remove the dots from the beginning of the left context :)
     let $left-context :=
         substring-after($left-context, "... ")
     (: we remove any initial combining marks from the left context :)
     let $left-context :=
-        replace($left-context, "(\p{M}*)(\P{M}\p{M}*)", "$2")
-    (:if the hit contains an initial combining mark, we remove the last non-combining character of the left context:)
-    let $left-context :=
+        replace($left-context, "^(\p{M}*)(.*)", "$2")
+    (: replace($left-context, "^(\P{M}\p{M}*)(.*)$", "$2"):)
+    (:if the hit contains an initial combining mark, we plan to move the last non-combining character of the left context 
+    (along with any non-combining character that may follow it) to the hit:)
+    (: we fist isolate any base character plus combining mark from the end of the context that has to be moved to the beginning of the hit :)
+    let $left-context-final-base-char :=
         if ($hit-initial-combining-chars) then 
-            replace($left-context, "(\P{M}\p{M}*)(\P{M})", "$1")
-        else $left-context
+            replace($left-context, "^(.*)(\P{M}\p{M}*)$", "$2")
+        else $hit
+    (: we add it to the beginning of the hit :)
+    let $hit := concat($left-context-final-base-char, $hit)
+    (: we remove what we have added to the hit from the left context :)
+    let $left-context := functx:substring-before-last($left-context, $left-context-final-base-char)
     (: we add dots to the left context if there is anything elided :)
     let $left-context :=
         if ($left-context) then
             concat('… ', $left-context)
         else
             ''
-    (:if the hit is not immediately preceded by a space, that is, if the left context does not end in a space, we add a hyphen to the left context:)
-    let $left-context :=
-        if (not(ends-with($left-context," "))) then 
-            concat($left-context, "-")
-        else $left-context
-    (:if the hit contains an initial combining mark, we add the last non-combining character of the left context to the beginning of the hit:)
-    let $hit :=
-        if ($hit-initial-combining-chars) then 
-            concat(replace($left-context, "((\P{M}\p{M}*)*)(\P{M})", "$2"), $hit)
-        else $hit
     return
         <tr>
             <td class="previous">{ $left-context }</td>
@@ -1520,6 +1518,8 @@ as element(tr)
             <td class="following">{ $right-context }</td>
         </tr>
 };
+
+
 
 (:declare function app:base($node as node(), $model as map(*)) {:)
 (:    let $context := request:get-context-path():)
