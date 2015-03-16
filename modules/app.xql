@@ -1446,7 +1446,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
     let $config := <config width="80" table="yes" link="{$div-id}.html?action=search#{$matchId}"/>
     let $kwic := kwic:summarize($hit-padded, $config)
     let $kwic :=
-        if ($index eq "lucene")
+        if ($index eq "lucene" or $hit/ancestor-or-self::*[@xml:lang][1]/@xml:lang eq "sa-Latn")
         then $kwic
         else app:clean-up-kwic($kwic)
     return
@@ -1456,50 +1456,68 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
 (:~
     Function which 1) moves any combining marks orphaned in the beginning of "following" to the end of "hit", 2) moves any combining marks orphaned in the beginning of "hit" to the end of "previous", 3) removes any combining marks orphaned in the beginning of "previous"
 :)
-declare %private function app:clean-up-kwic($kwic as element(tr)+) as element(tr) {
-    let $kwic := $kwic[1] (:NB: WHY?:)
+declare %private function app:clean-up-kwic($kwic as element(tr) +)
+as element(tr)
+{
+    let $kwic := $kwic[1] (: NB: Why is position necessary? :)
     let $left-context := $kwic//td[1]/string()
     let $hit := $kwic//td[2]/string()
     let $href := $kwic//td[2]/a/@href/string()
     let $right-context := $kwic//td[3]/string()
-    (:the right context may have 1) initial combining marks and 2) a body following any such marks, 3) and it has 3) traling dots:)
-    (:we isolate any initial combing marks:)
-    let $right-context-initial-combining-chars := replace($right-context, "(\p{M}*)(\P{M}\p{M}*)", "$1")
-    (:we get the body plus dots:)
+    (: the right context may have 1) initial combining marks and 2) a body following any such marks, and it has 3) traling dots :)
+    (: we isolate any initial combing marks :)
+    let $right-context-initial-combining-chars :=
+        replace($right-context, "(\p{M}*)(\P{M}\p{M}*)", "$1")
+    (: we get the body plus dots :)
     let $right-context := replace($right-context, "(\p{M}*)(\P{M}\p{M}*)", "$2")
-    (:we remove the dots:)
+    (: we remove the dots :)
     let $right-context := functx:substring-before-last($right-context, ' ...')
-    (:we remove any combining marks at the beginning:)
-    let $right-context := functx:substring-after-if-contains($right-context, $right-context-initial-combining-chars)
-    (:we append dots if there is anything elided:)
-    let $right-context := 
-        if (string-length($right-context)) then
-        concat($right-context, ' …')
-        else ''
-    (:and append any combining marks to the hit:)
+    (: we remove any combining marks at the beginning :)
+    let $right-context :=
+        functx:substring-after-if-contains($right-context, $right-context-initial-combining-chars)
+    (: we append dots if there is anything elided :)
+    let $right-context :=
+        if ($right-context) then
+            concat($right-context, ' …')
+        else
+            ''
+    (: we append any combining marks from the beginning of the right context to the hit :)
     let $hit := concat($hit, $right-context-initial-combining-chars)
-    (:the hit may have 1) initial combining marks and 2) a body:)
-    (:we isolate the body:)
-    let $hit := replace($hit, "(\p{M}*)(\P{M}\p{M}*)", "$2")
-    (:we isolate any initial combining marks:)
-    let $hit-initial-combining-chars := replace($hit, "(\p{M}*)(\P{M}\p{M}*)", "$1")
-    (:we add any initial combining marks to the end of the left context:)
-    let $left-context := concat($left-context, $hit-initial-combining-chars)
-    (:the left context contains 1) initial dots, it may contain 2) a body and it may contain 3) final combining marks, either original or added from the hit:)
-    (:we remove the dots:)
-    let $left-context := substring-after($left-context, "... ")
-    (:we remove any initial combining marks:)
-    let $left-context := replace($left-context, "(\p{M}*)(\P{M}\p{M}*)", "$2")
-    (:we add dots if there is anything elided:)
-    let $left-context := 
-        if (string-length($left-context)) then
-        concat('… ', $left-context)
-        else ''
+    (: we see if there are any initial combining marks in the hit :)
+    let $hit-initial-combining-chars :=
+        replace($hit, "(\p{M}*)(\P{M}\p{M}*)", "$1")
+    (: we remove the dots from the beginning of the left context :)
+    let $left-context :=
+        substring-after($left-context, "... ")
+    (: we remove any initial combining marks from the left context :)
+    let $left-context :=
+        replace($left-context, "(\p{M}*)(\P{M}\p{M}*)", "$2")
+    (:if the hit contains an initial combining mark, we remove the last non-combining character of the left context:)
+    let $left-context :=
+        if ($hit-initial-combining-chars) then 
+            replace($left-context, "(\P{M}\p{M}*)(\P{M})", "$1")
+        else $left-context
+    (: we add dots to the left context if there is anything elided :)
+    let $left-context :=
+        if ($left-context) then
+            concat('… ', $left-context)
+        else
+            ''
+    (:if the hit is not immediately preceded by a space, that is, if the left context does not end in a space, we add a hyphen to the left context:)
+    let $left-context :=
+        if (not(ends-with($left-context," "))) then 
+            concat($left-context, "-")
+        else $left-context
+    (:if the hit contains an initial combining mark, we add the last non-combining character of the left context to the beginning of the hit:)
+    let $hit :=
+        if ($hit-initial-combining-chars) then 
+            concat(replace($left-context, "((\P{M}\p{M}*)*)(\P{M})", "$2"), $hit)
+        else $hit
     return
         <tr>
-            <td class="previous">{$left-context}</td>
-            <td class="hi"><a href="{$href}">{$hit}</a></td>
-            <td class="following">{$right-context}</td>
+            <td class="previous">{ $left-context }</td>
+            <td class="hi"><a href="{ $href }">{ $hit }</a></td>
+            <td class="following">{ $right-context }</td>
         </tr>
 };
 
