@@ -1500,7 +1500,7 @@ as element(tr)
     let $left-context-final-base-char :=
         if ($hit-initial-combining-chars) then 
             replace($left-context, "^(.*)(\P{M}\p{M}*)$", "$2")
-        else $hit
+        else ''
     (: we add it to the beginning of the hit :)
     let $hit := concat($left-context-final-base-char, $hit)
     (: we remove what we have added to the hit from the left context :)
