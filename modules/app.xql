@@ -1426,6 +1426,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
     let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:front
     let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:back
     let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:teiHeader  
+    let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:trailer
     let $div := app:get-current($parent)
     let $parent-id := ($parent/@xml:id/string(), util:document-name($parent) || "_" || util:node-id($parent))[1]
     let $div-id := ($div/@xml:id/string(), util:document-name($div) || "_" || util:node-id($div))[1]
