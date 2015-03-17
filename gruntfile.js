@@ -251,7 +251,7 @@ module.exports = function (grunt) {
                     }
                 },
                 files: {
-                    'dist/index.html': ['./index.html']
+                    'dist/template.html': ['./template.html']
                 }
             }
         },
