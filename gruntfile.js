@@ -208,7 +208,7 @@ module.exports = function (grunt) {
                 flatten: true
             },
             dist: {
-                src: ['./index.html'],
+                src: ['./browse.html','./template.html'],
                 dest: 'resources/css/tidy.css'
             }
         },
