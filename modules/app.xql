@@ -1422,23 +1422,16 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
         then 'ngram'
         else 'lucene'
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
-    let $parent := $hit/ancestor-or-self::tei:div[1]
-    let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:front
-    let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:back
-    let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:teiHeader  
-    let $parent := if ($parent) then $parent else $hit/ancestor-or-self::tei:trailer
-    let $div := app:get-current($parent)
-    let $parent-id := ($parent/@xml:id/string(), util:document-name($parent) || "_" || util:node-id($parent))[1]
-    let $div-id := ($div/@xml:id/string(), util:document-name($div) || "_" || util:node-id($div))[1]
-    (:if the nearest div does not have an xml:id, find the nearest element with an xml:id and use it:)
-    (:is this necessary - can't we just use the nearest ancestor?:) 
-(:    let $div-id := :)
-(:        if ($div-id) :)
-(:        then $div-id :)
-(:        else ($hit/ancestor-or-self::*[@xml:id]/@xml:id)[1]/string():)
-    (:if it is not a div, it will not have a head:)
-    let $div-head := $parent/tei:head/text()
-    (:TODO: what if the hit is in the header?:)
+    let $ancestor := $hit/ancestor-or-self::tei:div[1]
+    let $ancestor := if ($ancestor) then $ancestor else $hit/ancestor-or-self::tei:front
+    let $ancestor := if ($ancestor) then $ancestor else $hit/ancestor-or-self::tei:back
+    let $ancestor := if ($ancestor) then $ancestor else $hit/ancestor-or-self::tei:teiHeader
+    let $ancestor := if ($ancestor) then $ancestor else $hit/ancestor-or-self::tei:trailer
+    (: TODO: there must be some neater way of coding this! :)
+    let $ancestor-id := ($ancestor/@xml:id/string(), util:document-name($ancestor) || "_" || util:node-id($ancestor))[1]
+    let $ancestor := app:get-current($ancestor)
+    let $ancestor-id := ($ancestor/@xml:id/string(), util:document-name($ancestor) || "_" || util:node-id($ancestor))[1]
+    let $ancestor-head := $ancestor/tei:head/text()
     let $work := $hit/ancestor::tei:TEI
     let $work-title := app:work-title($work)
     (:the work always has xml:id.:)
@@ -1449,11 +1442,11 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
         <tr class="reference">
             <td colspan="3">
                 <span class="number">{$start + $p - 1}</span>
-                <a href="{$work-id}">{$work-title}</a>{if ($div-head) then ', ' else ''}<a href="{$parent-id}.html">{$div-head}</a>
+                <a href="{$work-id}">{$work-title}</a>{if ($ancestor-head) then ', ' else ''}<a href="{$ancestor-id}.html">{$ancestor-head}</a>
             </td>
         </tr>
     let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
-    let $config := <config width="70" table="yes" link="{$div-id}.html?action=search#{$matchId}"/>
+    let $config := <config width="70" table="yes" link="{$ancestor-id}.html?action=search#{$matchId}"/>
     let $kwic := kwic:summarize($hit-padded, $config)
     let $kwic :=
         if ($index eq "lucene" or $hit/ancestor-or-self::*[@xml:lang][1]/@xml:lang eq "sa-Latn")
