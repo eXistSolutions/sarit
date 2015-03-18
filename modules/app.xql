@@ -636,7 +636,7 @@ declare %private function app:lucene-view($node as node(), $model as map (*), $q
             $div[ft:query(., $query)]
         else
             $div
-    let $view := app:get-previous($div)
+    let $view := app:get-content($div)
     let $view := util:expand($view, "add-exist-id=all")
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
@@ -711,7 +711,7 @@ declare %private function app:ngram-view($node as node(), $model as map (*), $qu
                 $div
         else
             $div
-    let $view := app:get-previous($div)
+    let $view := app:get-content($div)
     (: since util:expand() removes the node context, we only expand the hit after getting its context. :)
     let $view := util:expand($view, "add-exist-id=all")
     return
@@ -720,30 +720,29 @@ declare %private function app:ngram-view($node as node(), $model as map (*), $qu
         </div>
 };
 
-
-(:declare %private function app:get-content($div as element()) {:)
-(:    if ($div instance of element(tei:teiHeader)) then :)
-(:        $div:)
-(:    else:)
-(:        if ($div instance of element(tei:div)) then:)
-(:            if ($div/tei:div) then:)
-(:                if (count(($div/tei:div[1])/preceding-sibling::*) < 5) then:)
-(:                    let $child := $div/tei:div[1]:)
-(:                    return:)
-(:                        element { node-name($div) } {:)
-(:                            $div/@*,:)
-(:                            $child/preceding-sibling::*,:)
-(:                            app:get-content($child):)
-(:                        }:)
-(:                else:)
-(:                    element { node-name($div) } {:)
-(:                        $div/@*,:)
-(:                        $div/tei:div[1]/preceding-sibling::*:)
-(:                    }:)
-(:            else:)
-(:                $div:)
-(:        else $div:)
-(:};:)
+declare %private function app:get-content($div as element()) {
+    if ($div instance of element(tei:teiHeader)) then 
+        $div
+    else
+        if ($div instance of element(tei:div)) then
+            if ($div/tei:div) then
+                if (count(($div/tei:div[1])/preceding-sibling::*) < 5) then
+                    let $child := $div/tei:div[1]
+                    return
+                        element { node-name($div) } {
+                            $div/@*,
+                            $child/preceding-sibling::*,
+                            app:get-content($child)
+                        }
+                else
+                    element { node-name($div) } {
+                        $div/@*,
+                        $div/tei:div[1]/preceding-sibling::*
+                    }
+            else
+                $div
+        else $div
+};
 
 (:~
     
