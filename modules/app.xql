@@ -140,7 +140,6 @@ function app:list-works($node as node(), $model as map(*)) {
 declare
     %templates:wrap
 function app:work($node as node(), $model as map(*), $id as xs:string) {
-(:    console:log("sarit", "id: " || $id),:)
     let $work := app:load(collection($config:remote-data-root), $id)
     return
         map { "work" := $work[1] }
@@ -541,21 +540,7 @@ declare %private function app:get-next($div as element()) {
         $div/following::tei:div[1]
 };
 
-declare %private function app:get-previous($div as element(tei:div)?) {
-    if (empty($div)) then
-        ()
-    else
-        if (
-            empty($div/preceding-sibling::tei:div)  (: first div in section :)
-            and count($div/preceding-sibling::*) < 5 (: less than 5 elements before div :)
-            and $div/.. instance of element(tei:div) (: parent is a div :)
-        ) then
-            app:get-previous($div/..)
-        else
-            $div
-};
-
-declare %private function app:get-current($div as element()?) {
+declare %private function app:get-previous($div as element()?) {
     if (empty($div)) then
         ()
     else
@@ -563,10 +548,11 @@ declare %private function app:get-current($div as element()?) {
         $div
         else
             if (
-                empty($div/preceding-sibling::tei:div)  (: first div in section :)
-                and count($div/preceding-sibling::*) < 5 (: less than 5 elements before div :)
-                and $div/.. instance of element(tei:div) (: parent is a div :)
+                empty($div/preceding-sibling::tei:div)  (: if it is the first div in a section :)
+                and count($div/preceding-sibling::*) < 5 (: if there are less than 5 elements before it :)
+                and $div/.. instance of element(tei:div) (: if its parent is a div :)
             ) then
+                (: then there is too little content to display, so we try if its parent is better. :)
                 app:get-previous($div/..)
             else
                 $div
@@ -647,10 +633,11 @@ declare %private function app:lucene-view($node as node(), $model as map (*), $q
     for $div in $model("work")
     let $div :=
         if ($query) then
-            util:expand($div[ft:query(., $query)], "add-exist-id=all")
+            $div[ft:query(., $query)]
         else
             $div
-    let $view := app:get-content($div)
+    let $view := app:get-previous($div)
+    let $view := util:expand($view, "add-exist-id=all")
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
         { tei-to-html:recurse($view, <options/>) }
@@ -665,7 +652,7 @@ declare %private function app:ngram-view($node as node(), $model as map (*), $qu
         if (not(empty($query))) then
             if ($bool eq 'new') then
                 if ($query-scope eq 'narrow') then
-                    util:expand((if ($query[1]) then
+                    (if ($query[1]) then
                                     ($div//tei:p[ngram:wildcard-contains(., $query[1])],
                                     $div//tei:head[ngram:wildcard-contains(., $query[1])],
                                     $div//tei:lg[ngram:wildcard-contains(., $query[1])],
@@ -706,10 +693,9 @@ declare %private function app:ngram-view($node as node(), $model as map (*), $qu
                                     $div//tei:revisionDesc[ngram:wildcard-contains(., $query[2])])
                                 else
                                     ()
-                                ),
-                                "add-exist-id=all")
+                                )
                 else
-                    util:expand((if ($query[1]) then
+                    (if ($query[1]) then
                                     ($div//tei:div[ngram:wildcard-contains(., $query[1])],
                                     $div//tei:teiHeader[ngram:wildcard-contains(., $query[1])])
                                 else
@@ -720,13 +706,14 @@ declare %private function app:ngram-view($node as node(), $model as map (*), $qu
                                     $div//tei:teiHeader[ngram:wildcard-contains(., $query[2])])
                                 else
                                     ()
-                                ),
-                                "add-exist-id=all")
+                                )
             else
                 $div
         else
             $div
-    let $view := app:get-content($div[1])
+    let $view := app:get-previous($div)
+    (: since util:expand() removes the node context, we only expand the hit after getting its context. :)
+    let $view := util:expand($view, "add-exist-id=all")
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
         { tei-to-html:recurse($view, <options/>) }
@@ -734,29 +721,29 @@ declare %private function app:ngram-view($node as node(), $model as map (*), $qu
 };
 
 
-declare %private function app:get-content($div as element()) {
-    if ($div instance of element(tei:teiHeader)) then 
-        $div
-    else
-        if ($div instance of element(tei:div)) then
-            if ($div/tei:div) then
-                if (count(($div/tei:div[1])/preceding-sibling::*) < 5) then
-                    let $child := $div/tei:div[1]
-                    return
-                        element { node-name($div) } {
-                            $div/@*,
-                            $child/preceding-sibling::*,
-                            app:get-content($child)
-                        }
-                else
-                    element { node-name($div) } {
-                        $div/@*,
-                        $div/tei:div[1]/preceding-sibling::*
-                    }
-            else
-                $div
-        else $div
-};
+(:declare %private function app:get-content($div as element()) {:)
+(:    if ($div instance of element(tei:teiHeader)) then :)
+(:        $div:)
+(:    else:)
+(:        if ($div instance of element(tei:div)) then:)
+(:            if ($div/tei:div) then:)
+(:                if (count(($div/tei:div[1])/preceding-sibling::*) < 5) then:)
+(:                    let $child := $div/tei:div[1]:)
+(:                    return:)
+(:                        element { node-name($div) } {:)
+(:                            $div/@*,:)
+(:                            $child/preceding-sibling::*,:)
+(:                            app:get-content($child):)
+(:                        }:)
+(:                else:)
+(:                    element { node-name($div) } {:)
+(:                        $div/@*,:)
+(:                        $div/tei:div[1]/preceding-sibling::*:)
+(:                    }:)
+(:            else:)
+(:                $div:)
+(:        else $div:)
+(:};:)
 
 (:~
     
@@ -1422,22 +1409,25 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
         then 'ngram'
         else 'lucene'
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
+    (: we try if the hit has a div ancestor (or is itself a div) and take the first one (or itself), 
+    in order to be able to output the link to the hit context ($ancestor-id) and a header ($ancestor-head). :)
     let $ancestor := $hit/ancestor-or-self::tei:div[1]
-    let $ancestor := if ($ancestor) then $ancestor else $hit/ancestor-or-self::tei:front
-    let $ancestor := if ($ancestor) then $ancestor else $hit/ancestor-or-self::tei:back
-    let $ancestor := if ($ancestor) then $ancestor else $hit/ancestor-or-self::tei:teiHeader
-    let $ancestor := if ($ancestor) then $ancestor else $hit/ancestor-or-self::tei:trailer
-    (: TODO: there must be some neater way of coding this! :)
+    (: if it does not have a div ancestor, we try something else. :)
+    let $ancestor := if ($ancestor) then $ancestor else ($hit/ancestor-or-self::tei:trailer, $hit/ancestor-or-self::tei:front, $hit/ancestor-or-self::tei:back, $hit/ancestor-or-self::tei:teiHeader)[1]
+    (: NB: there are lots of theoretical possibilities for non-div ancestors: we use only the values that occur in the corpus. :)
     let $ancestor-id := ($ancestor/@xml:id/string(), util:document-name($ancestor) || "_" || util:node-id($ancestor))[1]
-    let $ancestor := app:get-current($ancestor)
-    let $ancestor-id := ($ancestor/@xml:id/string(), util:document-name($ancestor) || "_" || util:node-id($ancestor))[1]
-    let $ancestor-head := $ancestor/tei:head/text()
+    (: NB: I do not understand why we need to add to the context of $ancestor, if the only thing we want from it is the link id and the header. :)
+    let $ancestor := app:get-previous($ancestor) 
+    (: NB: no-div ancestors will not have heads. :)
+    let $ancestor-head := string-join($ancestor/tei:head/text())
     let $work := $hit/ancestor::tei:TEI
     let $work-title := app:work-title($work)
-    (:the work always has xml:id.:)
+    (: the work always has an xml:id. :)
     let $work-id := $work/@xml:id/string()
-    (:pad hit with surrounding siblings:)
-    let $hit-padded := <hit>{($hit/preceding-sibling::*[1], $hit, $hit/following-sibling::*[1])}</hit>
+    (: pad the hit with its surrounding siblings. :)
+    (: NB: we could have fed $ancestor instead of $hit-padded to kwic:summarize, 
+    but this too much would have to be discarded, and the result would probably have been the same. :)
+(:    let $hit-padded := <hit>{($hit/preceding-sibling::*[1], $hit, $hit/following-sibling::*[1])}</hit>:)
     let $loc := 
         <tr class="reference">
             <td colspan="3">
@@ -1445,9 +1435,9 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
                 <a href="{$work-id}">{$work-title}</a>{if ($ancestor-head) then ', ' else ''}<a href="{$ancestor-id}.html">{$ancestor-head}</a>
             </td>
         </tr>
-    let $matchId := ($hit/@xml:id, util:node-id($hit))[1]
+    let $matchId := util:node-id($hit)
     let $config := <config width="70" table="yes" link="{$ancestor-id}.html?action=search#{$matchId}"/>
-    let $kwic := kwic:summarize($hit-padded, $config)
+    let $kwic := kwic:summarize($ancestor, $config)
     let $kwic :=
         if ($index eq "lucene" or $hit/ancestor-or-self::*[@xml:lang][1]/@xml:lang eq "sa-Latn")
         then $kwic
