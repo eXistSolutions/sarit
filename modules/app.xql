@@ -636,7 +636,7 @@ declare %private function app:lucene-view($node as node(), $model as map (*), $q
             $div[ft:query(., $query)]
         else
             $div
-    let $view := app:get-content($div)
+    let $view := app:get-content($div[1])
     let $view := util:expand($view, "add-exist-id=all")
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
@@ -711,7 +711,7 @@ declare %private function app:ngram-view($node as node(), $model as map (*), $qu
                 $div
         else
             $div
-    let $view := app:get-content($div)
+    let $view := app:get-content($div[1])
     (: since util:expand() removes the node context, we only expand the hit after getting its context. :)
     let $view := util:expand($view, "add-exist-id=all")
     return
