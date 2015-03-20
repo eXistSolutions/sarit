@@ -777,7 +777,7 @@ declare
     %templates:default("bool", "new")
 function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $lucene-query-mode as xs:string, $tei-target as xs:string+, $query-scope as xs:string, $work-authors as xs:string+, $query-scripts as xs:string, $target-texts as xs:string+, $bool as xs:string) as map(*) {
     (:remove any ZERO WIDTH NON-JOINER from the query string:)
-    let $query := translate(normalize-space($query), "&#8204;", "")
+    let $query := lower-case(translate(normalize-space($query), "&#8204;", ""))
     (:based on which index the user wants to query against, the query string is dispatchted to separate functions. Both return empty if there is no query string.:)
     let $query := 
         if ($index eq 'ngram')
