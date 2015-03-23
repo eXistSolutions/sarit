@@ -8,8 +8,48 @@
     <fo:page-sequence master-reference="normal">
         <fo:flow flow-name="xsl-region-body">
             <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">FONTS TO BE USED</fo:block>
+            </fo:block-container>            
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Sahadeva</fo:block>
+                <fo:block font-size="14pt" font-family="Sahadeva" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Nakula</fo:block>
+                <fo:block font-size="14pt" font-family="Nakula" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Sanskrit 2003</fo:block>
+                <fo:block font-size="14pt" font-family="Sanskrit 2003" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Samanata</fo:block>
+                <fo:block font-size="14pt" font-family="Samanata" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container> 
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">FreeSerif</fo:block>
+                <fo:block font-size="14pt" font-family="FreeSerif" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>        
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Avagraha</fo:block>
+                <fo:block font-size="14pt" font-family="Arial Unicode MS">Arial Unicode MS font: ʼ</fo:block>
+                <fo:block font-size="14pt" font-family="Sanskrit2003" xml:lang="sa-Latn">(U+02bc) saṃprajñāto ʼpi yoga</fo:block>
+                <fo:block font-size="14pt" font-family="Sanskrit2003" xml:lang="sa-Latn">(U+027) saṃprajñāto 'pi yoga</fo:block>
+            </fo:block-container>                        
+            <fo:block-container padding-after="10pt">
                 <fo:block font-size="14pt" font-family="serif">Transliteration</fo:block>
                 <fo:block font-size="14pt" font-family="Sanskrit2003, serif" xml:lang="sa-Latn">saṁskṛtāsaṁskṛta.śiṣyāṇāṁ nigūḍha aśīti</fo:block>
+            </fo:block-container> 
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">OTHER FONTS</fo:block>
+            </fo:block-container> 
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Open Sans</fo:block>
+                <fo:block font-size="14pt" font-family="Open Sans" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>        
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Lohit Devanagari</fo:block>
+                <fo:block font-size="14pt" font-family="Lohit Devanagari" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>            
             <fo:block-container padding-after="10pt">
                 <fo:block font-size="14pt" font-family="serif">Aparajita</fo:block>
@@ -60,10 +100,6 @@
                 <fo:block font-size="14pt" font-family="Madan2" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>
             <fo:block-container padding-after="10pt">
-                <fo:block font-size="14pt" font-family="serif">Nakula</fo:block>
-                <fo:block font-size="14pt" font-family="Nakula" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
-            </fo:block-container>
-            <fo:block-container padding-after="10pt">
                 <fo:block font-size="14pt" font-family="serif">Raghindi</fo:block>
                 <fo:block font-size="14pt" font-family="Raghindi" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>          
@@ -71,14 +107,6 @@
                 <fo:block font-size="14pt" font-family="serif">Raghu8</fo:block>
                 <fo:block font-size="14pt" font-family="Raghu8" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>            
-            <fo:block-container padding-after="10pt">
-                <fo:block font-size="14pt" font-family="serif">Sahadeva</fo:block>
-                <fo:block font-size="14pt" font-family="Sahadeva" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
-            </fo:block-container>
-            <fo:block-container padding-after="10pt">
-                <fo:block font-size="14pt" font-family="serif">Sanskrit 2003</fo:block>
-                <fo:block font-size="14pt" font-family="Sanskrit 2003" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
-            </fo:block-container>
             <fo:block-container padding-after="10pt">
                 <fo:block font-size="14pt" font-family="serif">Siddhanta</fo:block>
                 <fo:block font-size="14pt" font-family="Siddhanta" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
@@ -94,7 +122,31 @@
             <fo:block-container padding-after="10pt">
                 <fo:block font-size="14pt" font-family="serif">Mangal</fo:block>
                 <fo:block font-size="14pt" font-family="Mangal" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Gurumaa Hindi</fo:block>
+                <fo:block font-size="14pt" font-family="Gurumaa Hindi" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">SiddhiUni</fo:block>
+                <fo:block font-size="14pt" font-family="SiddhiUni" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">SHREE-DV0726-OT</fo:block>
+                <fo:block font-size="14pt" font-family="SHREE-DV0726-OT" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">shiDeva</fo:block>
+                <fo:block font-size="14pt" font-family="shiDeva" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>            
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Ekushey Saraswatii</fo:block>
+                <fo:block font-size="14pt" font-family="Ekushey Saraswatii" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Samyak</fo:block>
+                <fo:block font-size="14pt" font-family="Samyak" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>
         </fo:flow>
     </fo:page-sequence>
 </fo:root>
