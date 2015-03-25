@@ -1446,10 +1446,6 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
     let $work-title := app:work-title($work)
     (: the work always has an xml:id. :)
     let $work-id := $work/@xml:id/string()
-    (: pad the hit with its surrounding siblings. :)
-    (: NB: we could have fed $ancestor instead of $hit-padded to kwic:summarize, 
-    but this too much would have to be discarded, and the result would probably have been the same. :)
-(:    let $hit-padded := <hit>{($hit/preceding-sibling::*[1], $hit, $hit/following-sibling::*[1])}</hit>:)
     let $loc := 
         <tr class="reference">
             <td colspan="3">
@@ -1458,14 +1454,17 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
             </td>
         </tr>
     let $matchId := util:node-id($hit)
-    let $config := <config width="70" table="yes" link="{$ancestor-id}.html?action=search#{$matchId}"/>
-    let $kwic := kwic:summarize($ancestor, $config)
-    let $kwic :=
-        if ($index eq "lucene" or $hit/ancestor-or-self::*[@xml:lang][1]/@xml:lang eq "sa-Latn")
-        then $kwic
-        else app:clean-up-kwic($kwic)
+    let $config := <config width="70" table="yes" link="{ $ancestor-id }.html?action=search#{ $matchId }"/>
+    let $expanded-ancestor := util:expand($ancestor)
     return
-        ($loc, $kwic)        
+        for $match in $expanded-ancestor//exist:match
+        let $kwic := kwic:get-summary($expanded-ancestor, $match, $config)
+        let $kwic :=
+            if ($index eq "lucene" or $hit/ancestor-or-self::*[@xml:lang][1]/@xml:lang eq "sa-Latn") then
+                $kwic
+            else
+                app:clean-up-kwic($kwic)
+        return ($loc, $kwic)
 };
 
 (:~
