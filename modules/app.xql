@@ -649,7 +649,7 @@ declare %private function app:ngram-view($node as node(), $model as map (*), $qu
 {
     for $div in $model("work")
     let $expanded-hit := request:get-parameter('expanded-hit', '')
-    let $div :=
+    let $matched-div :=
         if ($expanded-hit) then
             if ($bool eq 'new') then
                 if ($query-scope eq 'narrow') then
@@ -733,6 +733,7 @@ declare %private function app:ngram-view($node as node(), $model as map (*), $qu
                     $div
             else
                 $div
+    let $div := if ($matched-div) then $matched-div else $div
     let $view := app:get-content($div[1])
     (: since util:expand() removes the node context, we only expand the hit after getting its context. :)
     let $view := util:expand($view, "add-exist-id=all")
