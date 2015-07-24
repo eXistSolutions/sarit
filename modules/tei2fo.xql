@@ -473,7 +473,7 @@ declare function tei2fo:cell($node as element(tei:cell), $options) as element() 
             then attribute class {'label'} 
             else ()
             }
-            {tei2fo:recurse($node, $options)}
+            <fo:block>{tei2fo:recurse($node, $options)}</fo:block>
             </fo:table-cell>
 };
 

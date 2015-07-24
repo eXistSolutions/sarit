@@ -204,11 +204,11 @@ module.exports = function (grunt) {
          */
         uncss: {
             options: {
-                ignore: ['.collapsing', '.navbar-collapse.collapse', '.collapse.in', /.band-news.+\b/ , /.news-row.+\b/],
+                ignore: [/.open.+\b/,'.collapsing', '.navbar-collapse', '.collapse.in'],
                 flatten: true
             },
             dist: {
-                src: ['./index.html'],
+                src: ['./browse.html','./template.html'],
                 dest: 'resources/css/tidy.css'
             }
         },
@@ -251,7 +251,7 @@ module.exports = function (grunt) {
                     }
                 },
                 files: {
-                    'dist/index.html': ['./index.html']
+                    'dist/template.html': ['./template.html']
                 }
             }
         },

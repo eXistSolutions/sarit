@@ -1,5 +1,4 @@
-<div class="help" data-template="templates:surround" data-template-with="template.html"
-    data-template-at="content">
+<div class="help" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
     <div class="container">
         <div class="row help">
             <div class="col-md-12">
@@ -30,8 +29,7 @@
                         <p>There are also links for downloading the texts in various formats: epub,
                             pdf and xml (zipped).</p>
                         <p> The last link gives the possibility of opening the XML containing the
-                            text in an application called eXide. eXide is an application in the <a
-                                href="http:exist-db.org/">eXist-db database</a> that has been used
+                            text in an application called eXide. eXide is an application in the <a href="http:exist-db.org/">eXist-db database</a> that has been used
                             to develop the SARIT application. eXide also allows you to perform
                             searches, using XPath and XQuery, the main programming languages used in
                             the SARIT application, but that is another (rather long) story ….</p>
@@ -52,8 +50,13 @@
                             or you use regular expressions, masking your search expression by use of
                             wildcards etc. However, the SARIT search interface offers more options
                             than you can specify in the search term field, options for e.g.
-                            performing proximity searches. This is explained in the <a
-                                href="search-help-lucene.html">Lucene Search Help</a>.</p>
+                            performing proximity searches. This is explained in the <a href="search-help-lucene.html">Lucene Search Help</a>.</p>
+                    </div>
+                    <div>
+                        <h5>Search With Which Scripts?</h5>
+                        <p>Your search term is automatically converted to make your search proceed
+                            in both IAST romanisation and in Devanagari. If you wish to limit this,
+                            select which script to search with.</p>
                     </div>
                     <div>
                         <h5>Use Which Index?</h5>
@@ -80,10 +83,9 @@
                             that is, texts divided into chunks that resemble words in European
                             languages.</p>
                         <p>Word division is a matter of degree. Among the SARIT texts, only the
-                            Arthaśāstra is can be said to be divided into words in a way which makes
+                            Arthaśāstra can be said to be divided into words in a way which makes
                             use of the Lucene Full-Text index immediately possible. For information
-                            about the remaining texts, see <a href="search-help-word-division.html"
-                                >Word Division</a>. With these texts, you should as a rule use the
+                            about the remaining texts, see <a href="search-help-word-division.html">Word Division</a>. With these texts, you should as a rule use the
                             NGram Index.</p>
                         <p>Note that this does not mean that the NGram Index cannot be used with
                             texts that are divided into words – the two indexes make possible
@@ -91,15 +93,13 @@
                             for strings of characters (the NGram Index). You will almost always get
                             more hits with the NGram Index, but the Lucene Full-Text Index gives you
                             more search options (and is much slower).</p>
-                        <p>There are further explanations in the <a href="search-help-index.html"
-                                >Indexes and Searching Help</a>.</p>
+                        <p>There are further explanations in the <a href="search-help-index.html">Indexes and Searching Help</a>.</p>
                     </div>
                     <div>
                         <h5>Use Which Search Mode?</h5>
                         <p>This dropdown menu is only displayed if you choose Use Lucene Full-Text
                             Index.</p>
-                        <p>The many options are explained in more detail in the <a
-                                href="search-help-lucene.html">Lucene Search Help</a>, but the most
+                        <p>The many options are explained in more detail in the <a href="search-help-lucene.html">Lucene Search Help</a>, but the most
                             commonly used ones are the top ones, "Any Search Term" and "All Search
                             Terms Together". They are of relevance only if you search for several
                             words at a time. You should choose Any Search Term if you want a hit no
@@ -150,10 +150,22 @@
                             search throughout all texts.</p>
                     </div>
                     <div>
-                        <h5>Search With Which Scripts?</h5>
-                        <p>Your search term is automatically converted to make your search proceed
-                            in both IAST romanisation and in Devanagri. If you wish to limit this,
-                            select which script to search with.</p>
+                        <h5>Perform New Search or Continue Last Search? </h5>
+                        <p>This gives you the option to refine your previous search, by restricting
+                            or broadening the search result. </p>
+                        <p>The default value is to perform a new search. If you perform a new search, your search will not relate to your
+                            previous search.</p>
+                        <p>If you choose "AND Last Search", your search will restrict your last
+                            search by requiring that the search criteria for both the last and the
+                            present search are satisfied. You typically use this to search for the
+                            co-occurence of two words. </p>
+                        <p>If you choose "OR Last Search", your search will broaden your last
+                            search by including both the results from the last and the present
+                            search in the search results. You typically use this to search for
+                            alternative forms of a word. </p>
+                        <p>If you choose "NOT Last Search", your search will restrict your last
+                            search by excluding the results from the present search. You use this to
+                            remove specific hits from the search results. </p>
                     </div>
                 </div>
                 <div>
