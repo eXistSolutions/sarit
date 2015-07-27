@@ -8,19 +8,11 @@
     <fo:page-sequence master-reference="normal">
         <fo:flow flow-name="xsl-region-body">
             <fo:block-container padding-after="10pt">
-                <fo:block font-size="14pt" font-family="serif">FONTS TO BE USED</fo:block>
+                <fo:block font-size="14pt" font-family="serif">OTHER FONTS</fo:block>
             </fo:block-container>            
-            <fo:block-container padding-after="10pt">
-                <fo:block font-size="14pt" font-family="serif">Sahadeva</fo:block>
-                <fo:block font-size="14pt" font-family="Sahadeva" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
-            </fo:block-container>
             <fo:block-container padding-after="10pt">
                 <fo:block font-size="14pt" font-family="serif">Nakula</fo:block>
                 <fo:block font-size="14pt" font-family="Nakula" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
-            </fo:block-container>
-            <fo:block-container padding-after="10pt">
-                <fo:block font-size="14pt" font-family="serif">Sanskrit 2003</fo:block>
-                <fo:block font-size="14pt" font-family="Sanskrit 2003" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
             </fo:block-container>
             <fo:block-container padding-after="10pt">
                 <fo:block font-size="14pt" font-family="serif">Samanata</fo:block>
@@ -29,17 +21,6 @@
             <fo:block-container padding-after="10pt">
                 <fo:block font-size="14pt" font-family="serif">FreeSerif</fo:block>
                 <fo:block font-size="14pt" font-family="FreeSerif" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
-            </fo:block-container>        
-            <fo:block-container padding-after="10pt">
-                <fo:block font-size="14pt" font-family="serif">Avagraha</fo:block>
-                <fo:block font-size="14pt" font-family="Arial Unicode MS" xml:lang="sa-Latn">Arial Unicode MS font: saṃprajñāto ʼpi yoga</fo:block>
-                <fo:block font-size="14pt" font-family="URW Palladio ITU">URW Palladio ITU font: ʼ</fo:block>
-                <fo:block font-size="14pt" font-family="Sanskrit2003" xml:lang="sa-Latn">Sanskrit2003 font, U+02bc saṃprajñāto ʼpi yoga</fo:block>
-                <fo:block font-size="14pt" font-family="Sanskrit2003" xml:lang="sa-Latn">Sanskrit2003 font, U+027 saṃprajñāto 'pi yoga</fo:block>
-            </fo:block-container>                        
-            <fo:block-container padding-after="10pt">
-                <fo:block font-size="14pt" font-family="serif">Transliteration</fo:block>
-                <fo:block font-size="14pt" font-family="Sanskrit2003, serif" xml:lang="sa-Latn">saṁskṛtāsaṁskṛta.śiṣyāṇāṁ nigūḍha aśīti</fo:block>
             </fo:block-container> 
             <fo:block-container padding-after="10pt">
                 <fo:block font-size="14pt" font-family="serif">OTHER FONTS</fo:block>
