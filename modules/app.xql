@@ -469,7 +469,7 @@ declare function app:statistics($node as node(), $model as map(*)) {
                 else $total-works-size || " B"
     
     return 
-        $total-works-size-literal || " XML data (*** PDF pages)"
+        "SARIT currently contains "|| count($works) ||" text files (TEI-XML) of " || $total-works-size-literal || " XML." (: (*** pages in PDF format) :)
 };
 
 (:template function in browse.html:)
