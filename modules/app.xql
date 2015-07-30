@@ -436,6 +436,42 @@ declare function app:work-lang($node as node(), $model as map(*)) {
         concat($script, if ($auto-conversion) then ' (automatically converted)' else '')  
 };
 
+declare function app:statistics($node as node(), $model as map(*)) {
+    let $work-titles :=
+        for $work in collection($config:remote-data-root)/tei:TEI
+        return
+            app:work-title($work)
+    let $works :=
+        for $work in collection($config:remote-data-root)/tei:TEI
+        let $work-title := app:work-title($work)
+        let $work-script := $work//tei:text/@xml:lang
+        let $work-script := if ($work-script eq 'sa-Latn') then 'IAST' else 'Devanagari'
+        return
+            if (count(index-of($work-titles, $work-title)) > 1)
+            then
+                if ($work-script = 'Devanagari')
+                then $work
+                else ()
+            else $work
+    let $work-sizes :=
+        for $work in $works
+        return xmldb:size($config:remote-data-root, util:document-name($work))
+    let $total-works-size := sum($work-sizes)
+    let $total-works-size-literal :=
+        if ($total-works-size > 1000000000)
+        then round($total-works-size div 1000000000) || " GB"
+        else
+            if ($total-works-size > 1000000)
+            then round($total-works-size div 1000000) || " MB"
+            else
+                if ($total-works-size > 1000)
+                then round($total-works-size div 1000) || " KB"
+                else $total-works-size || " B"
+    
+    return 
+        $total-works-size-literal || " XML data (*** PDF pages)"
+};
+
 (:template function in browse.html:)
 declare function app:epub-link($node as node(), $model as map(*)) {
     let $id := $model("work")/@xml:id/string()
