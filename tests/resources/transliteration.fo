@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+    <fo:layout-master-set>
+        <fo:simple-page-master master-name="normal" page-width="8.5in" page-height="11in" margin="1in">
+            <fo:region-body/>
+        </fo:simple-page-master>
+    </fo:layout-master-set>
+    <fo:page-sequence master-reference="normal">
+        <fo:flow flow-name="xsl-region-body">
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">TRANSLITERATION</fo:block>
+                <fo:block font-size="14pt" font-family="Arial Unicode MS" xml:lang="sa-Latn">Arial Unicode MS font: saṃprajñāto ʼpi yoga</fo:block>
+                <fo:block font-size="14pt" font-family="URW Palladio ITU">URW Palladio ITU font: ʼ</fo:block>
+                <fo:block font-size="14pt" font-family="Sanskrit2003" xml:lang="sa-Latn">Sanskrit2003 font, U+02bc saṃprajñāto ʼpi yoga</fo:block>
+                <fo:block font-size="14pt" font-family="Sanskrit2003" xml:lang="sa-Latn">Sanskrit2003 font, U+027 saṃprajñāto 'pi yoga</fo:block>
+                <fo:block font-size="14pt" font-family="Sanskrit2003, serif" xml:lang="sa-Latn">saṁskṛtāsaṁskṛta.śiṣyāṇāṁ nigūḍha aśīti</fo:block>
+            </fo:block-container>
+        </fo:flow>
+    </fo:page-sequence>
+</fo:root>
