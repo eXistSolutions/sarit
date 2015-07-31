@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+    <fo:layout-master-set>
+        <fo:simple-page-master master-name="normal" page-width="8.5in" page-height="11in" margin="1in">
+            <fo:region-body/>
+        </fo:simple-page-master>
+    </fo:layout-master-set>
+    <fo:page-sequence master-reference="normal">
+        <fo:flow flow-name="xsl-region-body">
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">MAIN FONTS</fo:block>
+            </fo:block-container>            
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Sahadeva</fo:block>
+                <fo:block font-size="14pt" font-family="Sahadeva" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Nakula</fo:block>
+                <fo:block font-size="14pt" font-family="Nakula" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>
+            <fo:block-container padding-after="10pt">
+                <fo:block font-size="14pt" font-family="serif">Sanskrit 2003</fo:block>
+                <fo:block font-size="14pt" font-family="Sanskrit 2003" script="deva">कारणत्त्वङ्गवाश्वादीनमपीति चेत् युक्तम्</fo:block>
+            </fo:block-container>
+        </fo:flow>
+    </fo:page-sequence>
+</fo:root>
