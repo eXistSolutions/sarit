@@ -15,6 +15,8 @@ declare namespace tei="http://www.tei-c.org/ns/1.0";
 declare namespace h="http://www.w3.org/1999/xhtml";
 declare namespace functx="http://www.functx.com";
 
+declare default collation "?lang=hi-IN";
+
 declare variable $app:devnag2roman := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "devnag2roman"];
 declare variable $app:roman2devnag := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "roman2devnag"];
 declare variable $app:roman2devnag-search := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "roman2devnag-search"];
