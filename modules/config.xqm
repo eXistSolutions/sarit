@@ -31,7 +31,7 @@ declare variable $config:app-root :=
 declare variable $config:remote-root:= substring-before($config:app-root,"sarit") || "sarit-data";
 declare variable $config:remote-data-root:= $config:remote-root || "/data";
 declare variable $config:remote-download-root:= $config:remote-root || "/download";
-
+declare variable $config:data-metadata := doc($config:remote-root || "/metadata.xml")/*;
 
 declare variable $config:data-root := $config:app-root || "/data";
 
