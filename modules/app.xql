@@ -481,7 +481,7 @@ declare function app:statistics($node as node(), $model as map(*)) {
     let $pdf-work-pages-total := sum($pdf-work-pages)
     
     return 
-        "SARIT currently contains "|| count($works) ||" text files (TEI-XML) of " || $total-works-size-literal || " XML (" || $config:data-metadata/*[local-name() = 'number-of-pdf-pages'] || " pages in PDF format)."
+        "SARIT currently contains "|| count($works) ||" text files (TEI-XML) of " || $total-works-size-literal || " XML (" || $metadata:metadata/metadata:number-of-pdf-pages || " pages in PDF format)."
 };
 
 (:template function in browse.html:)
