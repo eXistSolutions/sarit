@@ -3,8 +3,8 @@ xquery version "3.0";
 import module namespace sarit="http://exist-db.org/xquery/sarit";
 import module namespace config="http://exist-db.org/apps/appblueprint/config" at "config.xqm";
 
-declare variable $devnag2roman := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "devnag2roman"];
-declare variable $roman2devnag := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "roman2devnag"];
+declare variable $devnag2roman := doc($config:app-root || "/modules/transliteration-rules.xml")//*[@id = "devnag2roman"];
+declare variable $roman2devnag := doc($config:app-root || "/modules/transliteration-rules.xml")//*[@id = "roman2devnag"];
 
 declare function local:init() {
     sarit:create("devnag2roman", $devnag2roman/string()),
