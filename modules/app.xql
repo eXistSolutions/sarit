@@ -10,7 +10,6 @@ import module namespace metadata = "http://exist-db.org/ns/sarit/metadata/" at "
 import module namespace request="http://exist-db.org/xquery/request";
 import module namespace tei-to-html="http://exist-db.org/xquery/app/tei2html" at "tei2html.xql";
 import module namespace kwic="http://exist-db.org/xquery/kwic" at "resource:org/exist/xquery/lib/kwic.xql";
-import module "http://expath.org/ns/pdf";
 
 declare default collation "?lang=hi-IN";
 
