@@ -9,11 +9,14 @@ import module namespace config="http://exist-db.org/apps/appblueprint/config" at
 import module namespace request="http://exist-db.org/xquery/request";
 import module namespace tei-to-html="http://exist-db.org/xquery/app/tei2html" at "tei2html.xql";
 import module namespace kwic="http://exist-db.org/xquery/kwic" at "resource:org/exist/xquery/lib/kwic.xql";
+import module "http://expath.org/ns/pdf";
 
 declare namespace expath="http://expath.org/ns/pkg";
 declare namespace tei="http://www.tei-c.org/ns/1.0";
 declare namespace h="http://www.w3.org/1999/xhtml";
 declare namespace functx="http://www.functx.com";
+
+declare default collation "?lang=hi-IN";
 
 declare variable $app:devnag2roman := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "devnag2roman"];
 declare variable $app:roman2devnag := doc($config:app-root || "/modules/transliteration-rules.xml")/transliteration/rules[@id = "roman2devnag"];
@@ -467,9 +470,18 @@ declare function app:statistics($node as node(), $model as map(*)) {
                 if ($total-works-size > 1000)
                 then round($total-works-size div 1000) || " KB"
                 else $total-works-size || " B"
+    let $pdf-work-pages :=
+        for $work in $works
+        let $work-path := $config:remote-root || "/download/pdf/" || util:document-name($work) || ".pdf"
+        
+        return 
+            if (util:binary-doc-available($work-path))
+            then map:get(pdf:get-metadata(util:binary-doc($work-path)), "number-of-pages")
+            else 0            
+    let $pdf-work-pages-total := sum($pdf-work-pages)
     
     return 
-        "SARIT currently contains "|| count($works) ||" text files (TEI-XML) of " || $total-works-size-literal || " XML." (: (*** pages in PDF format) :)
+        "SARIT currently contains "|| count($works) ||" text files (TEI-XML) of " || $total-works-size-literal || " XML. (" || $pdf-work-pages-total || " pages in PDF format)"
 };
 
 (:template function in browse.html:)
