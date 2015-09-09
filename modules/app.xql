@@ -440,22 +440,7 @@ declare function app:work-lang($node as node(), $model as map(*)) {
 };
 
 declare function app:statistics($node as node(), $model as map(*)) {
-    let $work-titles :=
-        for $work in collection($config:remote-data-root)/tei:TEI
-        return
-            app:work-title($work)
-    let $works :=
-        for $work in collection($config:remote-data-root)/tei:TEI
-        let $work-title := app:work-title($work)
-        let $work-script := $work//tei:text/@xml:lang
-        let $work-script := if ($work-script eq 'sa-Latn') then 'IAST' else 'Devanagari'
-        return
-            if (count(index-of($work-titles, $work-title)) > 1)
-            then
-                if ($work-script = 'Devanagari')
-                then $work
-                else ()
-            else $work
+    let $works := metadata:get-relevant-xml-works()
     let $work-sizes :=
         for $work in $works
         return xmldb:size($config:remote-data-root, util:document-name($work))

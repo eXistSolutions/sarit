@@ -3,7 +3,10 @@ xquery version "3.0";
 module namespace metadata = "http://exist-db.org/ns/sarit/metadata/";
 
 import module namespace config = "http://exist-db.org/apps/appblueprint/config" at "config.xqm";
+import module namespace app = "http://exist-db.org/apps/appblueprint/templates" at "app.xql";
 import module "http://expath.org/ns/pdf";
+
+declare namespace tei="http://www.tei-c.org/ns/1.0";
 
 declare variable $metadata:metadata := doc($config:remote-root || "/metadata.xml")/*;
 
@@ -21,4 +24,26 @@ declare function metadata:count-pdf-pages() {
 
     
     return $pdf-work-pages-total
+};
+
+declare function metadata:get-relevant-xml-works() {
+    let $work-titles :=
+        for $work in collection($config:remote-data-root)/tei:TEI
+        return
+            app:work-title($work)
+    let $works :=
+        for $work in collection($config:remote-data-root)/tei:TEI
+        let $work-title := app:work-title($work)
+        let $work-script := $work//tei:text/@xml:lang
+        let $work-script := if ($work-script eq 'sa-Latn') then 'IAST' else 'Devanagari'
+        return
+            if (count(index-of($work-titles, $work-title)) > 1)
+            then
+                if ($work-script = 'Devanagari')
+                then $work
+                else ()
+            else $work
+
+    
+    return $works
 };
