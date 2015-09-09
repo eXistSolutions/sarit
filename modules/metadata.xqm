@@ -54,3 +54,24 @@ declare function metadata:count-relevant-xml-works() {
     
     return $number-of-relevant-xml-works
 };
+
+declare function metadata:get-size-of-relevant-xml-works() {
+    let $works := metadata:get-relevant-xml-works()
+    let $work-sizes :=
+        for $work in $works
+        return xmldb:size($config:remote-data-root, util:document-name($work))
+    let $total-works-size := sum($work-sizes)
+    let $total-works-size-literal :=
+        if ($total-works-size > 1000000000)
+        then round($total-works-size div 1000000000) || " GB"
+        else
+            if ($total-works-size > 1000000)
+            then round($total-works-size div 1000000) || " MB"
+            else
+                if ($total-works-size > 1000)
+                then round($total-works-size div 1000) || " KB"
+                else $total-works-size || " B"
+    let $store-size-of-relevant-xml-works := update value $metadata:metadata/metadata:size-of-xml-works with $total-works-size-literal
+    
+    return $total-works-size-literal
+};

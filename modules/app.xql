@@ -440,24 +440,7 @@ declare function app:work-lang($node as node(), $model as map(*)) {
 };
 
 declare function app:statistics($node as node(), $model as map(*)) {
-    let $works := metadata:get-relevant-xml-works()
-    let $work-sizes :=
-        for $work in $works
-        return xmldb:size($config:remote-data-root, util:document-name($work))
-    let $total-works-size := sum($work-sizes)
-    let $total-works-size-literal :=
-        if ($total-works-size > 1000000000)
-        then round($total-works-size div 1000000000) || " GB"
-        else
-            if ($total-works-size > 1000000)
-            then round($total-works-size div 1000000) || " MB"
-            else
-                if ($total-works-size > 1000)
-                then round($total-works-size div 1000) || " KB"
-                else $total-works-size || " B"
-    
-    return 
-        "SARIT currently contains "|| $metadata:metadata/metadata:number-of-xml-works ||" text files (TEI-XML) of " || $total-works-size-literal || " XML (" || $metadata:metadata/metadata:number-of-pdf-pages || " pages in PDF format)."
+        "SARIT currently contains "|| $metadata:metadata/metadata:number-of-xml-works ||" text files (TEI-XML) of " || $metadata:metadata/metadata:size-of-xml-works || " XML (" || $metadata:metadata/metadata:number-of-pdf-pages || " pages in PDF format)."
 };
 
 (:template function in browse.html:)
