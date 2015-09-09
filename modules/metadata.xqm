@@ -47,3 +47,10 @@ declare function metadata:get-relevant-xml-works() {
     
     return $works
 };
+
+declare function metadata:count-relevant-xml-works() {
+    let $number-of-relevant-xml-works := count(metadata:get-relevant-xml-works())
+    let $store-number-of-relevant-xml-works := update value $metadata:metadata/metadata:number-of-xml-works with $number-of-relevant-xml-works
+    
+    return $number-of-relevant-xml-works
+};
