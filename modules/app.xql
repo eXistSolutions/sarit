@@ -391,7 +391,7 @@ declare function app:work-title($node as node(), $model as map(*), $type as xs:s
         <a xmlns="http://www.w3.org/1999/xhtml" href="{$node/@href}{$work/@xml:id}{$suffix}">{ app:work-title($work) }</a>
 };
 
-declare %private function app:work-title($work as element(tei:TEI)?) {
+declare %public function app:work-title($work as element(tei:TEI)?) {
     let $main-title := $work/*:teiHeader/*:fileDesc/*:titleStmt/*:title[@type eq 'main']/text()
     let $main-title := if ($main-title) then $main-title else $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1]/text()
     let $commentary-titles := $work/*:teiHeader/*:fileDesc/*:titleStmt/*:title[@type eq 'sub'][@subtype eq 'commentary']/text()
@@ -399,6 +399,16 @@ declare %private function app:work-title($work as element(tei:TEI)?) {
         if ($commentary-titles)
         then tei-to-html:serialize-list($commentary-titles)
         else $main-title
+};
+
+declare %public function app:work-author($work as element(tei:TEI)?) {
+    let $work-commentators := $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[@role eq 'commentator']/text()
+    let $work-authors := $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author[@role eq 'base-author']/text()
+    let $work-authors := if ($work-authors) then $work-authors else $work/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/text()
+    let $work-authors := if ($work-commentators) then $work-commentators else $work-authors
+    let $work-authors := if ($work-authors) then tei-to-html:serialize-list($work-authors) else ()
+    return 
+        $work-authors    
 };
 
 (:template function in browse.html:)
@@ -1160,6 +1170,10 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
 :)
 (: NB: How can this function return 0 or 1:)
 declare %private function app:expand-ngram-query($query as xs:string*, $query-scripts as xs:string?, $index as xs:string) as xs:string* {
+    util:log("INFO", "$app:devnag2roman")
+    ,
+    util:log("INFO", $app:devnag2roman)
+    ,
     if ($query)
     then (
         sarit:create("devnag2roman", $app:devnag2roman/string()),
