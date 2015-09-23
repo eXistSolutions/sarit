@@ -733,7 +733,7 @@ declare %private function app:ngram-view($node as node(), $model as map (*), $qu
     let $view := util:expand($view, "add-exist-id=all")
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
-        { tei-to-html:recurse($view, <options/>) }
+        { tei-to-html:recurse($view, <options><param name="div-type" value="{$view/@type}" /></options>) }
         </div>
 };
 

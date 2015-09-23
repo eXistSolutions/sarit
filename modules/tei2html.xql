@@ -370,7 +370,19 @@ declare function tei-to-html:label($node as element(tei:label), $options) as ele
 
 (:NB: resolve target!:)
 declare function tei-to-html:ref($node as element(tei:ref), $options) {
-<span class="inline-quote" title="tei:ref" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</span>
+    let $div-type := $options/*:param[@name = 'div-type']/@value
+    let $target := data($node/@target)
+    
+    return
+        switch ($div-type)
+           case "toc" return
+                element a { 
+                    attribute href { $target },
+                    attribute title {concat('tei:ref', ' with @target ', $target)},
+                    attribute target { '_blank' },
+                    tei-to-html:recurse($node, $options) 
+                    }
+           default return <span class="inline-quote" title="tei:ref" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</span>
 (:    let $target := $node/@target:)
 (:    return:)
 (:        element a { :)
@@ -723,18 +735,18 @@ declare function tei-to-html:note($node as element()+, $options) as element()+ {
     <span class="note" title="tei:note">
     <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="{concat('#', $id)}" id="{tei-to-html:get-id($node)}">ⓝ</button>
     <div class="modal fade" id="{$id}" tabindex="-1" role="dialog" aria-labelledby="{concat($id, '-label')}" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" class="close" data-dismiss="modal">
-    					<span aria-hidden="true">x</span><span class="sr-only">Close</span></button>
-    				<h4 class="modal-title" id="{concat($id, '-label')}">Note</h4>
-    			</div>
-    			<div class="modal-body">
-    				{tei-to-html:recurse($node, $options)}
-    			</div>
-    		</div>
-    	</div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">x</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="{concat($id, '-label')}">Note</h4>
+                </div>
+                <div class="modal-body">
+                    {tei-to-html:recurse($node, $options)}
+                </div>
+            </div>
+        </div>
     </div></span>
 :)
 };
@@ -1358,4 +1370,3 @@ declare function tei-to-html:add($node as element(tei:add), $options) as element
             else <span class="add" title="tei:add">{'⟨'}{tei-to-html:recurse($node, $options)}{'⟩'}</span>
 
 };
-
