@@ -375,22 +375,31 @@ declare function tei-to-html:ref($node as element(tei:ref), $options) {
     
     return
         switch ($div-type)
-           case "toc" return
+            case "toc" return
                 element a { 
                     attribute href { $target },
                     attribute title {concat('tei:ref', ' with @target ', $target)},
                     attribute target { '_blank' },
                     tei-to-html:recurse($node, $options) 
                     }
-           default return <span class="inline-quote" title="tei:ref" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</span>
-(:    let $target := $node/@target:)
-(:    return:)
-(:        element a { :)
-(:            attribute href { $target },:)
-(:            attribute title {concat('tei:ref', ' with @target ', $target)},:)
-(:            attribute target { '_blank' },:)
-(:            tei-to-html:recurse($node, $options) :)
-(:            }:)
+           default return
+                if (starts-with($target, "http"))
+                then
+                    element a { 
+                        attribute href { $target },
+                        attribute title {concat('tei:ref', ' with @target ', $target)},
+                        attribute target { '_blank' },
+                        tei-to-html:recurse($node, $options) 
+                        }
+                else
+                    if (contains($node/ancestor::*/local-name(), "teiHeader"))
+                    then
+                        element a { 
+                            attribute href { $target },
+                            attribute title {concat('tei:ref', ' with @target ', $target)},
+                            tei-to-html:recurse($node, $options) 
+                            }
+                    else <span class="inline-quote" title="tei:ref" id="{tei-to-html:get-id($node)}">{tei-to-html:recurse($node, $options)}</span>                      
 };
 
 declare function tei-to-html:foreign($node as element(tei:foreign), $options) as element() {
@@ -809,7 +818,7 @@ declare function tei-to-html:bibl-element-only($node as element(tei:bibl), $opti
     let $result :=
     
         (
-        <table title="tei:bibl">
+        <table id="{$node/@xml:id}" title="tei:bibl">
         {
             for $title in $titles
             return 
