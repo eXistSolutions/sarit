@@ -13,6 +13,7 @@
     <type>application</type>
     <target>sarit</target>
     <prepare>pre-install.xql</prepare>
+    <finish>post-install.xq</finish>
     <finish/>
 	  <deployed/>
 </meta>

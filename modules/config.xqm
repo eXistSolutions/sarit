@@ -32,7 +32,6 @@ declare variable $config:remote-root:= substring-before($config:app-root,"sarit"
 declare variable $config:remote-data-root:= $config:remote-root || "/data";
 declare variable $config:remote-download-root:= $config:remote-root || "/download";
 
-
 declare variable $config:data-root := $config:app-root || "/data";
 
 declare variable $config:repo-descriptor := doc(concat($config:app-root, "/repo.xml"))/repo:meta;
