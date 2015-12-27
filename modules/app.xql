@@ -623,36 +623,33 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
 
 (:template function in view-play.html:)
 declare 
-    %templates:default("index", "ngram")
     %templates:default("action", "browse")
-    %templates:default("query-scripts", "all")
-function app:view($node as node(), $model as map(*), $id as xs:string, $action as xs:string) {
-        let $query := 
-            if ($action eq 'search')
-            then session:get-attribute("apps.sarit.query")
+function app:view($node as node(), $model as map(*), $action as xs:string) {
+    if ($action eq 'search')
+    (:TODO: if the user employs different indexes, get matches for both indexes.:)
+    then
+        if (string-length(string-join(session:get-attribute("apps.sarit.lucene-query"))))
+        then app:lucene-view($node, $model)
+        else
+            if (string-length(string-join(session:get-attribute("apps.sarit.ngram-query"))))
+            then app:ngram-view($node, $model)
             else ()
-        let $query-scope := 
-            if (not(empty($query)))
-            then session:get-attribute("apps.sarit.scope")
-            else ()
-        let $bool := 
-            if (not(empty($query)))
-            then session:get-attribute("apps.sarit.bool")
-            else ()
-        return
-            if ($query instance of element())
-            then app:lucene-view($node, $model, $query)
-            else app:ngram-view($node, $model, $query, $query-scope, $bool)
+    else ()
+
 };
 
-declare %private function app:lucene-view($node as node(), $model as map (*), $query as element()?)
+declare %private function app:lucene-view($node as node(), $model as map (*))
 {
+    let $query := session:get-attribute("apps.sarit.lucene-query")
+    let $query := string-join($query, ' OR ')
+    (:can there be more than one div here?:)
     for $div in $model("work")
     let $div :=
         if ($query) then
             $div[ft:query(., $query)]
         else
             $div
+    (:can there be more than one div here?:)
     let $view := app:get-content($div[1])
     let $view := util:expand($view, "add-exist-id=all")
     return
@@ -661,80 +658,33 @@ declare %private function app:lucene-view($node as node(), $model as map (*), $q
         </div>
 };
 
-declare %private function app:ngram-view($node as node(), $model as map (*), $query as xs:string*,
-                                         $query-scope as xs:string*, $bool as xs:string*)
+declare %private function app:ngram-view($node as node(), $model as map (*))
 {
+    (:can there be more than one div here?:)
     for $div in $model("work")
-    let $div :=
-        if (not(empty($query))) then
-            if ($bool eq 'new') then
-                if ($query-scope eq 'narrow') then
-                    (if ($query[1]) then
-                                    ($div//tei:p[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:head[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:lg[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:trailer[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:note[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:list[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:quote[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:table[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:listApp[ngram:wildcard-contains(., $query[1])],
-                                    $div/tei:listBibl[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:cit[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:label[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:encodingDesc[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:fileDesc[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:profileDesc[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:revisionDesc[ngram:wildcard-contains(., $query[1])])
-                                else
-                                    ()
-                                ,
-                                if ($query[2]) then
-                                    ($div//tei:p[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:head[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:lg[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:trailer[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:note[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:list[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:l[not(local-name(./..) eq 'lg')][ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:quote[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:table[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:listApp[ngram:wildcard-contains(., $query[2])],
-                                    $div/tei:listBibl[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:cit[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:label[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:encodingDesc[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:fileDesc[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:profileDesc[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:revisionDesc[ngram:wildcard-contains(., $query[2])])
-                                else
-                                    ()
-                                )
-                else
-                    (if ($query[1]) then
-                                    ($div//tei:div[ngram:wildcard-contains(., $query[1])],
-                                    $div//tei:teiHeader[ngram:wildcard-contains(., $query[1])])
-                                else
-                                    ()
-                                ,
-                                if ($query[2]) then
-                                    ($div//tei:div[ngram:wildcard-contains(., $query[2])],
-                                    $div//tei:teiHeader[ngram:wildcard-contains(., $query[2])])
-                                else
-                                    ()
-                                )
-            else
-                $div
-        else
-            $div
-    let $view := app:get-content($div[1])
-    (: since util:expand() removes the node context, we only expand the hit after getting its context. :)
-    let $view := util:expand($view, "add-exist-id=all")
+    let $query := session:get-attribute("apps.sarit.ngram-query")
+    let $view := app:recursive-ngram-search(distinct-values($query), $div)
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
         { tei-to-html:recurse($view, <options><param name="div-type" value="{$view/@type}" /></options>) }
         </div>
+};
+
+(: the idea is to get exist:match on all hits, but ngram search is lazy and marks up only the first match (whereas lucene search continues marking up even after hits have been found. :)
+declare %private function app:recursive-ngram-search($queries as xs:string+, $div as element()) as element() {
+    let $head := head($queries)
+    let $tail := tail($queries)
+    let $div-match := $div[ngram:wildcard-contains(., $head)]
+    let $div-match := util:expand($div-match, "add-exist-id=all")
+    let $div := 
+        if ($div-match//exist:match) 
+        (:can there be more than one div here?:)
+        then app:get-content($div-match[1]) 
+        else $div
+    return
+        if (empty($tail))
+        then $div
+        else app:recursive-ngram-search($tail, $div)
 };
 
 declare %private function app:get-content($div as element()) {
@@ -774,7 +724,6 @@ declare %private function app:get-content($div as element()) {
 : @param $model
 : @param $query The query string. This string is transformed into a <query> element containing one or two <bool> elements in a Lucene query and it is transformed into a sequence of one or two query strings in an ngram query. The first <bool> and the first string contain the query as input and the second the query as transliterated into Devanagari or IAST as determined by $query-scripts. One <bool> and one query string may be empty.
 : @param $index The index against which the query is to be performed, as the string "ngram" or "lucene".
-: @param $lucene-query-mode If a Lucene query is performed, which of the options "any", "all", "phrase", "near-ordered", "near-unordered", "fuzzy", or "regex" have been selected (note that wildcard is not implemented, due to its syntactic overlap with regex).
 : @param $tei-target A sequence of one or more targets within a TEI document, the tei:teiHeader or tei:text.
 : @param $work-authors A sequence of the string "all" or of the xml:ids of the documents associated with the selected authors.
 : @param $query-scripts A sequence of the string "all" or of the values "sa-Latn" or "sa-Deva", indicating whether or not the user wishes to transliterate the query string.
@@ -785,28 +734,38 @@ declare %private function app:get-content($div as element()) {
 (:template function in search.html:)
 declare 
     %templates:default("index", "ngram")
-    %templates:default("lucene-query-mode", "any")
     %templates:default("tei-target", "tei-text")
     %templates:default("query-scope", "narrow")
     %templates:default("work-authors", "all")
     %templates:default("query-scripts", "all")
     %templates:default("target-texts", "all")
     %templates:default("bool", "new")
-function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $lucene-query-mode as xs:string, $tei-target as xs:string+, $query-scope as xs:string, $work-authors as xs:string+, $query-scripts as xs:string, $target-texts as xs:string+, $bool as xs:string) as map(*) {
+function app:query($node as node()*, $model as map(*), $query as xs:string?, $index as xs:string, $tei-target as xs:string+, $query-scope as xs:string, $work-authors as xs:string+, $query-scripts as xs:string, $target-texts as xs:string+, $bool as xs:string) as map(*) {
     (:remove any ZERO WIDTH NON-JOINER from the query string:)
     let $query := lower-case(translate(normalize-space($query), "&#8204;", ""))
     (:based on which index the user wants to query against, the query string is dispatchted to separate functions. Both return empty if there is no query string.:)
+    let $query := app:expand-query($query, $query-scripts)
     let $query := 
         if ($index eq 'ngram')
-        then app:expand-ngram-query($query, $query-scripts, $index)
-        else app:create-lucene-query($query, $lucene-query-mode, $query-scripts)
+        then $query
+        else
+            for $query in $query
+            return
+                if (contains($query, '['))
+                then "/" || $query || "/"
+                else $query
+    let $query := 
+        if ($index eq 'ngram')
+        then $query
+        else string-join($query, ' OR ')
     return
         (:If there is no query string, fill up the map with existing values:)
         if (empty($query))
         then
             map {
                 "hits" := session:get-attribute("apps.sarit"),
-                "query" := session:get-attribute("apps.sarit.query"),
+                "ngram-query" := session:get-attribute("apps.sarit.ngram-query"),
+                "lucene-query" := session:get-attribute("apps.sarit.lucene-query"),
                 "scope" := $query-scope (:NB: what about the other arguments?:)
             }
         else
@@ -1047,7 +1006,6 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                 ) 
                         else ()
                         )
-                                    let $log := util:log("INFO", $query-scope eq 'narrow' and $tei-target eq 'tei-text')                        
                             order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending 
                             return $hit
                         else
@@ -1127,18 +1085,15 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                             order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending
                                             return $hit
                                         else ()
-                        (:Build upon the last search.:)
-            let $query :=
-                if ($index eq 'lucene')
-                then
-                    if ($bool eq 'new')
-                    then $query
-                    else
-                        <query>
-                            <bool occur="should">{session:get-attribute("apps.sarit.query")}</bool>
-                            <bool occur="should">{$query}</bool>
-                        </query>
-                else $query
+            (:Build upon the last search.:)
+(:            let $query :=:)
+(:                if ($index eq 'lucene'):)
+(:                then:)
+(:                    if ($bool eq 'new'):)
+(:                    then $query:)
+(:                    else:)
+(:                        concat("(", session:get-attribute("apps.sarit.query"), ") OR (", $query, ")"):)
+(:                else ($query, session:get-attribute("apps.sarit.query")):)
             let $hits :=
                 if ($bool eq 'or')
                 then session:get-attribute("apps.sarit") union $hits
@@ -1150,9 +1105,36 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                         then session:get-attribute("apps.sarit") except $hits
                         else $hits
             (:Store the result in the session.:)
+            let $ngram-query :=
+                if ($index eq 'ngram')
+                then
+                    if ($bool eq 'new')
+                    then $query
+                    else
+                        if ($bool = ('or', 'and'))
+                        then ($query, session:get-attribute("apps.sarit.ngram-query"))
+                        else
+                            if ($bool eq 'not')
+                            then session:get-attribute("apps.sarit.ngram-query")
+                            else ''
+                else ''
+            let $lucene-query :=
+                if ($index eq 'lucene')
+                then
+                    if ($bool eq 'new')
+                    then $query
+                    else
+                        if ($bool = ('or', 'and'))
+                        then ($query, session:get-attribute("apps.sarit.lucene-query"))
+                        else
+                            if ($bool eq 'not')
+                            then session:get-attribute("apps.sarit.lucene-query")
+                            else ''
+                else ''
             let $store := (
                 session:set-attribute("apps.sarit", $hits),
-                session:set-attribute("apps.sarit.query", $query),
+                session:set-attribute("apps.sarit.ngram-query", $ngram-query),
+                session:set-attribute("apps.sarit.lucene-query", $lucene-query),
                 session:set-attribute("apps.sarit.scope", $query-scope),
                 session:set-attribute("apps.sarit.bool", $bool)
                 )
@@ -1160,7 +1142,8 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                 (: The hits are not returned directly, but processed by the nested templates :)
                 map {
                     "hits" := $hits,
-                    "query" := $query
+                    "ngram-query" := $ngram-query,
+                    "lucene-query" := $lucene-query
                 }
 };
 
@@ -1169,7 +1152,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
     if the user has indicated that this search is wanted. 
 :)
 (: NB: How can this function return 0 or 1:)
-declare %private function app:expand-ngram-query($query as xs:string*, $query-scripts as xs:string?, $index as xs:string) as xs:string* {
+declare %private function app:expand-query($query as xs:string*, $query-scripts as xs:string?) as xs:string* {
     util:log("INFO", "$app:devnag2roman")
     ,
     util:log("INFO", $app:devnag2roman)
@@ -1185,19 +1168,19 @@ declare %private function app:expand-ngram-query($query as xs:string*, $query-sc
             (:if the user wants to search in Devanagri, then transliterate and discard the original query:)
             if ($query-scripts eq "sa-Deva") 
             then
-                ('', sarit:transliterate("expand",translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")) )
+                sarit:transliterate("expand",translate(sarit:transliterate("roman2devnag", $query), "&#8204;", ""))
             else 
                 (:if the user wants to search in both IAST and Devanagri, then transliterate the original query and keep it:)
                 if ($query-scripts eq "all")
                 then
-                    ($query, sarit:transliterate("expand",translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")) )
+                    ($query, sarit:transliterate("expand",translate(sarit:transliterate("roman2devnag", $query), "&#8204;", "")))
                 else 
                     (:if the user wants to search in romanization, then do not transliterate but keep original query:)
                     if ($query-scripts eq "sa-Latn") 
                     then 
-                        ($query, '')
+                        $query
                     (:this exhausts all options for IAST input strings:)
-                    else ()
+                    else ''
         else
             (:if there is input exclusively in Devanagari:)
             if (empty(string-to-codepoints($query)[not(. = (9-13, 32, 133, 160, 2304 to 2431, 43232 to 43259, 7376 to 7412))])) 
@@ -1205,21 +1188,21 @@ declare %private function app:expand-ngram-query($query as xs:string*, $query-sc
                 (:if the user wants to search in IAST, then transliterate the original query but delete it:)
                 if ($query-scripts eq "sa-Latn") 
                 then
-                    ('', sarit:transliterate("devnag2roman", $query))
+                    sarit:transliterate("devnag2roman", $query)
                 else
                     (:if the user wants to search in both Devanagri and IAST, then transliterate the original query and keep it:)
                     if ($query-scripts eq "all")
                     then
-                        (sarit:transliterate("expand",$query), sarit:transliterate("devnag2roman",$query) )
+                        (sarit:transliterate("expand",$query), sarit:transliterate("devnag2roman", $query))
                     else 
                         (:if the user wants to search in Devanagri, then do not transliterate original query but keep it:)
                         if ($query-scripts eq "sa-Deva")
                         then
-                            (sarit:transliterate("expand",$query), ())
-                        else ()
+                            sarit:transliterate("expand", $query)
+                        else ''
             (:there are only two options: IAST and Devanagari input. If the query is not pure IAST and is not pure Devanagari, then do not (try to) transliterate the original query but keep it.:)
             else
-                ($query, ())
+                $query
     ) 
     else ()
 };
@@ -1228,113 +1211,48 @@ declare %private function app:expand-ngram-query($query as xs:string*, $query-sc
     app:expand-lucene-query transliterates the lucene query element from Devanagari to IAST transcription and/or from IAST transcription to Devanagari, 
     if the user has indicated that this search is wanted. 
 :)
-declare %private function app:expand-lucene-query($query as element(bool), $query-scripts as xs:string) as element(bool)+ {
+declare %private function app:expand-lucene-query($query as xs:string, $query-scripts as xs:string) as xs:string {
         (:if there is input exclusively in IAST characters:)
-        if (not(matches($query/string(), $app:iast-char-repertoire-negation)))
+        if (not(matches($query, $app:iast-char-repertoire-negation)))
         then
             (:if the user wishes to search in Devanagari, transliterate the original query and delete it:)
             if ($query-scripts eq "sa-Deva") 
-            then ((), app:transliterate-lucene-query($query, "roman2devnag"))
+            then app:transliterate-lucene-query($query, "roman2devnag")
             else
                 (:if the user wishes to search in both IAST and  Devanagari, transliterate the original query and keep it:)
                 if ($query-scripts eq "all") 
-                then ($query, app:transliterate-lucene-query($query, "roman2devnag"))
+                then concat("(", $query, ") OR (", app:transliterate-lucene-query($query, "roman2devnag"), ")")
                 else
                     (:if the user wishes to search in IAST only, do not transliterate the original query but keep it:)
                     if ($query-scripts eq "sa-Latn") 
-                    then ($query, ())
+                    then $query
                     else ()
         else
-            if (empty(string-to-codepoints($query/string())[not(. = (9-13, 32, 133, 160, 2304 to 2431, 43232 to 43259, 7376 to 7412))]))
+            if (empty(string-to-codepoints($query)[not(. = (9-13, 32, 133, 160, 2304 to 2431, 43232 to 43259, 7376 to 7412))]))
             (:if there is input consisting exclusively of Devanagari characters:)
             then
                 (:if the user wishes to search in IAST, transliterate the original query and delete it:)
                 if ($query-scripts eq "sa-Latn")
-                then ((), app:transliterate-lucene-query($query, "devnag2roman"))
+                then app:transliterate-lucene-query($query, "devnag2roman")
                 else
                     (:if the user wishes to search in Devanagari, do not transliterate the original query but keep it:)
                     if ($query-scripts eq "sa-Deva")
-                    then ($query, ())
+                    then $query
                     else
                         (:if the user wishes to search in both IAST and  Devanagari, transliterate the original query and keep it:)
                         if ($query-scripts eq "all")
-                        then ($query, app:transliterate-lucene-query($query, "devnag2roman"))
+                        then concat("(", $query, ") OR (", app:transliterate-lucene-query($query, "devnag2roman"), ")")
                         else ()
-            else ($query, ())
+            else $query
 };
 
-(:~
-    Helper function: create a lucene query from the user input
-:)
-declare %private function app:create-lucene-query($query-string as xs:string?, $lucene-query-mode as xs:string, $query-scripts as xs:string) {
-    if ($query-string)
-    then
-        let $query-string := if ($query-string) then app:sanitize-lucene-query($query-string) else ''
-        let $query-string := normalize-space($query-string)
-        let $query:=
-            (:If the query is in "any" mode and contains any operator used in boolean searches, proximity searches, boosted searches, or regex searches, 
-            pass it on to the query parser;:) 
-            if (functx:contains-any-of($query-string, ('AND', 'OR', 'NOT', '+', '-', '!', '~', '^', '.', '?', '*', '|', '{','[', '(', '<', '@', '#', '&amp;', '~')) and $lucene-query-mode eq 'any')
-            then 
-                let $luceneParse := app:parse-lucene($query-string)
-                let $luceneXML := util:parse($luceneParse)
-                let $lucene2xml := app:lucene2xml($luceneXML/node(), $lucene-query-mode)
-                return $lucene2xml
-            (:otherwise the query is an ordinary term query or one of the special options (phrase, near, fuzzy, wildcard or regex):)
-            else
-                let $query-string := tokenize($query-string, '\s')
-                let $last-item := $query-string[last()]
-                let $query-string := 
-                    if ($last-item castable as xs:integer) 
-                    then string-join(subsequence($query-string, 1, count($query-string) - 1), ' ') 
-                    else string-join($query-string, ' ')
-                let $query :=
-                        if ($lucene-query-mode eq 'any') 
-                        then
-                            for $term in tokenize($query-string, '\s')
-                            return <term occur="should">{$term}</term>
-                        else 
-                            if ($lucene-query-mode eq 'all') 
-                            then
-                            <bool>
-                            {
-                                for $term in tokenize($query-string, '\s')
-                                return <term occur="must">{$term}</term>
-                            }
-                            </bool>
-                            else 
-                                if ($lucene-query-mode eq 'phrase') 
-                                then <phrase>{$query-string}</phrase>
-                                else
-                                    if ($lucene-query-mode eq 'near-unordered')
-                                    then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="no">{$query-string}</near>
-                                    else 
-                                        if ($lucene-query-mode eq 'near-ordered')
-                                        then <near slop="{if ($last-item castable as xs:integer) then $last-item else 5}" ordered="yes">{$query-string}</near>
-                                        else 
-                                            if ($lucene-query-mode eq 'fuzzy')
-                                            then <fuzzy max-edits="{if ($last-item castable as xs:integer and number($last-item) < 3) then $last-item else 2}">{tokenize($query-string, ' ')[1]}</fuzzy>
-                                            else 
-                                                if ($lucene-query-mode eq 'wildcard')
-                                                then <wildcard>{$query-string}</wildcard>
-                                                else 
-                                                    if ($lucene-query-mode eq 'regex')
-                                                    then <regex>{$query-string}</regex>
-                                                    else ()
-                let $query := <bool>{$query}</bool>
-                let $query := app:expand-lucene-query($query, $query-scripts)
-                return <query>{$query}</query>
-        return $query
-    else ()
 
-};
-
-declare %private function app:transliterate-lucene-query($element as element(), $direction as xs:string) as element() {
+declare %private function app:transliterate-lucene-query($query as xs:string, $direction as xs:string) as xs:string {
    (
     sarit:create("devnag2roman", $app:devnag2roman/string()),
-    sarit:create("roman2devnag", $app:roman2devnag-search/string()), element {node-name($element)}
-    {$element/@*,
-        for $child in $element/node()
+    sarit:create("roman2devnag", $app:roman2devnag-search/string()), element {node-name($query)}
+    {$query/@*,
+        for $child in $query/node()
         return
             if ($child instance of element())
             then app:transliterate-lucene-query($child, $direction)
@@ -1553,9 +1471,13 @@ declare %private function app:sanitize-lucene-query($query-string as xs:string) 
     (:Remove colons – Lucene fields are not supported.:)
     let $query-string := translate($query-string, ":", " ")
     let $query-string := 
-       if (functx:number-of-matches($query-string, '"') mod 2) 
+       if (functx:number-of-matches($query-string, '"') mod 2 eq 0) 
        then $query-string
        else replace($query-string, '"', ' ') (:if there is an uneven number of quotation marks, delete all quotation marks.:)
+    let $query-string := 
+       if (functx:number-of-matches($query-string, '/') mod 2 eq 0) 
+       then $query-string
+       else replace($query-string, '/', ' ') (:if there is an uneven number of slashes, delete all quotation marks.:)
     let $query-string := 
        if ((functx:number-of-matches($query-string, '\(') + functx:number-of-matches($query-string, '\)')) mod 2 eq 0) 
        then $query-string
@@ -1575,165 +1497,6 @@ declare %private function app:sanitize-lucene-query($query-string as xs:string) 
     return $query-string
 };
 
-(: Function to translate a Lucene search string to an intermediate string mimicking the XML syntax, 
-with some additions for later parsing of boolean operators. The resulting intermediary XML search string will be parsed as XML with util:parse(). 
-Based on Ron Van den Branden, https://rvdb.wordpress.com/2010/08/04/exist-lucene-to-xml-syntax/:)
-(:TODO:
-The following cases are not covered:
-1)
-<query><near slop="10"><first end="4">snake</first><term>fillet</term></near></query>
-as opposed to
-<query><near slop="10"><first end="4">fillet</first><term>snake</term></near></query>
-
-w(..)+d, w[uiaeo]+d is not treated correctly as regex.
-:)
-declare %private function app:parse-lucene($string as xs:string) {
-    (: replace all symbolic booleans with lexical counterparts :)
-    if (matches($string, '[^\\](\|{2}|&amp;{2}|!) ')) 
-    then
-        let $rep := 
-            replace(
-            replace(
-            replace(
-                $string, 
-            '&amp;{2} ', 'AND '), 
-            '\|{2} ', 'OR '), 
-            '! ', 'NOT ')
-        return app:parse-lucene($rep)                
-    else 
-        (: replace all booleans with '<AND/>|<OR/>|<NOT/>' :)
-        if (matches($string, '[^<](AND|OR|NOT) ')) 
-        then
-            let $rep := replace($string, '(AND|OR|NOT) ', '<$1/>')
-            return app:parse-lucene($rep)
-        else 
-            (: replace all '+' modifiers in token-initial position with '<AND/>' :)
-            if (matches($string, '(^|[^\w&quot;])\+[\w&quot;(]'))
-            then
-                let $rep := replace($string, '(^|[^\w&quot;])\+([\w&quot;(])', '$1<AND type=_+_/>$2')
-                return app:parse-lucene($rep)
-            else 
-                (: replace all '-' modifiers in token-initial position with '<NOT/>' :)
-                if (matches($string, '(^|[^\w&quot;])-[\w&quot;(]'))
-                then
-                    let $rep := replace($string, '(^|[^\w&quot;])-([\w&quot;(])', '$1<NOT type=_-_/>$2')
-                    return app:parse-lucene($rep)
-                else 
-                    (: replace parentheses with '<bool></bool>' :)
-                    (:NB: regex also uses parentheses!:) 
-                    if (matches($string, '(^|[\W-[\\]]|>)\(.*?[^\\]\)(\^(\d+))?(<|\W|$)'))                
-                    then
-                        let $rep := 
-                            (: add @boost attribute when string ends in ^\d :)
-                            (:if (matches($string, '(^|\W|>)\(.*?\)(\^(\d+))(<|\W|$)')) 
-                            then replace($string, '(^|\W|>)\((.*?)\)(\^(\d+))(<|\W|$)', '$1<bool boost=_$4_>$2</bool>$5')
-                            else:) replace($string, '(^|\W|>)\((.*?)\)(<|\W|$)', '$1<bool>$2</bool>$3')
-                        return app:parse-lucene($rep)
-                    else 
-                        (: replace quoted phrases with '<near slop="0"></bool>' :)
-                        if (matches($string, '(^|\W|>)(&quot;).*?\2([~^]\d+)?(<|\W|$)')) 
-                        then
-                            let $rep := 
-                                (: add @boost attribute when phrase ends in ^\d :)
-                                (:if (matches($string, '(^|\W|>)(&quot;).*?\2([\^]\d+)?(<|\W|$)')) 
-                                then replace($string, '(^|\W|>)(&quot;)(.*?)\2([~^](\d+))?(<|\W|$)', '$1<near boost=_$5_>$3</near>$6')
-                                (\: add @slop attribute in other cases :\)
-                                else:) replace($string, '(^|\W|>)(&quot;)(.*?)\2([~^](\d+))?(<|\W|$)', '$1<near slop=_$5_>$3</near>$6')
-                            return app:parse-lucene($rep)
-                        else (: wrap fuzzy search strings in '<fuzzy max-edits=""></fuzzy>' :)
-                            if (matches($string, '[\w-[<>]]+?~[\d.]*')) 
-                            then
-                                let $rep := replace($string, '([\w-[<>]]+?)~([\d.]*)', '<fuzzy max-edits=_$2_>$1</fuzzy>')
-                                return app:parse-lucene($rep)
-                            else (: wrap resulting string in '<query></query>' :)
-                                concat('<query>', replace(normalize-space($string), '_', '"'), '</query>')
-};
-
-(: Function to transform the intermediary structures in the search query generated through app:parse-lucene() and util:parse() 
-to full-fledged boolean expressions employing XML query syntax. 
-Based on Ron Van den Branden, https://rvdb.wordpress.com/2010/08/04/exist-lucene-to-xml-syntax/:)
-declare %private function app:lucene2xml($node as item(), $lucene-query-mode as xs:string) {
-    typeswitch ($node)
-        case element(query) return 
-            element { node-name($node)} {
-            element bool {
-            $node/node()/app:lucene2xml(., $lucene-query-mode)
-        }
-    }
-    case element(AND) return ()
-    case element(OR) return ()
-    case element(NOT) return ()
-    case element() return
-        let $name := 
-            if (($node/self::phrase | $node/self::near)[not(@slop > 0)]) 
-            then 'phrase' 
-            else node-name($node)
-        return
-            element { $name } {
-                $node/@*,
-                    if (($node/following-sibling::*[1] | $node/preceding-sibling::*[1])[self::AND or self::OR or self::NOT or self::bool])
-                    then
-                        attribute occur {
-                            if ($node/preceding-sibling::*[1][self::AND]) 
-                            then 'must'
-                            else 
-                                if ($node/preceding-sibling::*[1][self::NOT]) 
-                                then 'not'
-                                else 
-                                    if ($node[self::bool]and $node/following-sibling::*[1][self::AND])
-                                    then 'must'
-                                    else
-                                        if ($node/following-sibling::*[1][self::AND or self::OR or self::NOT][not(@type)]) 
-                                        then 'should' (:must?:) 
-                                        else 'should'
-                        }
-                    else ()
-                    ,
-                    $node/node()/app:lucene2xml(., $lucene-query-mode)
-        }
-    case text() return
-        if ($node/parent::*[self::query or self::bool]) 
-        then
-            for $tok at $p in tokenize($node, '\s+')[normalize-space()]
-            (:Here the query switches into regex mode based on whether or not characters used in regex expressions are present in $tok.:)
-            (:It is not possible reliably to distinguish reliably between a wildcard search and a regex search, so switching into wildcard searches is ruled out here.:)
-            (:One could also simply dispense with 'term' and use 'regex' instead - is there a speed penalty?:)
-                let $el-name := 
-                    if (matches($tok, '((^|[^\\])[.?*+()\[\]\\^|{}#@&amp;<>~]|\$$)') or $lucene-query-mode eq 'regex')
-                    then 'regex'
-                    else 'term'
-                return 
-                    element { $el-name } {
-                        attribute occur {
-                        (:if the term follows AND:)
-                        if ($p = 1 and $node/preceding-sibling::*[1][self::AND]) 
-                        then 'must'
-                        else 
-                            (:if the term follows NOT:)
-                            if ($p = 1 and $node/preceding-sibling::*[1][self::NOT])
-                            then 'not'
-                            else (:if the term is preceded by AND:)
-                                if ($p = 1 and $node/following-sibling::*[1][self::AND][not(@type)])
-                                then 'must'
-                                    (:if the term follows OR and is preceded by OR or NOT, or if it is standing on its own:)
-                                else 'should'
-                    }
-                    (:,
-                    if (matches($tok, '((^|[^\\])[.?*+()\[\]\\^|{}#@&amp;<>~]|\$$)')) 
-                    then
-                        (\:regex searches have to be lower-cased:\)
-                        attribute boost {
-                            lower-case(replace($tok, '(.*?)(\^(\d+))(\W|$)', '$3'))
-                        }
-                    else ():)
-        ,
-        (:regex searches have to be lower-cased:)
-        lower-case(normalize-space(replace($tok, '(.*?)(\^(\d+))(\W|$)', '$1')))
-        }
-        else normalize-space($node)
-    default return
-        $node
-};
 
 (:~
  : This is a function for supplying links to download the files in remote-download-root. 
