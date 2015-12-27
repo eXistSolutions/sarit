@@ -628,19 +628,22 @@ function app:view($node as node(), $model as map(*), $action as xs:string) {
     if ($action eq 'search')
     (:TODO: if the user employs different indexes, get matches for both indexes.:)
     then
-        if (string-length(string-join(session:get-attribute("apps.sarit.lucene-query"))))
-        then app:lucene-view($node, $model)
-        else
-            if (string-length(string-join(session:get-attribute("apps.sarit.ngram-query"))))
-            then app:ngram-view($node, $model)
-            else ()
+        let $query := session:get-attribute("apps.sarit.lucene-query")
+        return
+            if (string-length(string-join($query)))
+            then app:lucene-view($node, $model, $query)
+            else
+                let $query := session:get-attribute("apps.sarit.ngram-query")
+                return
+                    if (string-length(string-join(session:get-attribute("apps.sarit.ngram-query"))))
+                    then app:ngram-view($node, $model, $query)
+                    else ()
     else ()
 
 };
 
-declare %private function app:lucene-view($node as node(), $model as map (*))
+declare %private function app:lucene-view($node as node(), $model as map (*), $query as xs:string+)
 {
-    let $query := session:get-attribute("apps.sarit.lucene-query")
     let $query := string-join($query, ' OR ')
     (:can there be more than one div here?:)
     for $div in $model("work")
@@ -658,11 +661,10 @@ declare %private function app:lucene-view($node as node(), $model as map (*))
         </div>
 };
 
-declare %private function app:ngram-view($node as node(), $model as map (*))
+declare %private function app:ngram-view($node as node(), $model as map (*), $query as xs:string+)
 {
     (:can there be more than one div here?:)
     for $div in $model("work")
-    let $query := session:get-attribute("apps.sarit.ngram-query")
     let $view := app:recursive-ngram-search(distinct-values($query), $div)
     return
         <div xmlns="http://www.w3.org/1999/xhtml" class="play">
