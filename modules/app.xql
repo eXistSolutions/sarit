@@ -765,7 +765,8 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
         if (empty($query))
         then
             map {
-                "hits" := session:get-attribute("apps.sarit"),
+                "hits" := session:get-attribute("apps.sarit.hits"),
+                "index" := session:get-attribute("apps.sarit.index"),
                 "ngram-query" := session:get-attribute("apps.sarit.ngram-query"),
                 "lucene-query" := session:get-attribute("apps.sarit.lucene-query"),
                 "scope" := $query-scope (:NB: what about the other arguments?:)
@@ -1087,24 +1088,15 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                                             order by $hit/ancestor-or-self::tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[1] ascending
                                             return $hit
                                         else ()
-            (:Build upon the last search.:)
-(:            let $query :=:)
-(:                if ($index eq 'lucene'):)
-(:                then:)
-(:                    if ($bool eq 'new'):)
-(:                    then $query:)
-(:                    else:)
-(:                        concat("(", session:get-attribute("apps.sarit.query"), ") OR (", $query, ")"):)
-(:                else ($query, session:get-attribute("apps.sarit.query")):)
-            let $hits :=
+            let $hits := 
                 if ($bool eq 'or')
-                then session:get-attribute("apps.sarit") union $hits
+                then session:get-attribute("apps.sarit.hits") union $hits
                 else 
                     if ($bool eq 'and')
-                    then session:get-attribute("apps.sarit") intersect $hits
+                    then session:get-attribute("apps.sarit.hits") intersect $hits
                     else
                         if ($bool eq 'not')
-                        then session:get-attribute("apps.sarit") except $hits
+                        then session:get-attribute("apps.sarit.hits") except $hits
                         else $hits
             (:Store the result in the session.:)
             let $ngram-query :=
@@ -1134,7 +1126,8 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             else ''
                 else ''
             let $store := (
-                session:set-attribute("apps.sarit", $hits),
+                session:set-attribute("apps.sarit.hits", $hits),
+                session:set-attribute("apps.sarit.index", $index),
                 session:set-attribute("apps.sarit.ngram-query", $ngram-query),
                 session:set-attribute("apps.sarit.lucene-query", $lucene-query),
                 session:set-attribute("apps.sarit.scope", $query-scope),
@@ -1345,10 +1338,7 @@ declare
     %templates:default("start", 1)
     %templates:default("per-page", 10)
 function app:show-hits($node as node()*, $model as map(*), $start as xs:integer, $per-page as xs:integer) {
-    let $index :=
-        if ($model('query')[1] instance of xs:string)
-        then 'ngram'
-        else 'lucene'
+    let $index := session:get-attribute("apps.sarit.index")
     for $hit at $p in subsequence($model("hits"), $start, $per-page)
     (: we try if the hit has a div ancestor (or is itself a div) and take the first one (or itself), 
     in order to be able to output the link to the hit context ($ancestor-id) and a header ($ancestor-head). :)
@@ -1380,6 +1370,7 @@ function app:show-hits($node as node()*, $model as map(*), $start as xs:integer,
     let $config := <config width="70" table="yes" link="{$ancestor-id}.html?action=search#{$matchId}"/>
     let $kwic := kwic:summarize($ancestor, $config)
     let $kwic :=
+        (:only clean up kwic if ngram search is employed on Devanagari text:)
         if ($index eq "lucene" or $hit/ancestor-or-self::*[@xml:lang][1]/@xml:lang eq "sa-Latn")
         then $kwic
         else app:clean-up-kwic($kwic)
@@ -1498,56 +1489,3 @@ declare %private function app:sanitize-lucene-query($query-string as xs:string) 
        else translate($query-string, '<>', ' ') (:if there is an uneven number of angle brackets, delete all angle brackets.:)
     return $query-string
 };
-
-
-(:~
- : This is a function for supplying links to download the files in remote-download-root. 
- : It is assumed that the XML files in $config:remote-data-root are mirrored in $config:remote-download-root, 
- : except 00-SARIT-TEI-header-template.xml.
- : 
- : @param $node the HTML node with the attribute which triggered this call
- : @param $model a map containing arbitrary data - used to pass information between template calls
- :)
-
-(:declare function app:list-downloads($node as node(), $model as map(*)) {
-    let $child-resources := xmldb:get-child-resources($config:remote-data-root)
-    let $xml-resources := 
-        for $file in $child-resources 
-        return 
-            if (contains($file, ".xml") and $file ne "00-SARIT-TEI-header-template.xml")
-            then (
-                let $header := doc($config:remote-data-root || "/" || $file)//tei:titleStmt
-                let $title := $header//tei:title[@type eq "main"]
-                let $subtitle := $header//tei:title[@type eq "sub"][1]
-                let $author :=  
-                    if (exists($header//tei:respStmt/tei:persName)) 
-                    then (string-join($header//tei:respStmt/tei:persName,', '))
-                    else (
-                        if (exists($header//tei:respStmt/tei:orgName))
-                        then (string-join($header//tei:respStmt/tei:orgName,', '))
-                        else (
-                            if (exists($header//tei:respStmt/tei:name))
-                            then (string-join($header//tei:respStmt/tei:name,', '))
-                            else string-join($header//tei:author,', ')
-                        )
-                    )       
-                let $bytes := xmldb:size($config:remote-data-root, $file)                
-                let $size := 
-                    if ($bytes lt 1048576) 
-                    then (format-number($bytes div 1024,"#,###.##") || "kB") 
-                    else (format-number($bytes div 1048576,"#,###.##") || "MB" )
-                let $downloadPath := request:get-scheme() ||"://" || request:get-server-name() || ":" || request:get-server-port() || substring-before(request:get-effective-uri(),"/db/apps/sarit/modules/view.xql") || $config:remote-download-root || "/" || substring-before($file,".xml") || ".zip"
-                
-                return 
-                    <div style="border-top:1px solid gray;padding-top:5px;" class="row">
-                        <div class="col-md-12">
-                            <p><strong>{$title/text()}</strong> - <small>{$subtitle/text()}</small></p>
-                            <p>Author(s): {$author}</p>
-                            <p>File: <a href="{$downloadPath}">{xmldb:decode($file)}</a> - Size: {$size}</p>
-                        </div>
-                    </div>
-            )
-            else ()        
-    return     
-        $xml-resources
-};:)
