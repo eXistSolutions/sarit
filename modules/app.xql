@@ -625,21 +625,20 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
 declare 
     %templates:default("action", "browse")
 function app:view($node as node(), $model as map(*), $action as xs:string) {
-    if ($action eq 'search')
-    (:TODO: if the user employs different indexes, get matches for both indexes.:)
-    then
-        let $query := session:get-attribute("apps.sarit.lucene-query")
-        return
-            if (string-length(string-join($query)))
-            then app:lucene-view($node, $model, $query)
+    let $lucene-query := session:get-attribute("apps.sarit.lucene-query")
+    let $ngram-query := session:get-attribute("apps.sarit.ngram-query")
+    return
+        if (string-length(string-join($lucene-query)))
+        then app:lucene-view($node, $model, $lucene-query)
+        else
+            if (string-length(string-join($ngram-query)))
+            then app:ngram-view($node, $model, $ngram-query)
             else
-                let $query := session:get-attribute("apps.sarit.ngram-query")
-                return
-                    if (string-length(string-join(session:get-attribute("apps.sarit.ngram-query"))))
-                    then app:ngram-view($node, $model, $query)
-                    else ()
-    else ()
-
+                for $div in $model("work") 
+                return 
+                    <div xmlns="http://www.w3.org/1999/xhtml" class="play">
+                    { tei-to-html:recurse($div, <options><param name="div-type" value="{$div/@type}" /></options>) }
+                    </div>
 };
 
 declare %private function app:lucene-view($node as node(), $model as map (*), $query as xs:string+)
@@ -747,6 +746,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
     let $query := lower-case(translate(normalize-space($query), "&#8204;", ""))
     (:based on which index the user wants to query against, the query string is dispatchted to separate functions. Both return empty if there is no query string.:)
     let $query := app:expand-query($query, $query-scripts)
+    (:both lucene queries and ngram queries are passed around as sequences of strings, but after expansion lucene queries have to be wrapped in slashes to trigger regex mode:)
     let $query := 
         if ($index eq 'ngram')
         then $query
@@ -756,6 +756,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                 if (contains($query, '['))
                 then "/" || $query || "/"
                 else $query
+    (:this joins the latest lucene query with OR if it has been expanded - this OR does not have anything to do with boolean searches:)
     let $query := 
         if ($index eq 'ngram')
         then $query
@@ -1098,7 +1099,8 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                         if ($bool eq 'not')
                         then session:get-attribute("apps.sarit.hits") except $hits
                         else $hits
-            (:Store the result in the session.:)
+            (:gather up previous searches for match highlighting.:)
+            (:NB: lucene-queries may have slashes added, so they may be different from ngram-queries:)
             let $ngram-query :=
                 if ($index eq 'ngram')
                 then
