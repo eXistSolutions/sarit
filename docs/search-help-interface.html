@@ -45,12 +45,6 @@
                             occurrences of the words and phrases you are interested in. All the
                             other choices you make in the search interface restrict or modify the
                             search term(s) you input here. </p>
-                        <p>Generally speaking, there are two ways you can enter a search term:
-                            either you enter a string of characters which you wish to find verbatim,
-                            or you use regular expressions, masking your search expression by use of
-                            wildcards etc. However, the SARIT search interface offers more options
-                            than you can specify in the search term field, options for e.g.
-                            performing proximity searches. This is explained in the <a href="search-help-lucene.html">Lucene Search Help</a>.</p>
                     </div>
                     <div>
                         <h5>Search With Which Scripts?</h5>
@@ -68,7 +62,7 @@
                             a Lucene Full-Text Index.</p>
                         <p>The NGram Index analyses the text in terms of strings, regardless of any
                             word divisions. The index consists of overlapping chunks of text three
-                            characters long.</p>
+                            characters long (tri-grams).</p>
                         <p>The Lucene Full-Text Index analyses the text in terms of words, that is
                             strings as separated by spaces, etc. The index consists of each and
                             every word in the text.</p>
@@ -77,14 +71,14 @@
                             is, space-separated string) or as only part of a word.</p>
                         <p>When you search with the Lucene Full-Text Index, you will only find
                             occurrences of your search term that are identical with whole words
-                            (that is, space-separated strings). You will not find occurrences that
+                            (that is, strings separated by spaces, etc.). You will not find occurrences that
                             are only part of a word, unless you use Regular Expressions.</p>
                         <p>The Lucene Full-Text Index is thus useful for texts segmented into words,
                             that is, texts divided into chunks that resemble words in European
                             languages.</p>
                         <p>Word division is a matter of degree. Among the SARIT texts, only the
                             Arthaśāstra can be said to be divided into words in a way which makes
-                            use of the Lucene Full-Text index immediately possible. For information
+                            use of the Lucene Full-Text index immediately suitable. For information
                             about the remaining texts, see <a href="search-help-word-division.html">Word Division</a>. With these texts, you should as a rule use the
                             NGram Index.</p>
                         <p>Note that this does not mean that the NGram Index cannot be used with
@@ -92,21 +86,8 @@
                             different searches, one for words (the Lucene Full-Text Index) and one
                             for strings of characters (the NGram Index). You will almost always get
                             more hits with the NGram Index, but the Lucene Full-Text Index gives you
-                            more search options (and is much slower).</p>
+                            more search options (and is slower).</p>
                         <p>There are further explanations in the <a href="search-help-index.html">Indexes and Searching Help</a>.</p>
-                    </div>
-                    <div>
-                        <h5>Use Which Search Mode?</h5>
-                        <p>This dropdown menu is only displayed if you choose Use Lucene Full-Text
-                            Index.</p>
-                        <p>The many options are explained in more detail in the <a href="search-help-lucene.html">Lucene Search Help</a>, but the most
-                            commonly used ones are the top ones, "Any Search Term" and "All Search
-                            Terms Together". They are of relevance only if you search for several
-                            words at a time. You should choose Any Search Term if you want a hit no
-                            matter if one or the other of the words you input as search terms is
-                            present, or if both are, whereas you should choose All Search Terms
-                            Together, if you only want hits if all of the words you input are
-                            present at the same time in the search context.</p>
                     </div>
                     <div>
                         <h5>Search Which Document Part?</h5>
@@ -213,7 +194,7 @@
                             terms are within the texts searched, the higher the score will be.</p>
                         <p>The search term matches are grouped in hits, i.e. according to the levels
                             of the document targeted by your search, with clickable references to
-                            the text as a whole (showing the&#160;header information and table of
+                            the text as a whole (showing the header information and table of
                             contents) and the part of the text in which the hit occurred (displaying
                             the text itself). One hit (such as the second here) may contain several
                             matches.</p>
@@ -228,16 +209,16 @@
                         <p>After clicking on one of the links that leads to a direct display of a
                             page, you are shown the page view.</p>
                         <img src="resources/img/page-view.png"/>
-                        <p>If you have clicked on a search term link in the hitlist, the search term
-                            will be highlighted.</p>
+                        <p>If you have clicked on a search term link in the hitlist, the search term(s)
+                            will all be highlighted if you are searching through the Luucene Full-Text index, but only one will be highlighted if you search through the NGram Index.</p>
                         <p>It is not possible to view a whole text, due to the heavy load on the
-                            browser this would entail in case of very long texts, but you can
+                            browser this would entail in case of very long texts, but as a substitute for this you can
                             download the whole text in a number of formats from the list of
                             works.</p>
                         <p>You have the option of moving back and forth in the text. There may occur
                             a "blank layer", with no text displayed, in which case you should just
                             move on one click. Such "blank layers" occur because the text moves from
-                            one division down to a lower division which does not have any text or a
+                            one division down to a lower division which does not have any text and does not have a
                             header.</p>
                         <p>From the button in the left side of the screen, you have the option of
                             accessing the table of contents, allowing you to move from chapter to

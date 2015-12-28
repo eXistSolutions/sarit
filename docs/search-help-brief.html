@@ -1,9 +1,7 @@
-<div class="help" data-template="templates:surround" data-template-with="template.html"
-    data-template-at="content">
+<div class="help" data-template="templates:surround" data-template-with="template.html" data-template-at="content">
     <div class="container content">
         <h3>Brief Search Help</h3>
-        <section>
-            <!--<h4>Search 101</h4>-->
+        <section><!--<h4>Search 101</h4>-->
             <p>Some brief hints are given here — for fuller explanations, please consult the other
                 search instructions.</p>
             <ul>
@@ -14,23 +12,23 @@
                 <li>Do you want to use Regular Expressions? <ul>
                         <li>With both NGram Index and Lucene Full-Text Index, use standard regex
                             syntax for ".", "?", "+" , "*", "[]" and "{}". </li>
+                        <li>Enclose Regular Expressions in forward slashes ("/") when using the Lucene Full-Text Index. </li>
                     </ul>
                 </li>
                 <li>Do you want to search for the co-occurrence of a number of words? <ul>
                         <li>Check whether the texts are divided into words, and if they are, select
-                            Use Lucene Full-Text Index and select All Search Terms Together. </li>
+                            Use Lucene Full-Text Index and enter "AND" between the different words. </li>
                     </ul>
                 </li>
                 <li>If you input a IAST search term or Devanagari search term, your search term will
-                    by default be automatically converted to make your search apply to texts both in
-                    IAST and in Devanagari. If you wish to choose whether to search using IAST or
-                    using Devanagari, see below.</li>
+                    by default be automatically converted to both
+                    IAST and in Devanagari. If you wish to search using IAST or
+                    Devanagari only, see below.</li>
             </ul>
         </section>
         <section>
             <h4>What Does It Mean?</h4>
-            <p>If you hover over the dropdowns in the Search panel, you will see the titles of the
-                dropdowns.</p>
+            <p>If you hover over the dropdowns in the Search panel, you will see their titles.</p>
             <ul>
                 <li>Search For What? <ul>
                         <li>You can either enter the precise term to search for or use Regular
@@ -72,62 +70,8 @@
                             are segmented into words. This applies to a few texts in romanisation,
                             mainly the Arthaśāstra. For information about the remaining texts, see
                                 <a href="search-help-word-division.html">Word Division</a>. </li>
-                        <li>Selecting Use Lucene Full-Text Index gives you extra options, shown in
-                            the dropdown menu Use Which Search Mode? </li>
-                    </ul>
-                </li>
-                <li>Use Which Search Mode? <ul>
-                        <li>This dropdown menu is only visible if you have selected Use Lucene
-                            Full-Text Index. </li>
-                        <li>Any Search Term <ul>
-                                <li>If you have entered several words to search, hits will also be
-                                    retrieved where only one of the terms appear, but the hits with
-                                    occurrences of many search terms will be displayed at the top of
-                                    the hitlist. </li>
-                                <li>This is the default search mode, so use it also if you are only
-                                    searching for one word. </li>
-                            </ul>
-                        </li>
-                        <li>All Search Terms Together <ul>
-                                <li>If you have entered several words to search, hits will only be
-                                    retrieved in which all of the terms appear. </li>
-                            </ul>
-                        </li>
-                        <li>Phrase Search <ul>
-                                <li>Searches for words in immediate sequence. </li>
-                            </ul>
-                        </li>
-                        <li>Proximity Search (Ordered) <ul>
-                                <li>Using this option only has meaning if there is more than one
-                                    search term. </li>
-                                <li>Searches for words in sequence, with a maximum number of words
-                                    in between your search terms. Enter the maximum number of words
-                                    you wish to allow as a digit following the search terms,
-                                    preceded by a space. </li>
-                            </ul>
-                        </li>
-                        <li>Proximity Search (Unordered) <ul>
-                                <li>Using this option only has meaning if there is more than one
-                                    search term. </li>
-                                <li>Searches for words in near each other, regardless of order, with
-                                    a maximum number of words in between your search terms. Enter
-                                    the maximum number of words you wish to allow as a digit
-                                    following the search terms, preceded by a space. </li>
-                            </ul>
-                        </li>
-                        <li>Fuzzy Search <ul>
-                                <li>This option can only be used if there is just one search term. </li>
-                                <li>Enter the number 1 or 2 after the word to get fuzzier and yet
-                                    fuzzier results. See further explanation in Lucene Search
-                                    Help.</li>
-                            </ul>
-                        </li>
-                        <li>Regex Search <ul>
-                                <li>For starters, use standard regex syntax for ".", "?", "+" , "*",
-                                    "[]" and "{}". Read about additional options in Lucene Search
-                                    Help. </li>
-                            </ul>
-                        </li>
+                        <li>Selecting Use Lucene Full-Text Index gives you extra search options, see
+                                <a href="search-help-lucene.html">Lucene Search Help</a>. </li>
                     </ul>
                 </li>
                 <li>Search Which Document Part? <ul>
@@ -144,7 +88,7 @@
                 </li>
                 <li>Search Narrowly Or Broadly? <ul>
                         <li>This option is mainly relevant you are interested in finding the
-                            cooccurrence of more than one search term within a certain part of the
+                            co-occurrence of more than one search term within a certain part of the
                             text.</li>
                         <li>A narrow search searches for hits in smaller parts, whereas a broad
                             search searches for hits in larger parts. Two terms may occur together
@@ -154,8 +98,8 @@
                 <li>Perform New Search or Continue Last Search? <ul>
                         <li>This gives you the option to refine your previous search, by restricting
                             or broadening the search result.</li>
-                        <li>If you choose Perform New Search, your search will not relate to your
-                            previous search.</li>
+                        <li>If you choose Perform New Search, your will search afresh, so your search will not relate to any
+                            previous searches.</li>
                         <li>If you choose "AND Last Search", your search will restrict your last
                             search by requiring that the search criteria for both the last and the
                             present search are satisfied. You typically use this to search for the
@@ -165,14 +109,14 @@
                             search in the search results. You typically use this to search for
                             alternative forms of a word. </li>
                         <li>If you choose "NOT Last Search", your search will restrict your last
-                            search by excluding the results from the present search. You use this to
+                            search by excluding the results from the present search. You typically use this to
                             remove specific hits from the search results. </li>
                         <li>Note that if you search using the Lucene Full-Text Index, you can
                             perform these operations in one search. If you search using the Ngram
-                            Index, this is the only way at present to use Boolean operators. Also,
-                            while search results are always highlighted in page view when you search using
-                            the Lucene Full-Text Index, this is only the case when you search using
-                            the NGram Index if you choose "Perform New Search".</li>
+                            Index, using this dropdown is the only way to use Boolean operators. </li>
+                        <li>Note that all search hits are highlighted in page view when you search using
+                            the Lucene Full-Text Index, but only one will be highlighted when you search using
+                            the NGram Index.</li>
                     </ul>
                 </li>
             </ul>
