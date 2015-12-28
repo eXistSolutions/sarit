@@ -751,9 +751,9 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
         if ($index eq 'ngram')
         then $query
         else
-            for $query in $query
+            for $query in normalize-space($query)
             return
-                if (contains($query, '['))
+                if (contains($query, '[') and not(starts-with($query, "/") and ends-with($query, "/")))
                 then "/" || $query || "/"
                 else $query
     (:this joins the latest lucene query with OR if it has been expanded - this OR does not have anything to do with boolean searches:)
