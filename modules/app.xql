@@ -100,14 +100,6 @@ declare function functx:substring-after-if-contains
    else ''
  } ;
 
-declare %private function functx:contains-any-of
-  ( $arg as xs:string? ,
-    $searchStrings as xs:string* )  as xs:boolean {
-
-   some $searchString in $searchStrings
-   satisfies contains($arg,$searchString)
- } ;
-
 (:modified by applying functx:escape-for-regex() :)
 declare %private function functx:number-of-matches 
   ( $arg as xs:string? ,
@@ -625,20 +617,23 @@ declare function app:navigation-link($node as node(), $model as map(*), $directi
 declare 
     %templates:default("action", "browse")
 function app:view($node as node(), $model as map(*), $action as xs:string) {
-    let $lucene-query := session:get-attribute("apps.sarit.lucene-query")
-    let $ngram-query := session:get-attribute("apps.sarit.ngram-query")
-    return
-        if (string-length(string-join($lucene-query)))
-        then app:lucene-view($node, $model, $lucene-query)
-        else
-            if (string-length(string-join($ngram-query)))
-            then app:ngram-view($node, $model, $ngram-query)
+    if ($action eq 'browse')
+    then
+        for $div in $model("work")
+        return 
+            <div xmlns="http://www.w3.org/1999/xhtml" class="play">
+            { tei-to-html:recurse($div, <options><param name="div-type" value="{$div/@type}" /></options>) }
+            </div>
+    else
+        let $lucene-query := session:get-attribute("apps.sarit.lucene-query")
+        let $ngram-query := session:get-attribute("apps.sarit.ngram-query")
+        return
+            if (string-length(string-join($lucene-query)))
+            then app:lucene-view($node, $model, $lucene-query)
             else
-                for $div in $model("work") 
-                return 
-                    <div xmlns="http://www.w3.org/1999/xhtml" class="play">
-                    { tei-to-html:recurse($div, <options><param name="div-type" value="{$div/@type}" /></options>) }
-                    </div>
+                if (string-length(string-join($ngram-query)))
+                then app:ngram-view($node, $model, $ngram-query)
+                else ()
 };
 
 declare %private function app:lucene-view($node as node(), $model as map (*), $query as xs:string+)
@@ -825,7 +820,7 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
                             then collection($config:remote-data-root)//tei:TEI[@xml:id = $target-texts]/tei:teiHeader
                             else ()
             (: Here the actual query commences. This is split into two parts, the first for a Lucene query and the second for an ngram query. :)
-            (:The query passed to a Luecene query in ft:query is an XML element <query> containing one or two <bool>. The <bool> contain the original query and the transliterated query, as indicated by the user in $query-scripts.:)
+            (:The query passed to a Lucene query in ft:query is a string containing one or two queries joined by an OR. The queries contain the original query and the transliterated query, as indicated by the user in $query-scripts.:)
             let $hits :=
                 if ($index eq 'lucene')
                 then
@@ -1145,15 +1140,10 @@ function app:query($node as node()*, $model as map(*), $query as xs:string?, $in
 };
 
 (:~
-    app:expand-ngram-query transliterates the query string from Devanagari to IAST transcription and/or from IAST transcription to Devanagari, 
-    if the user has indicated that this search is wanted. 
+    app:expand-query transliterates the query string from Devanagari to IAST transcription and/or from IAST transcription to Devanagari, 
+    if the user has indicated that this is wanted in $query-scripts. 
 :)
-(: NB: How can this function return 0 or 1:)
 declare %private function app:expand-query($query as xs:string*, $query-scripts as xs:string?) as xs:string* {
-    util:log("INFO", "$app:devnag2roman")
-    ,
-    util:log("INFO", $app:devnag2roman)
-    ,
     if ($query)
     then (
         sarit:create("devnag2roman", $app:devnag2roman/string()),
@@ -1197,70 +1187,11 @@ declare %private function app:expand-query($query as xs:string*, $query-scripts 
                         then
                             sarit:transliterate("expand", $query)
                         else ''
-            (:there are only two options: IAST and Devanagari input. If the query is not pure IAST and is not pure Devanagari, then do not (try to) transliterate the original query but keep it.:)
+            (:there should only be two options: IAST and Devanagari input. If the query is not pure IAST and is not pure Devanagari, then do not (try to) transliterate the original query but keep it as it is.:)
             else
                 $query
     ) 
     else ()
-};
-
-(:~
-    app:expand-lucene-query transliterates the lucene query element from Devanagari to IAST transcription and/or from IAST transcription to Devanagari, 
-    if the user has indicated that this search is wanted. 
-:)
-declare %private function app:expand-lucene-query($query as xs:string, $query-scripts as xs:string) as xs:string {
-        (:if there is input exclusively in IAST characters:)
-        if (not(matches($query, $app:iast-char-repertoire-negation)))
-        then
-            (:if the user wishes to search in Devanagari, transliterate the original query and delete it:)
-            if ($query-scripts eq "sa-Deva") 
-            then app:transliterate-lucene-query($query, "roman2devnag")
-            else
-                (:if the user wishes to search in both IAST and  Devanagari, transliterate the original query and keep it:)
-                if ($query-scripts eq "all") 
-                then concat("(", $query, ") OR (", app:transliterate-lucene-query($query, "roman2devnag"), ")")
-                else
-                    (:if the user wishes to search in IAST only, do not transliterate the original query but keep it:)
-                    if ($query-scripts eq "sa-Latn") 
-                    then $query
-                    else ()
-        else
-            if (empty(string-to-codepoints($query)[not(. = (9-13, 32, 133, 160, 2304 to 2431, 43232 to 43259, 7376 to 7412))]))
-            (:if there is input consisting exclusively of Devanagari characters:)
-            then
-                (:if the user wishes to search in IAST, transliterate the original query and delete it:)
-                if ($query-scripts eq "sa-Latn")
-                then app:transliterate-lucene-query($query, "devnag2roman")
-                else
-                    (:if the user wishes to search in Devanagari, do not transliterate the original query but keep it:)
-                    if ($query-scripts eq "sa-Deva")
-                    then $query
-                    else
-                        (:if the user wishes to search in both IAST and  Devanagari, transliterate the original query and keep it:)
-                        if ($query-scripts eq "all")
-                        then concat("(", $query, ") OR (", app:transliterate-lucene-query($query, "devnag2roman"), ")")
-                        else ()
-            else $query
-};
-
-
-declare %private function app:transliterate-lucene-query($query as xs:string, $direction as xs:string) as xs:string {
-   (
-    sarit:create("devnag2roman", $app:devnag2roman/string()),
-    sarit:create("roman2devnag", $app:roman2devnag-search/string()), element {node-name($query)}
-    {$query/@*,
-        for $child in $query/node()
-        return
-            if ($child instance of element())
-            then app:transliterate-lucene-query($child, $direction)
-            else
-                if ($direction eq "devnag2roman")
-                then
-                    sarit:transliterate("devnag2roman", $child)
-                else
-                    translate(sarit:transliterate("roman2devnag", $child), "&#8204;", "")
-    }
-    )
 };
 
 (:~
@@ -1448,15 +1379,6 @@ as element(tr)
             <td class="following">{ $right-context }</td>
         </tr>
 };
-
-
-
-(:declare function app:base($node as node(), $model as map(*)) {:)
-(:    let $context := request:get-context-path():)
-(:    let $app-root := substring-after($config:app-root, "/db/"):)
-(:    return:)
-(:        <base xmlns="http://www.w3.org/1999/xhtml" href="{$context}/{$app-root}/"/>:)
-(:};:)
 
 (: This functions provides crude way to avoid the most common errors with paired expressions and apostrophes. :)
 (: TODO: check order of pairs:)
