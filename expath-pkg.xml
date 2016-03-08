@@ -2,4 +2,5 @@
 <package xmlns="http://expath.org/ns/pkg" name="http://sarit.indology.info/" abbrev="sarit" version="0.0.1" spec="1.0">
     <title>SARIT: Search and Retrieval of Indic Texts</title>
     <dependency package="http://exist-db.org/apps/monex" semver-min="0.5"/>
+    <dependency processor="http://exist-db.org" semver-min="2.1.0" semver-max="3.1.0"/>
 </package>
